@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Admin Dashboard - Cà Phê Thông Minh</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="../css/admin-dashboard.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-mug-hot"></i>
+                    <span>Cà Phê <span class="highlight">Thông Minh</span></span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="../../staff-management/html/staff-management.html" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>Quản lý nhân viên</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-chair"></i>
+                    <span>Quản lý bàn</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Báo cáo</span>
+                </a>
+                <a href="../../password-requests/html/password-requests.html" class="nav-item">
+                    <i class="fas fa-key"></i>
+                    <span>Yêu cầu đặt lại mật khẩu</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Cài đặt</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <img id="adminAvatar" class="avatar" src="https://ui-avatars.com/api/?background=ff0055&color=fff&rounded=true" alt="Avatar">
+                    <div>
+                        <p id="adminName">Admin</p>
+                        <small>Quản trị viên</small>
+                    </div>
+                </div>
+                <button class="logout-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="date-range">
+                    <button class="range-btn active" data-range="day">Hôm nay</button>
+                    <button class="range-btn" data-range="week">Tuần này</button>
+                    <button class="range-btn" data-range="month">Tháng này</button>
+                    <button class="range-btn" data-range="year">Năm nay</button>
+                </div>
+                <div class="admin-actions">
+                    <button class="refresh-btn" id="refreshBtn">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalRevenue">0₫</h3>
+                        <p>Tổng doanh thu</p>
+                        <span id="revenueChange" class="stat-change positive">+0%</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalOrders">0</h3>
+                        <p>Tổng đơn hàng</p>
+                        <span id="ordersChange" class="stat-change positive">+0%</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalCustomers">0</h3>
+                        <p>Khách hàng</p>
+                        <span id="customersChange" class="stat-change positive">+0%</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="avgRating">4.8</h3>
+                        <p>Đánh giá trung bình</p>
+                        <span class="stat-change positive">★ 5 sao</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Row: Line Chart (trái) + Stack (phải: Pie + Rating) -->
+            <div class="charts-row">
+                <!-- Line Chart - Chiếm bên trái -->
+                <div class="line-chart-card">
+    <div class="chart-header">
+        <h3><i class="fas fa-chart-line"></i> PHÂN TÍCH DOANH THU & KHÁCH HÀNG</h3>
+        <div class="chart-options">
+            <button class="range-btn active" data-range="week">Tuần</button>
+            <button class="range-btn" data-range="month">Tháng</button>
+            <button class="range-btn" data-range="year">Năm</button>
+        </div>
+    </div>
+    
+    <div class="chart-main-container">
+        <div class="chart-canvas-wrapper">
+            <canvas id="revenueChart"></canvas>
+        </div>
+        
+        <div class="chart-analysis-panel">
+            <h4><i class="fas fa-calculate"></i> SO SÁNH KỲ TRƯỚC</h4>
+            
+            <div class="analysis-item">
+                <span class="label">Doanh thu:</span>
+                <div id="compareRevenue" class="value">--</div>
+                <small id="compareRevenueDetail">--</small>
+            </div>
+            
+            <div class="analysis-item">
+                <span class="label">Lượng khách:</span>
+                <div id="compareCustomers" class="value">--</div>
+                <small id="compareCustomersDetail">--</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+                <!-- Right Stack: Pie Chart (trên) + Rating Chart (dưới) -->
+                <div class="right-stack">
+                    <!-- Pie Chart -->
+                    <div class="chart-card pie-chart-card">
+                        <h3>DOANH THU THEO DANH MỤC</h3>
+                        <canvas id="categoryChart" height="160"></canvas>
+                        <div class="pie-legend" id="pieLegend"></div>
+                    </div>
+
+                    <!-- Rating Bar Chart -->
+                    <div class="chart-card rating-card">
+                        <h3><i class="fas fa-star"></i> ĐÁNH GIÁ KHÁCH HÀNG</h3>
+                        <div class="rating-bars">
+                            <div class="rating-row">
+                                <div class="rating-label">5 ★</div>
+                                <div class="rating-bar-container">
+                                    <div class="rating-bar" id="rating-bar-5" style="width: 0%"></div>
+                                </div>
+                                <div class="rating-percent" id="rating-percent-5">0%</div>
+                            </div>
+                            <div class="rating-row">
+                                <div class="rating-label">4 ★</div>
+                                <div class="rating-bar-container">
+                                    <div class="rating-bar" id="rating-bar-4" style="width: 0%"></div>
+                                </div>
+                                <div class="rating-percent" id="rating-percent-4">0%</div>
+                            </div>
+                            <div class="rating-row">
+                                <div class="rating-label">3 ★</div>
+                                <div class="rating-bar-container">
+                                    <div class="rating-bar" id="rating-bar-3" style="width: 0%"></div>
+                                </div>
+                                <div class="rating-percent" id="rating-percent-3">0%</div>
+                            </div>
+                            <div class="rating-row">
+                                <div class="rating-label">2 ★</div>
+                                <div class="rating-bar-container">
+                                    <div class="rating-bar" id="rating-bar-2" style="width: 0%"></div>
+                                </div>
+                                <div class="rating-percent" id="rating-percent-2">0%</div>
+                            </div>
+                            <div class="rating-row">
+                                <div class="rating-label">1 ★</div>
+                                <div class="rating-bar-container">
+                                    <div class="rating-bar" id="rating-bar-1" style="width: 0%"></div>
+                                </div>
+                                <div class="rating-percent" id="rating-percent-1">0%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Items Table -->
+            <div class="top-items-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-trophy"></i> TOP MÓN BÁN CHẠY NHẤT</h3>
+                    <div class="table-controls">
+                        <input type="text" id="searchItem" placeholder="Tìm kiếm món..." class="search-input">
+                        <select id="sortBy" class="sort-select">
+                            <option value="quantity">Theo số lượng</option>
+                            <option value="revenue">Theo doanh thu</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="top-items-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Tên món</th>
+                                <th>Danh mục</th>
+                                <th>Số lượng bán</th>
+                                <th>Doanh thu</th>
+                                <th>Ngày bán gần nhất</th>
+                            </tr>
+                        </thead>
+                        <tbody id="topItemsBody">
+                            <tr>
+                                <td colspan="6" class="loading">Đang tải dữ liệu...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/admin-dashboard.js"></script>
+</body>
+</html>

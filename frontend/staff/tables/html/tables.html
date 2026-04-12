@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Quản lý bàn - Nhân viên | Cà Phê Thông Minh</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../css/tables.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-mug-hot"></i>
+                <span>Cà Phê <span class="highlight">Thông Minh</span></span>
+                <span class="staff-badge">STAFF</span>
+            </div>
+            <div class="nav-links" id="navLinks">
+                <a href="../../dashboard/html/staff-dashboard.html">
+                    <i class="fas fa-chart-line"></i> Dashboard
+                </a>
+                <a href="#" class="active">
+                    <i class="fas fa-chair"></i> Quản lý bàn
+                </a>
+                <a href="../../orders/html/orders.html">
+                    <i class="fas fa-receipt"></i> Đơn hàng
+                </a>
+            </div>
+            <div class="user-menu">
+                <div class="user-info">
+                    <img id="staffAvatar" class="avatar" src="https://ui-avatars.com/api/?background=3498db&color=fff&rounded=true" alt="Avatar">
+                    <span id="staffName">Nhân viên</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                </div>
+            </div>
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <div class="page-header">
+            <h1><i class="fas fa-chair"></i> Quản lý bàn</h1>
+            <div class="header-actions">
+                <button class="refresh-btn" id="refreshBtn">
+                    <i class="fas fa-sync-alt"></i> Làm mới
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats Summary -->
+        <div class="stats-summary">
+            <div class="stat-summary-item">
+                <i class="fas fa-chair"></i>
+                <span>Tổng số bàn: <strong id="totalTables">0</strong></span>
+            </div>
+            <div class="stat-summary-item available">
+                <i class="fas fa-circle"></i>
+                <span>Trống: <strong id="availableTables">0</strong></span>
+            </div>
+            <div class="stat-summary-item occupied">
+                <i class="fas fa-circle"></i>
+                <span>Đang dùng: <strong id="occupiedTables">0</strong></span>
+            </div>
+            <div class="stat-summary-item reserved">
+                <i class="fas fa-circle"></i>
+                <span>Đã đặt: <strong id="reservedTables">0</strong></span>
+            </div>
+        </div>
+
+        <!-- Tables Grid -->
+        <div class="tables-container">
+            <div class="tables-grid" id="tablesGrid">
+                <div class="loading-spinner">
+                    <i class="fas fa-spinner fa-spin"></i> Đang tải...
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Table Detail Modal -->
+    <div id="tableModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTableTitle">Chi tiết bàn</h3>
+                <button class="modal-close" id="closeModalBtn">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Nội dung sẽ load bằng JS -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" id="modalCancelBtn">Đóng</button>
+                <button class="btn-confirm" id="modalConfirmBtn">Cập nhật trạng thái</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Change Status Modal -->
+    <div id="confirmModal" class="modal hidden">
+        <div class="modal-content confirm-modal">
+            <div class="modal-icon">
+                <i class="fas fa-question-circle"></i>
+            </div>
+            <h3>Xác nhận đổi trạng thái</h3>
+            <p id="confirmMessage">Bạn có chắc chắn muốn đổi trạng thái bàn này?</p>
+            <div class="modal-buttons">
+                <button class="btn-cancel" id="confirmCancelBtn">Hủy</button>
+                <button class="btn-confirm" id="confirmOkBtn">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/tables.js"></script>
+</body>
+</html>

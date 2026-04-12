@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Thanh toán - Cà Phê Thông Minh</title>
+    <link rel="stylesheet" href="../../../shared/css/global.css">
+    <link rel="stylesheet" href="../css/payment.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-mug-hot"></i>
+                <span>Cà Phê <span class="highlight">Thông Minh</span></span>
+            </div>
+            <div class="nav-links" id="navLinks">
+                <a href="../../index/html/index.html"><i class="fas fa-home"></i> Trang chủ</a>
+                <a href="../../menu/html/menu.html"><i class="fas fa-coffee"></i> Thực đơn</a>
+                <a href="../../tables/html/tables.html"><i class="fas fa-chair"></i> Đặt bàn</a>
+                <a href="../../orders/html/orders.html"><i class="fas fa-shopping-cart"></i> Đơn hàng <span id="cartCount" class="cart-badge">0</span></a>
+                <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+            </div>
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="payment-hero">
+        <div class="payment-hero-overlay"></div>
+        <div class="payment-hero-content">
+            <h1>Thanh toán <span class="highlight">đơn hàng</span></h1>
+            <p>Vui lòng kiểm tra lại thông tin trước khi thanh toán</p>
+        </div>
+    </section>
+
+    <!-- Payment Section -->
+    <section class="payment-section">
+        <div class="container">
+            <div class="payment-layout">
+                <!-- Order Summary -->
+                <div class="order-summary">
+                    <h3>Đơn hàng của bạn</h3>
+                    <div class="order-items" id="orderItems">
+                        <div class="loading-spinner">
+                            <i class="fas fa-spinner fa-spin"></i> Đang tải...
+                        </div>
+                    </div>
+                    <div class="order-total">
+                        <div class="total-row">
+                            <span>Tạm tính:</span>
+                            <span id="subtotal">0đ</span>
+                        </div>
+                        <div class="total-row">
+                            <span>Thuế VAT (10%):</span>
+                            <span id="tax">0đ</span>
+                        </div>
+                        <div class="total-row grand-total">
+                            <span>Tổng cộng:</span>
+                            <span id="total">0đ</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Methods -->
+                <div class="payment-methods">
+                    <h3>Phương thức thanh toán</h3>
+                    <div class="method-options">
+                        <label class="method-option">
+                            <input type="radio" name="paymentMethod" value="cash" checked>
+                            <div class="method-card">
+                                <i class="fas fa-money-bill-wave"></i>
+                                <div>
+                                    <strong>Tiền mặt</strong>
+                                    <p>Thanh toán trực tiếp tại quầy</p>
+                                </div>
+                            </div>
+                        </label>
+                        <label class="method-option">
+                            <input type="radio" name="paymentMethod" value="bank">
+                            <div class="method-card">
+                                <i class="fas fa-university"></i>
+                                <div>
+                                    <strong>Chuyển khoản ngân hàng</strong>
+                                    <p>Thanh toán qua tài khoản ngân hàng</p>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <!-- Cash Payment Section -->
+                    <div id="cashSection" class="payment-detail-section">
+                        <div class="cash-input">
+                            <label>Tiền khách đưa:</label>
+                            <div class="amount-input">
+                                <input type="number" id="cashAmount" placeholder="0" value="0">
+                                <span>đ</span>
+                            </div>
+                        </div>
+                        <div class="change-amount">
+                            <span>Tiền thừa:</span>
+                            <strong id="changeAmount">0đ</strong>
+                        </div>
+                    </div>
+
+                    <!-- Bank Transfer Section -->
+                    <div id="bankSection" class="payment-detail-section hidden">
+                        <div class="bank-info">
+                            <h4>Thông tin chuyển khoản</h4>
+                            <div class="info-row">
+                                <span>Ngân hàng:</span>
+                                <strong>Vietcombank</strong>
+                            </div>
+                            <div class="info-row">
+                                <span>Số tài khoản:</span>
+                                <strong>1234567890</strong>
+                            </div>
+                            <div class="info-row">
+                                <span>Chủ tài khoản:</span>
+                                <strong>CA PHE THONG MINH</strong>
+                            </div>
+                            <div class="info-row">
+                                <span>Số tiền:</span>
+                                <strong id="bankAmount" class="highlight">0đ</strong>
+                            </div>
+                            <div class="info-row">
+                                <span>Nội dung:</span>
+                                <strong>TTDONHANG + [SĐT]</strong>
+                            </div>
+                        </div>
+                        <div class="qr-code">
+                            <div id="qrcode"></div>
+                            <p>Quét mã QR để chuyển khoản nhanh</p>
+                        </div>
+                    </div>
+
+                    <button class="confirm-btn" id="confirmBtn">
+                        <i class="fas fa-check-circle"></i> Xác nhận thanh toán
+                    </button>
+                    <button class="back-btn" onclick="window.location.href='../../orders/html/orders.html'">
+                        <i class="fas fa-arrow-left"></i> Quay lại đơn hàng
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2>Thanh toán thành công!</h2>
+            <p>Cảm ơn bạn đã đặt hàng. Đơn hàng của bạn đã được ghi nhận.</p>
+            <button class="modal-btn" id="closeModalBtn">Về trang chủ</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-logo">
+                        <i class="fas fa-mug-hot"></i>
+                        <span>Cà Phê <span class="highlight">Thông Minh</span></span>
+                    </div>
+                    <p>Nơi hội tụ của những tín đồ cà phê và công nghệ hiện đại.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Liên hệ</h4>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Đường Cà Phê, Quận 1, TP.HCM</li>
+                        <li><i class="fas fa-phone"></i> 1900 1234</li>
+                        <li><i class="fas fa-envelope"></i> hello@cafethongminh.com</li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Giờ mở cửa</h4>
+                    <ul>
+                        <li><i class="fas fa-clock"></i> Thứ 2 - Thứ 6: 7:00 - 22:00</li>
+                        <li><i class="fas fa-clock"></i> Thứ 7 - CN: 8:00 - 23:00</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Cà Phê Thông Minh. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../../shared/js/api.js"></script>
+    <script src="../../../shared/js/auth-check.js"></script>
+    <script src="../js/payment.js"></script>
+</body>
+</html>

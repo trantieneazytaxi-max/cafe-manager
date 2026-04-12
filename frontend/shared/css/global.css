@@ -1,0 +1,67 @@
+/* ============================================
+   GLOBAL STYLES - CAFE MANAGEMENT
+   Dùng chung cho toàn bộ hệ thống
+   ============================================ */
+
+:root {
+    --primary-brown: #5C3A21;
+    --primary-brown-light: #8B5A2B;
+    --primary-beige: #F5E6D3;
+    --primary-beige-light: #FFF8F0;
+    --primary-orange: #E67E22;
+    --primary-orange-light: #F39C12;
+    --white: #FFFFFF;
+    --text-dark: #3D2B1F;
+    --text-light: #8B7355;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--primary-beige-light);
+    color: var(--text-dark);
+    line-height: 1.6;
+}
+
+/* Utility Classes */
+.text-center { text-align: center; }
+.text-brown { color: var(--primary-brown); }
+.text-orange { color: var(--primary-orange); }
+.bg-beige { background-color: var(--primary-beige); }
+.bg-white { background-color: var(--white); }
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--primary-beige);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-orange);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-brown);
+}
+
+.cart-badge {
+    background: #E67E22;
+    color: white;
+    border-radius: 50%;
+    padding: 0.1rem 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    margin-left: 0.25rem;
+    display: inline-block;
+    min-width: 20px;
+    text-align: center;
+}

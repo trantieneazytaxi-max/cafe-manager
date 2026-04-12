@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Đặt bàn - Cà Phê Thông Minh</title>
+    <link rel="stylesheet" href="../../../shared/css/global.css">
+    <link rel="stylesheet" href="../css/tables.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-mug-hot"></i>
+                <span>Cà Phê <span class="highlight">Thông Minh</span></span>
+            </div>
+            <div class="nav-links" id="navLinks">
+                <a href="../../index/html/index.html"><i class="fas fa-home"></i> Trang chủ</a>
+                <a href="../../menu/html/menu.html"><i class="fas fa-coffee"></i> Thực đơn</a>
+                <a href="#" class="active"><i class="fas fa-chair"></i> Đặt bàn</a>
+                <a href="../../orders/html/orders.html"><i class="fas fa-shopping-cart"></i> Giỏ hàng <span id="cartCount" class="cart-badge" style="display: none;">0</span></a>
+                
+                <!-- Profile Dropdown -->
+                <div class="profile-dropdown" id="profileDropdown">
+                    <button class="profile-btn" id="profileBtn">
+                        <img id="avatarImg" class="avatar-small" src="https://ui-avatars.com/api/?background=E67E22&color=fff&rounded=true" alt="Avatar">
+                        <span id="userNameShort"></span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <a href="../../profile/html/profile.html"><i class="fas fa-user-circle"></i> Thông tin cá nhân</a>
+                        <a href="../../settings/html/settings.html"><i class="fas fa-cog"></i> Cài đặt</a>
+                        <hr>
+                        <a href="#" id="logoutDropdownBtn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                    </div>
+                </div>
+            </div>
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="tables-hero">
+        <div class="tables-hero-overlay"></div>
+        <div class="tables-hero-content">
+            <h1>Chọn <span class="highlight">bàn</span> của bạn</h1>
+            <p>Không gian thoải mái, phục vụ tận tình</p>
+        </div>
+    </section>
+
+    <!-- Tables Section -->
+    <section class="tables-section">
+        <div class="container">
+            <div class="selected-table-info" id="selectedTableInfo" style="display: none;">
+                <div class="info-card">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Bạn đã chọn: <strong id="selectedTableName"></strong></span>
+                    <button class="change-table-btn" id="changeTableBtn">Đổi bàn</button>
+                </div>
+            </div>
+            
+            <div class="tables-grid" id="tablesGrid">
+                <div class="loading-spinner">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Đang tải sơ đồ bàn...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Confirm Modal -->
+    <div id="confirmModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-icon">
+                <i class="fas fa-question-circle"></i>
+            </div>
+            <h3>Xác nhận chọn bàn</h3>
+            <p>Bạn có chắc chắn muốn chọn <strong id="confirmTableName"></strong>?</p>
+            <div class="modal-buttons">
+                <button class="modal-cancel" id="modalCancelBtn">Hủy</button>
+                <button class="modal-confirm" id="modalConfirmBtn">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-logo">
+                        <i class="fas fa-mug-hot"></i>
+                        <span>Cà Phê <span class="highlight">Thông Minh</span></span>
+                    </div>
+                    <p>Nơi hội tụ của những tín đồ cà phê và công nghệ hiện đại.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Liên hệ</h4>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Đường Cà Phê, Quận 1, TP.HCM</li>
+                        <li><i class="fas fa-phone"></i> 0965 147 941</li>
+                        <li><i class="fas fa-envelope"></i> vothanhdat101091@gmail.com</li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Giờ mở cửa</h4>
+                    <ul>
+                        <li><i class="fas fa-clock"></i> Thứ 2 - Thứ 6: 7:00 - 22:00</li>
+                        <li><i class="fas fa-clock"></i> Thứ 7 - CN: 8:00 - 23:00</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Cà Phê Thông Minh. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../../shared/js/api.js"></script>
+    <script src="../../../shared/js/auth-check.js"></script>
+    <script src="../js/tables.js"></script>
+</body>
+</html>

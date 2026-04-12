@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Cài đặt - Cà Phê Thông Minh</title>
+    <link rel="stylesheet" href="../../../shared/css/global.css">
+    <link rel="stylesheet" href="../css/settings.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-mug-hot"></i>
+                <span>Cà Phê <span class="highlight">Thông Minh</span></span>
+            </div>
+            <div class="nav-links" id="navLinks">
+                <a href="../../index/html/index.html"><i class="fas fa-home"></i> Trang chủ</a>
+                <a href="../../menu/html/menu.html"><i class="fas fa-coffee"></i> Thực đơn</a>
+                <a href="../../tables/html/tables.html"><i class="fas fa-chair"></i> Đặt bàn</a>
+                <a href="../../orders/html/orders.html"><i class="fas fa-shopping-cart"></i> Giỏ hàng <span id="cartCount" class="cart-badge">0</span></a>
+                
+                <!-- Profile Dropdown -->
+                <div class="profile-dropdown" id="profileDropdown">
+                    <button class="profile-btn" id="profileBtn">
+                        <img id="avatarImg" class="avatar-small" src="https://ui-avatars.com/api/?background=E67E22&color=fff&rounded=true" alt="Avatar">
+                        <span id="userNameShort"></span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <a href="../../profile/html/profile.html"><i class="fas fa-user-circle"></i> Thông tin cá nhân</a>
+                        <a href="#" class="active"><i class="fas fa-cog"></i> Cài đặt</a>
+                        <hr>
+                        <a href="#" id="logoutDropdownBtn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                    </div>
+                </div>
+            </div>
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="settings-hero">
+        <div class="settings-hero-overlay"></div>
+        <div class="settings-hero-content">
+            <div class="hero-icon">
+                <i class="fas fa-cog fa-spin"></i>
+            </div>
+            <h1>Cài đặt <span class="highlight">hệ thống</span></h1>
+            <p>Tùy chỉnh trải nghiệm của bạn</p>
+        </div>
+    </section>
+
+    <!-- Settings Section -->
+    <section class="settings-section">
+        <div class="container">
+            <div class="settings-card">
+                <!-- Thông báo -->
+                <div class="settings-group">
+                    <div class="group-header">
+                        <i class="fas fa-bell"></i>
+                        <h3>Thông báo</h3>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i class="fas fa-envelope"></i>
+                            <div>
+                                <span class="setting-title">Thông báo qua email</span>
+                                <p class="setting-desc">Nhận thông báo về đơn hàng và khuyến mãi qua email</p>
+                            </div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="emailNotification">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i class="fas fa-phone-alt"></i>
+                            <div>
+                                <span class="setting-title">Thông báo qua SMS</span>
+                                <p class="setting-desc">Nhận thông báo qua tin nhắn điện thoại</p>
+                            </div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="smsNotification">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Ngôn ngữ & Khu vực -->
+                <div class="settings-group">
+                    <div class="group-header">
+                        <i class="fas fa-globe"></i>
+                        <h3>Ngôn ngữ & Khu vực</h3>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i class="fas fa-language"></i>
+                            <div>
+                                <span class="setting-title">Ngôn ngữ</span>
+                                <p class="setting-desc">Chọn ngôn ngữ hiển thị</p>
+                            </div>
+                        </div>
+                        <select id="languageSelect" class="setting-select">
+                            <option value="vi">🇻🇳 Tiếng Việt</option>
+                            <option value="en">🇬🇧 English</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <div>
+                                <span class="setting-title">Đơn vị tiền tệ</span>
+                                <p class="setting-desc">Chọn loại tiền tệ hiển thị</p>
+                            </div>
+                        </div>
+                        <select id="currencySelect" class="setting-select">
+                            <option value="VND">🇻🇳 VND (₫)</option>
+                            <option value="USD">🇺🇸 USD ($)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Dữ liệu -->
+                <div class="settings-group">
+                    <div class="group-header">
+                        <i class="fas fa-database"></i>
+                        <h3>Dữ liệu</h3>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i class="fas fa-shopping-cart"></i>
+                            <div>
+                                <span class="setting-title">Xóa dữ liệu giỏ hàng</span>
+                                <p class="setting-desc">Xóa tất cả sản phẩm đang có trong giỏ hàng</p>
+                            </div>
+                        </div>
+                        <button class="danger-btn" id="clearDataBtn">
+                            <i class="fas fa-trash-alt"></i> Xóa
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Hiển thị -->
+                <div class="settings-group">
+                    <div class="group-header">
+                        <i class="fas fa-palette"></i>
+                        <h3>Giao diện</h3>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i class="fas fa-moon"></i>
+                            <div>
+                                <span class="setting-title">Chế độ tối</span>
+                                <p class="setting-desc">Chuyển đổi giao diện sáng/tối</p>
+                            </div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="darkModeToggle">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <button class="save-settings-btn" id="saveSettingsBtn">
+                    <i class="fas fa-save"></i> Lưu cài đặt
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-logo">
+                        <i class="fas fa-mug-hot"></i>
+                        <span>Cà Phê <span class="highlight">Thông Minh</span></span>
+                    </div>
+                    <p>Nơi hội tụ của những tín đồ cà phê và công nghệ hiện đại.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Liên hệ</h4>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Đường Cà Phê, Quận 1, TP.HCM</li>
+                        <li><i class="fas fa-phone"></i> 0965 147 941</li>
+                        <li><i class="fas fa-envelope"></i> vothanhdat101091@gmail.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Cà Phê Thông Minh. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../../shared/js/api.js"></script>
+    <script src="../js/settings.js"></script>
+</body>
+</html>

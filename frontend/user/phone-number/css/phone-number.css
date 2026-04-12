@@ -1,0 +1,537 @@
+/* ============================================
+   PHONE NUMBER VERIFICATION - CAFE MANAGEMENT
+   Màu sắc: Nâu (#5C3A21), Be (#F5E6D3), Cam (#E67E22), Trắng (#FFFFFF)
+   ============================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #5C3A21 0%, #8B5A2B 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23F5E6D3" fill-opacity="0.05" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+    background-size: cover;
+    pointer-events: none;
+}
+
+.verification-container {
+    width: 100%;
+    max-width: 550px;
+    z-index: 1;
+}
+
+.verification-card {
+    background: #FFFFFF;
+    border-radius: 32px;
+    padding: 2rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    animation: fadeInUp 0.5s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ========== BACK BUTTON ========== */
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #8B7355;
+    text-decoration: none;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    transition: color 0.3s ease;
+}
+
+.back-btn:hover {
+    color: #E67E22;
+}
+
+/* ========== HEADER ========== */
+.verification-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.verification-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #F5E6D3, #FFF8F0);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+.verification-icon i {
+    font-size: 2.5rem;
+    color: #E67E22;
+}
+
+.verification-header h1 {
+    font-size: 1.8rem;
+    color: #5C3A21;
+    margin-bottom: 0.5rem;
+}
+
+.verification-header p {
+    color: #8B7355;
+    font-size: 0.9rem;
+}
+
+/* ========== METHOD DROPDOWN ========== */
+.method-selector {
+    margin-bottom: 1.5rem;
+}
+
+.method-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #5C3A21;
+    margin-bottom: 0.5rem;
+}
+
+.method-label i {
+    color: #E67E22;
+}
+
+.custom-dropdown {
+    position: relative;
+    cursor: pointer;
+}
+
+.dropdown-selected {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.9rem 1rem;
+    background: #FFF8F0;
+    border: 2px solid #F5E6D3;
+    border-radius: 16px;
+    transition: all 0.3s ease;
+}
+
+.dropdown-selected i:first-child {
+    color: #E67E22;
+    font-size: 1.1rem;
+}
+
+.dropdown-selected span {
+    flex: 1;
+    color: #5C3A21;
+}
+
+.dropdown-selected i:last-child {
+    color: #8B7355;
+    transition: transform 0.3s ease;
+}
+
+.custom-dropdown.open .dropdown-selected {
+    border-color: #E67E22;
+    box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.1);
+}
+
+.custom-dropdown.open .dropdown-selected i:last-child {
+    transform: rotate(180deg);
+}
+
+.dropdown-options {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.custom-dropdown.open .dropdown-options {
+    max-height: 200px;
+    opacity: 1;
+}
+
+.dropdown-option {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.9rem 1rem;
+    transition: background 0.2s ease;
+}
+
+.dropdown-option:hover {
+    background: #F5E6D3;
+}
+
+.dropdown-option i {
+    color: #E67E22;
+    width: 20px;
+}
+
+.dropdown-option span {
+    color: #5C3A21;
+}
+
+/* ========== INPUT SECTION ========== */
+.input-section {
+    margin-bottom: 1.5rem;
+}
+
+.input-section.hidden {
+    display: none;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.input-group i:first-child {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #E67E22;
+    font-size: 1.1rem;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 1rem 1rem 1rem 3rem;
+    border: 2px solid #F5E6D3;
+    border-radius: 16px;
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.3s ease;
+    background: #FFF8F0;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #E67E22;
+    box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.1);
+}
+
+/* ========== SEND BUTTON ========== */
+.send-btn {
+    width: 100%;
+    padding: 1rem;
+    background: #E67E22;
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+.send-btn:hover {
+    background: #D35400;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(230, 126, 34, 0.3);
+}
+
+.send-btn:disabled {
+    background: #D4B896;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ========== OTP SECTION ========== */
+.otp-section {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #F5E6D3;
+}
+
+.otp-section.hidden {
+    display: none;
+}
+
+/* Timer Circle */
+.timer-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.timer-circle {
+    position: relative;
+    width: 100px;
+    height: 100px;
+}
+
+.timer-svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.timer-bg {
+    fill: none;
+    stroke: #F5E6D3;
+    stroke-width: 8;
+}
+
+.timer-progress {
+    fill: none;
+    stroke: #E67E22;
+    stroke-width: 8;
+    stroke-linecap: round;
+    stroke-dasharray: 283;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 1s linear;
+}
+
+.timer-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.timer-text span {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #E67E22;
+}
+
+.timer-text small {
+    font-size: 0.7rem;
+    color: #8B7355;
+    display: block;
+}
+
+.timer-label {
+    text-align: center;
+    font-size: 0.8rem;
+    color: #8B7355;
+    margin-top: 0.5rem;
+}
+
+/* OTP Inputs */
+.otp-input-group {
+    margin-bottom: 1.5rem;
+}
+
+.otp-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    font-weight: 500;
+    color: #5C3A21;
+}
+
+.otp-title i {
+    color: #E67E22;
+}
+
+.otp-inputs {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.otp-digit {
+    width: 55px;
+    height: 65px;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+    font-family: 'Inter', monospace;
+    border: 2px solid #F5E6D3;
+    border-radius: 16px;
+    background: #FFF8F0;
+    transition: all 0.3s ease;
+}
+
+.otp-digit:focus {
+    outline: none;
+    border-color: #E67E22;
+    box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.1);
+}
+
+.otp-digit.error {
+    border-color: #EF4444;
+    animation: shake 0.3s ease;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+.otp-hint {
+    font-size: 0.75rem;
+    color: #8B7355;
+    text-align: center;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+}
+
+.verify-btn, .resend-btn {
+    flex: 1;
+    padding: 0.9rem;
+    border-radius: 16px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.verify-btn {
+    background: #10B981;
+    color: white;
+    border: none;
+}
+
+.verify-btn:hover {
+    background: #059669;
+    transform: translateY(-2px);
+}
+
+.verify-btn:disabled {
+    background: #9CA3AF;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.resend-btn {
+    background: #F5E6D3;
+    color: #E67E22;
+    border: none;
+}
+
+.resend-btn:hover {
+    background: #E67E22;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.resend-btn.hidden {
+    display: none;
+}
+
+/* ========== SUCCESS MESSAGE ========== */
+.success-message {
+    text-align: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, #10B981, #059669);
+    border-radius: 24px;
+    color: white;
+    margin-top: 1rem;
+    animation: successPulse 0.5s ease;
+}
+
+@keyframes successPulse {
+    0% { transform: scale(0.95); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.success-message.hidden {
+    display: none;
+}
+
+.success-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.success-message h3 {
+    margin-bottom: 0.5rem;
+}
+
+/* ========== INFO NOTE ========== */
+.info-note {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: #F5E6D3;
+    border-radius: 16px;
+    margin-top: 1.5rem;
+    font-size: 0.8rem;
+    color: #8B7355;
+}
+
+.info-note i {
+    color: #E67E22;
+    font-size: 1rem;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 480px) {
+    .verification-card {
+        padding: 1.5rem;
+    }
+    
+    .otp-digit {
+        width: 45px;
+        height: 55px;
+        font-size: 1.2rem;
+    }
+    
+    .otp-inputs {
+        gap: 0.5rem;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    .verification-header h1 {
+        font-size: 1.4rem;
+    }
+}

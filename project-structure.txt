@@ -1,0 +1,1688 @@
+Folder PATH listing for volume OS
+Volume serial number is 385B-750C
+C:.
++---backend
+¦   +---config
+¦   ¦   +---js
+¦   +---middleware
+¦   +---node_modules
+¦   ¦   +---.bin
+¦   ¦   +---@azure
+¦   ¦   ¦   +---abort-controller
+¦   ¦   ¦   ¦   +---dist
+¦   ¦   ¦   ¦       +---browser
+¦   ¦   ¦   ¦       +---commonjs
+¦   ¦   ¦   ¦       +---esm
+¦   ¦   ¦   ¦       +---react-native
+¦   ¦   ¦   +---core-auth
+¦   ¦   ¦   ¦   +---dist
+¦   ¦   ¦   ¦       +---browser
+¦   ¦   ¦   ¦       +---commonjs
+¦   ¦   ¦   ¦       +---esm
+¦   ¦   ¦   ¦       +---react-native
+¦   ¦   ¦   +---core-client
+¦   ¦   ¦   ¦   +---dist
+¦   ¦   ¦   ¦       +---browser
+¦   ¦   ¦   ¦       +---commonjs
+¦   ¦   ¦   ¦       +---esm
+¦   ¦   ¦   ¦       +---react-native
+¦   ¦   ¦   +---core-http-compat
+¦   ¦   ¦   ¦   +---dist
+¦   ¦   ¦   ¦       +---browser
+¦   ¦   ¦   ¦       ¦   +---policies
+¦   ¦   ¦   ¦       +---commonjs
+¦   ¦   ¦   ¦       ¦   +---policies
+¦   ¦   ¦   ¦       +---esm
+¦   ¦   ¦   ¦       ¦   +---policies
+¦   ¦   ¦   ¦       +---react-native
+¦   ¦   ¦   ¦           +---policies
+¦   ¦   ¦   +---core-lro
+¦   ¦   ¦   ¦   +---dist
+¦   ¦   ¦   ¦       +---browser
+¦   ¦   ¦   ¦       ¦   +---http
+¦   ¦   ¦   ¦       ¦   +---legacy
+¦   ¦   ¦   ¦       ¦   ¦   +---lroEngine
+¦   ¦   ¦   ¦       ¦   +---poller
+¦   ¦   ¦   ¦       +---commonjs
+¦   ¦   ¦   ¦       ¦   +---http
+¦   ¦   ¦   ¦       ¦   +---legacy
+¦   ¦   ¦   ¦       ¦   ¦   +---lroEngine
+¦   ¦   ¦   ¦       ¦   +---poller
+¦   ¦   ¦   ¦       +---esm
+¦   ¦   ¦   ¦       ¦   +---http
+¦   ¦   ¦   ¦       ¦   +---legacy
+¦   ¦   ¦   ¦       ¦   ¦   +---lroEngine
+¦   ¦   ¦   ¦       ¦   +---poller
+¦   ¦   ¦   ¦       +---react-native
+¦   ¦   ¦   ¦           +---http
+¦   ¦   ¦   ¦           +---legacy
+¦   ¦   ¦   ¦           ¦   +---lroEngine
+¦   ¦   ¦   ¦           +---poller
+¦   ¦   ¦   +---core-paging
+¦   ¦   ¦   ¦   +---dist
+¦   ¦   ¦   ¦       +---browser
+¦   ¦   ¦   ¦       +---commonjs
+¦   ¦   ¦   ¦       +---esm
+¦   ¦   ¦   ¦       +---react-native
+¦   ¦   ¦   +---core-rest-pipeline
+¦   ¦   ¦   ¦   +---dist
+¦   ¦   ¦   ¦       +---browser
+¦   ¦   ¦   ¦       ¦   +---policies
+¦   ¦   ¦   ¦       ¦   +---util
+¦   ¦   ¦   ¦       +---commonjs
+¦   ¦   ¦   ¦       ¦   +---policies
+¦   ¦   ¦   ¦       ¦   +---util
+¦   ¦   ¦   ¦       +---esm
+¦   ¦   ¦   ¦       ¦   +---policies
+¦   ¦   ¦   ¦       ¦   +---util
+¦   ¦   ¦   ¦       +---react-native
+¦   ¦   ¦   ¦           +---policies
+¦   ¦   ¦   ¦           +---util
+¦   ¦   ¦   +---core-tracing
+¦   ¦   ¦   ¦   +---dist
+¦   ¦   ¦   ¦       +---browser
+¦   ¦   ¦   ¦       +---commonjs
+¦   ¦   ¦   ¦       +---esm
+¦   ¦   ¦   ¦       +---react-native
+¦   ¦   ¦   +---core-util
+¦   ¦   ¦   ¦   +---dist
+¦   ¦   ¦   ¦       +---browser
+¦   ¦   ¦   ¦       +---commonjs
+¦   ¦   ¦   ¦       +---esm
+¦   ¦   ¦   ¦       +---react-native
+¦   ¦   ¦   +---identity
+¦   ¦   ¦   ¦   +---dist
+¦   ¦   ¦   ¦       +---browser
+¦   ¦   ¦   ¦       ¦   +---client
+¦   ¦   ¦   ¦       ¦   +---credentials
+¦   ¦   ¦   ¦       ¦   ¦   +---managedIdentityCredential
+¦   ¦   ¦   ¦       ¦   +---msal
+¦   ¦   ¦   ¦       ¦   ¦   +---browserFlows
+¦   ¦   ¦   ¦       ¦   ¦   +---nodeFlows
+¦   ¦   ¦   ¦       ¦   +---plugins
+¦   ¦   ¦   ¦       ¦   +---util
+¦   ¦   ¦   ¦       +---commonjs
+¦   ¦   ¦   ¦       ¦   +---client
+¦   ¦   ¦   ¦       ¦   +---credentials
+¦   ¦   ¦   ¦       ¦   ¦   +---managedIdentityCredential
+¦   ¦   ¦   ¦       ¦   +---msal
+¦   ¦   ¦   ¦       ¦   ¦   +---browserFlows
+¦   ¦   ¦   ¦       ¦   ¦   +---nodeFlows
+¦   ¦   ¦   ¦       ¦   +---plugins
+¦   ¦   ¦   ¦       ¦   +---util
+¦   ¦   ¦   ¦       +---esm
+¦   ¦   ¦   ¦       ¦   +---client
+¦   ¦   ¦   ¦       ¦   +---credentials
+¦   ¦   ¦   ¦       ¦   ¦   +---managedIdentityCredential
+¦   ¦   ¦   ¦       ¦   +---msal
+¦   ¦   ¦   ¦       ¦   ¦   +---browserFlows
+¦   ¦   ¦   ¦       ¦   ¦   +---nodeFlows
+¦   ¦   ¦   ¦       ¦   +---plugins
+¦   ¦   ¦   ¦       ¦   +---util
+¦   ¦   ¦   ¦       +---workerd
+¦   ¦   ¦   ¦           +---client
+¦   ¦   ¦   ¦           +---credentials
+¦   ¦   ¦   ¦           ¦   +---managedIdentityCredential
+¦   ¦   ¦   ¦           +---msal
+¦   ¦   ¦   ¦           ¦   +---browserFlows
+¦   ¦   ¦   ¦           ¦   +---nodeFlows
+¦   ¦   ¦   ¦           +---plugins
+¦   ¦   ¦   ¦           +---util
+¦   ¦   ¦   +---keyvault-common
+¦   ¦   ¦   ¦   +---dist
+¦   ¦   ¦   ¦       +---browser
+¦   ¦   ¦   ¦       +---commonjs
+¦   ¦   ¦   ¦       +---esm
+¦   ¦   ¦   +---keyvault-keys
+¦   ¦   ¦   ¦   +---dist
+¦   ¦   ¦   ¦       +---browser
+¦   ¦   ¦   ¦       ¦   +---cryptography
+¦   ¦   ¦   ¦       ¦   +---generated
+¦   ¦   ¦   ¦       ¦   ¦   +---api
+¦   ¦   ¦   ¦       ¦   ¦   +---models
+¦   ¦   ¦   ¦       ¦   ¦   +---static-helpers
+¦   ¦   ¦   ¦       ¦   +---lro
+¦   ¦   ¦   ¦       ¦       +---delete
+¦   ¦   ¦   ¦       ¦       +---recover
+¦   ¦   ¦   ¦       +---commonjs
+¦   ¦   ¦   ¦       ¦   +---cryptography
+¦   ¦   ¦   ¦       ¦   +---generated
+¦   ¦   ¦   ¦       ¦   ¦   +---api
+¦   ¦   ¦   ¦       ¦   ¦   +---models
+¦   ¦   ¦   ¦       ¦   ¦   +---static-helpers
+¦   ¦   ¦   ¦       ¦   +---lro
+¦   ¦   ¦   ¦       ¦       +---delete
+¦   ¦   ¦   ¦       ¦       +---recover
+¦   ¦   ¦   ¦       +---esm
+¦   ¦   ¦   ¦           +---cryptography
+¦   ¦   ¦   ¦           +---generated
+¦   ¦   ¦   ¦           ¦   +---api
+¦   ¦   ¦   ¦           ¦   +---models
+¦   ¦   ¦   ¦           ¦   +---static-helpers
+¦   ¦   ¦   ¦           +---lro
+¦   ¦   ¦   ¦               +---delete
+¦   ¦   ¦   ¦               +---recover
+¦   ¦   ¦   +---logger
+¦   ¦   ¦   ¦   +---dist
+¦   ¦   ¦   ¦       +---browser
+¦   ¦   ¦   ¦       +---commonjs
+¦   ¦   ¦   ¦       +---esm
+¦   ¦   ¦   ¦       +---react-native
+¦   ¦   ¦   +---msal-browser
+¦   ¦   ¦   ¦   +---dist
+¦   ¦   ¦   ¦   ¦   +---app
+¦   ¦   ¦   ¦   ¦   +---broker
+¦   ¦   ¦   ¦   ¦   ¦   +---nativeBroker
+¦   ¦   ¦   ¦   ¦   +---cache
+¦   ¦   ¦   ¦   ¦   +---config
+¦   ¦   ¦   ¦   ¦   +---controllers
+¦   ¦   ¦   ¦   ¦   +---crypto
+¦   ¦   ¦   ¦   ¦   +---custom-auth-path
+¦   ¦   ¦   ¦   ¦   ¦   +---app
+¦   ¦   ¦   ¦   ¦   ¦   +---broker
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---nativeBroker
+¦   ¦   ¦   ¦   ¦   ¦   +---cache
+¦   ¦   ¦   ¦   ¦   ¦   +---config
+¦   ¦   ¦   ¦   ¦   ¦   +---controllers
+¦   ¦   ¦   ¦   ¦   ¦   +---crypto
+¦   ¦   ¦   ¦   ¦   ¦   +---custom_auth
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---configuration
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---controller
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---core
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---auth_flow
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---jit
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---error_type
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---result
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---state
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---mfa
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦       +---error_type
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦       +---result
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦       +---state
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---error
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---interaction_client
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---jit
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---parameter
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---result
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---mfa
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦       +---parameter
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦       +---result
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---network_client
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---custom_auth_api
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---types
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---http_client
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---telemetry
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---utils
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---get_account
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---auth_flow
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---error_type
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---result
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---state
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---interaction_client
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---operating_context
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---reset_password
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---auth_flow
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---error_type
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---result
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---state
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---interaction_client
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦       +---parameter
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦       +---result
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---sign_in
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---auth_flow
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---error_type
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---result
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---state
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---interaction_client
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦       +---parameter
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦       +---result
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---sign_up
+¦   ¦   ¦   ¦   ¦   ¦   ¦       +---auth_flow
+¦   ¦   ¦   ¦   ¦   ¦   ¦       ¦   +---error_type
+¦   ¦   ¦   ¦   ¦   ¦   ¦       ¦   +---result
+¦   ¦   ¦   ¦   ¦   ¦   ¦       ¦   +---state
+¦   ¦   ¦   ¦   ¦   ¦   ¦       +---interaction_client
+¦   ¦   ¦   ¦   ¦   ¦   ¦           +---parameter
+¦   ¦   ¦   ¦   ¦   ¦   ¦           +---result
+¦   ¦   ¦   ¦   ¦   ¦   +---encode
+¦   ¦   ¦   ¦   ¦   ¦   +---error
+¦   ¦   ¦   ¦   ¦   ¦   +---event
+¦   ¦   ¦   ¦   ¦   ¦   +---interaction_client
+¦   ¦   ¦   ¦   ¦   ¦   +---interaction_handler
+¦   ¦   ¦   ¦   ¦   ¦   +---naa
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---mapping
+¦   ¦   ¦   ¦   ¦   ¦   +---navigation
+¦   ¦   ¦   ¦   ¦   ¦   +---network
+¦   ¦   ¦   ¦   ¦   ¦   +---operatingcontext
+¦   ¦   ¦   ¦   ¦   ¦   +---protocol
+¦   ¦   ¦   ¦   ¦   ¦   +---redirect_bridge
+¦   ¦   ¦   ¦   ¦   ¦   +---request
+¦   ¦   ¦   ¦   ¦   ¦   +---response
+¦   ¦   ¦   ¦   ¦   ¦   +---telemetry
+¦   ¦   ¦   ¦   ¦   ¦   +---utils
+¦   ¦   ¦   ¦   ¦   +---custom_auth
+¦   ¦   ¦   ¦   ¦   ¦   +---configuration
+¦   ¦   ¦   ¦   ¦   ¦   +---controller
+¦   ¦   ¦   ¦   ¦   ¦   +---core
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---auth_flow
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---jit
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---error_type
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---result
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---state
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---mfa
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦       +---error_type
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦       +---result
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦       +---state
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---error
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---interaction_client
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---jit
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---parameter
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---result
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---mfa
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦       +---parameter
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦       +---result
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---network_client
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---custom_auth_api
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---types
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---http_client
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---telemetry
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---utils
+¦   ¦   ¦   ¦   ¦   ¦   +---get_account
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---auth_flow
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---error_type
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---result
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---state
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---interaction_client
+¦   ¦   ¦   ¦   ¦   ¦   +---operating_context
+¦   ¦   ¦   ¦   ¦   ¦   +---reset_password
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---auth_flow
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---error_type
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---result
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---state
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---interaction_client
+¦   ¦   ¦   ¦   ¦   ¦   ¦       +---parameter
+¦   ¦   ¦   ¦   ¦   ¦   ¦       +---result
+¦   ¦   ¦   ¦   ¦   ¦   +---sign_in
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---auth_flow
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---error_type
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---result
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---state
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---interaction_client
+¦   ¦   ¦   ¦   ¦   ¦   ¦       +---parameter
+¦   ¦   ¦   ¦   ¦   ¦   ¦       +---result
+¦   ¦   ¦   ¦   ¦   ¦   +---sign_up
+¦   ¦   ¦   ¦   ¦   ¦       +---auth_flow
+¦   ¦   ¦   ¦   ¦   ¦       ¦   +---error_type
+¦   ¦   ¦   ¦   ¦   ¦       ¦   +---result
+¦   ¦   ¦   ¦   ¦   ¦       ¦   +---state
+¦   ¦   ¦   ¦   ¦   ¦       +---interaction_client
+¦   ¦   ¦   ¦   ¦   ¦           +---parameter
+¦   ¦   ¦   ¦   ¦   ¦           +---result
+¦   ¦   ¦   ¦   ¦   +---encode
+¦   ¦   ¦   ¦   ¦   +---error
+¦   ¦   ¦   ¦   ¦   +---event
+¦   ¦   ¦   ¦   ¦   +---interaction_client
+¦   ¦   ¦   ¦   ¦   +---interaction_handler
+¦   ¦   ¦   ¦   ¦   +---naa
+¦   ¦   ¦   ¦   ¦   ¦   +---mapping
+¦   ¦   ¦   ¦   ¦   +---navigation
+¦   ¦   ¦   ¦   ¦   +---network
+¦   ¦   ¦   ¦   ¦   +---operatingcontext
+¦   ¦   ¦   ¦   ¦   +---protocol
+¦   ¦   ¦   ¦   ¦   +---redirect-bridge
+¦   ¦   ¦   ¦   ¦   ¦   +---app
+¦   ¦   ¦   ¦   ¦   ¦   +---broker
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---nativeBroker
+¦   ¦   ¦   ¦   ¦   ¦   +---cache
+¦   ¦   ¦   ¦   ¦   ¦   +---config
+¦   ¦   ¦   ¦   ¦   ¦   +---controllers
+¦   ¦   ¦   ¦   ¦   ¦   +---crypto
+¦   ¦   ¦   ¦   ¦   ¦   +---custom_auth
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---configuration
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---controller
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---core
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---auth_flow
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---jit
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---error_type
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---result
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---state
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---mfa
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦       +---error_type
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦       +---result
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦       +---state
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---error
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---interaction_client
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---jit
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---parameter
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---result
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---mfa
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦       +---parameter
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦       +---result
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---network_client
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---custom_auth_api
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---types
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---http_client
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---telemetry
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---utils
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---get_account
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---auth_flow
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---error_type
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---result
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---state
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---interaction_client
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---operating_context
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---reset_password
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---auth_flow
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---error_type
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---result
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---state
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---interaction_client
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦       +---parameter
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦       +---result
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---sign_in
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---auth_flow
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---error_type
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---result
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---state
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---interaction_client
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦       +---parameter
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦       +---result
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---sign_up
+¦   ¦   ¦   ¦   ¦   ¦   ¦       +---auth_flow
+¦   ¦   ¦   ¦   ¦   ¦   ¦       ¦   +---error_type
+¦   ¦   ¦   ¦   ¦   ¦   ¦       ¦   +---result
+¦   ¦   ¦   ¦   ¦   ¦   ¦       ¦   +---state
+¦   ¦   ¦   ¦   ¦   ¦   ¦       +---interaction_client
+¦   ¦   ¦   ¦   ¦   ¦   ¦           +---parameter
+¦   ¦   ¦   ¦   ¦   ¦   ¦           +---result
+¦   ¦   ¦   ¦   ¦   ¦   +---encode
+¦   ¦   ¦   ¦   ¦   ¦   +---error
+¦   ¦   ¦   ¦   ¦   ¦   +---event
+¦   ¦   ¦   ¦   ¦   ¦   +---interaction_client
+¦   ¦   ¦   ¦   ¦   ¦   +---interaction_handler
+¦   ¦   ¦   ¦   ¦   ¦   +---naa
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---mapping
+¦   ¦   ¦   ¦   ¦   ¦   +---navigation
+¦   ¦   ¦   ¦   ¦   ¦   +---network
+¦   ¦   ¦   ¦   ¦   ¦   +---operatingcontext
+¦   ¦   ¦   ¦   ¦   ¦   +---protocol
+¦   ¦   ¦   ¦   ¦   ¦   +---redirect_bridge
+¦   ¦   ¦   ¦   ¦   ¦   +---request
+¦   ¦   ¦   ¦   ¦   ¦   +---response
+¦   ¦   ¦   ¦   ¦   ¦   +---telemetry
+¦   ¦   ¦   ¦   ¦   ¦   +---utils
+¦   ¦   ¦   ¦   ¦   +---redirect_bridge
+¦   ¦   ¦   ¦   ¦   +---request
+¦   ¦   ¦   ¦   ¦   +---response
+¦   ¦   ¦   ¦   ¦   +---telemetry
+¦   ¦   ¦   ¦   ¦   +---utils
+¦   ¦   ¦   ¦   +---lib
+¦   ¦   ¦   ¦   ¦   +---custom-auth-path
+¦   ¦   ¦   ¦   ¦   ¦   +---types
+¦   ¦   ¦   ¦   ¦   ¦       +---app
+¦   ¦   ¦   ¦   ¦   ¦       +---broker
+¦   ¦   ¦   ¦   ¦   ¦       ¦   +---nativeBroker
+¦   ¦   ¦   ¦   ¦   ¦       +---cache
+¦   ¦   ¦   ¦   ¦   ¦       +---config
+¦   ¦   ¦   ¦   ¦   ¦       +---controllers
+¦   ¦   ¦   ¦   ¦   ¦       +---crypto
+¦   ¦   ¦   ¦   ¦   ¦       +---custom_auth
+¦   ¦   ¦   ¦   ¦   ¦       ¦   +---configuration
+¦   ¦   ¦   ¦   ¦   ¦       ¦   +---controller
+¦   ¦   ¦   ¦   ¦   ¦       ¦   +---core
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   +---auth_flow
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   +---jit
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   ¦   +---error_type
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   ¦   +---result
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   ¦   +---state
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   +---mfa
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦       +---error_type
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦       +---result
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦       +---state
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   +---error
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   +---interaction_client
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   +---jit
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   ¦   +---parameter
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   ¦   +---result
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   +---mfa
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦       +---parameter
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦       +---result
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   +---network_client
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   +---custom_auth_api
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   ¦   +---types
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   +---http_client
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   +---telemetry
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   +---utils
+¦   ¦   ¦   ¦   ¦   ¦       ¦   +---get_account
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   +---auth_flow
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   +---error_type
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   +---result
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   +---state
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   +---interaction_client
+¦   ¦   ¦   ¦   ¦   ¦       ¦   +---operating_context
+¦   ¦   ¦   ¦   ¦   ¦       ¦   +---reset_password
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   +---auth_flow
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   +---error_type
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   +---result
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   +---state
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   +---interaction_client
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦       +---parameter
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦       +---result
+¦   ¦   ¦   ¦   ¦   ¦       ¦   +---sign_in
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   +---auth_flow
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   +---error_type
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   +---result
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   +---state
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   +---interaction_client
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦       +---parameter
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦       +---result
+¦   ¦   ¦   ¦   ¦   ¦       ¦   +---sign_up
+¦   ¦   ¦   ¦   ¦   ¦       ¦       +---auth_flow
+¦   ¦   ¦   ¦   ¦   ¦       ¦       ¦   +---error_type
+¦   ¦   ¦   ¦   ¦   ¦       ¦       ¦   +---result
+¦   ¦   ¦   ¦   ¦   ¦       ¦       ¦   +---state
+¦   ¦   ¦   ¦   ¦   ¦       ¦       +---interaction_client
+¦   ¦   ¦   ¦   ¦   ¦       ¦           +---parameter
+¦   ¦   ¦   ¦   ¦   ¦       ¦           +---result
+¦   ¦   ¦   ¦   ¦   ¦       +---encode
+¦   ¦   ¦   ¦   ¦   ¦       +---error
+¦   ¦   ¦   ¦   ¦   ¦       +---event
+¦   ¦   ¦   ¦   ¦   ¦       +---interaction_client
+¦   ¦   ¦   ¦   ¦   ¦       +---interaction_handler
+¦   ¦   ¦   ¦   ¦   ¦       +---naa
+¦   ¦   ¦   ¦   ¦   ¦       ¦   +---mapping
+¦   ¦   ¦   ¦   ¦   ¦       +---navigation
+¦   ¦   ¦   ¦   ¦   ¦       +---network
+¦   ¦   ¦   ¦   ¦   ¦       +---operatingcontext
+¦   ¦   ¦   ¦   ¦   ¦       +---protocol
+¦   ¦   ¦   ¦   ¦   ¦       +---redirect_bridge
+¦   ¦   ¦   ¦   ¦   ¦       +---request
+¦   ¦   ¦   ¦   ¦   ¦       +---response
+¦   ¦   ¦   ¦   ¦   ¦       +---telemetry
+¦   ¦   ¦   ¦   ¦   ¦       +---utils
+¦   ¦   ¦   ¦   ¦   +---redirect-bridge
+¦   ¦   ¦   ¦   ¦   +---types
+¦   ¦   ¦   ¦   ¦       +---app
+¦   ¦   ¦   ¦   ¦       +---broker
+¦   ¦   ¦   ¦   ¦       ¦   +---nativeBroker
+¦   ¦   ¦   ¦   ¦       +---cache
+¦   ¦   ¦   ¦   ¦       +---config
+¦   ¦   ¦   ¦   ¦       +---controllers
+¦   ¦   ¦   ¦   ¦       +---crypto
+¦   ¦   ¦   ¦   ¦       +---custom_auth
+¦   ¦   ¦   ¦   ¦       ¦   +---configuration
+¦   ¦   ¦   ¦   ¦       ¦   +---controller
+¦   ¦   ¦   ¦   ¦       ¦   +---core
+¦   ¦   ¦   ¦   ¦       ¦   ¦   +---auth_flow
+¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   +---jit
+¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   ¦   +---error_type
+¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   ¦   +---result
+¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   ¦   +---state
+¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   +---mfa
+¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦       +---error_type
+¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦       +---result
+¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦       +---state
+¦   ¦   ¦   ¦   ¦       ¦   ¦   +---error
+¦   ¦   ¦   ¦   ¦       ¦   ¦   +---interaction_client
+¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   +---jit
+¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   ¦   +---parameter
+¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   ¦   +---result
+¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   +---mfa
+¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦       +---parameter
+¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦       +---result
+¦   ¦   ¦   ¦   ¦       ¦   ¦   +---network_client
+¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   +---custom_auth_api
+¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   ¦   +---types
+¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   +---http_client
+¦   ¦   ¦   ¦   ¦       ¦   ¦   +---telemetry
+¦   ¦   ¦   ¦   ¦       ¦   ¦   +---utils
+¦   ¦   ¦   ¦   ¦       ¦   +---get_account
+¦   ¦   ¦   ¦   ¦       ¦   ¦   +---auth_flow
+¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   +---error_type
+¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   +---result
+¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   +---state
+¦   ¦   ¦   ¦   ¦       ¦   ¦   +---interaction_client
+¦   ¦   ¦   ¦   ¦       ¦   +---operating_context
+¦   ¦   ¦   ¦   ¦       ¦   +---reset_password
+¦   ¦   ¦   ¦   ¦       ¦   ¦   +---auth_flow
+¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   +---error_type
+¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   +---result
+¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   +---state
+¦   ¦   ¦   ¦   ¦       ¦   ¦   +---interaction_client
+¦   ¦   ¦   ¦   ¦       ¦   ¦       +---parameter
+¦   ¦   ¦   ¦   ¦       ¦   ¦       +---result
+¦   ¦   ¦   ¦   ¦       ¦   +---sign_in
+¦   ¦   ¦   ¦   ¦       ¦   ¦   +---auth_flow
+¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   +---error_type
+¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   +---result
+¦   ¦   ¦   ¦   ¦       ¦   ¦   ¦   +---state
+¦   ¦   ¦   ¦   ¦       ¦   ¦   +---interaction_client
+¦   ¦   ¦   ¦   ¦       ¦   ¦       +---parameter
+¦   ¦   ¦   ¦   ¦       ¦   ¦       +---result
+¦   ¦   ¦   ¦   ¦       ¦   +---sign_up
+¦   ¦   ¦   ¦   ¦       ¦       +---auth_flow
+¦   ¦   ¦   ¦   ¦       ¦       ¦   +---error_type
+¦   ¦   ¦   ¦   ¦       ¦       ¦   +---result
+¦   ¦   ¦   ¦   ¦       ¦       ¦   +---state
+¦   ¦   ¦   ¦   ¦       ¦       +---interaction_client
+¦   ¦   ¦   ¦   ¦       ¦           +---parameter
+¦   ¦   ¦   ¦   ¦       ¦           +---result
+¦   ¦   ¦   ¦   ¦       +---encode
+¦   ¦   ¦   ¦   ¦       +---error
+¦   ¦   ¦   ¦   ¦       +---event
+¦   ¦   ¦   ¦   ¦       +---interaction_client
+¦   ¦   ¦   ¦   ¦       +---interaction_handler
+¦   ¦   ¦   ¦   ¦       +---naa
+¦   ¦   ¦   ¦   ¦       ¦   +---mapping
+¦   ¦   ¦   ¦   ¦       +---navigation
+¦   ¦   ¦   ¦   ¦       +---network
+¦   ¦   ¦   ¦   ¦       +---operatingcontext
+¦   ¦   ¦   ¦   ¦       +---protocol
+¦   ¦   ¦   ¦   ¦       +---redirect_bridge
+¦   ¦   ¦   ¦   ¦       +---request
+¦   ¦   ¦   ¦   ¦       +---response
+¦   ¦   ¦   ¦   ¦       +---telemetry
+¦   ¦   ¦   ¦   ¦       +---utils
+¦   ¦   ¦   ¦   +---src
+¦   ¦   ¦   ¦       +---app
+¦   ¦   ¦   ¦       +---broker
+¦   ¦   ¦   ¦       ¦   +---nativeBroker
+¦   ¦   ¦   ¦       +---cache
+¦   ¦   ¦   ¦       +---config
+¦   ¦   ¦   ¦       +---controllers
+¦   ¦   ¦   ¦       +---crypto
+¦   ¦   ¦   ¦       +---custom_auth
+¦   ¦   ¦   ¦       ¦   +---configuration
+¦   ¦   ¦   ¦       ¦   +---controller
+¦   ¦   ¦   ¦       ¦   +---core
+¦   ¦   ¦   ¦       ¦   ¦   +---auth_flow
+¦   ¦   ¦   ¦       ¦   ¦   ¦   +---jit
+¦   ¦   ¦   ¦       ¦   ¦   ¦   ¦   +---error_type
+¦   ¦   ¦   ¦       ¦   ¦   ¦   ¦   +---result
+¦   ¦   ¦   ¦       ¦   ¦   ¦   ¦   +---state
+¦   ¦   ¦   ¦       ¦   ¦   ¦   +---mfa
+¦   ¦   ¦   ¦       ¦   ¦   ¦       +---error_type
+¦   ¦   ¦   ¦       ¦   ¦   ¦       +---result
+¦   ¦   ¦   ¦       ¦   ¦   ¦       +---state
+¦   ¦   ¦   ¦       ¦   ¦   +---error
+¦   ¦   ¦   ¦       ¦   ¦   +---interaction_client
+¦   ¦   ¦   ¦       ¦   ¦   ¦   +---jit
+¦   ¦   ¦   ¦       ¦   ¦   ¦   ¦   +---parameter
+¦   ¦   ¦   ¦       ¦   ¦   ¦   ¦   +---result
+¦   ¦   ¦   ¦       ¦   ¦   ¦   +---mfa
+¦   ¦   ¦   ¦       ¦   ¦   ¦       +---parameter
+¦   ¦   ¦   ¦       ¦   ¦   ¦       +---result
+¦   ¦   ¦   ¦       ¦   ¦   +---network_client
+¦   ¦   ¦   ¦       ¦   ¦   ¦   +---custom_auth_api
+¦   ¦   ¦   ¦       ¦   ¦   ¦   ¦   +---types
+¦   ¦   ¦   ¦       ¦   ¦   ¦   +---http_client
+¦   ¦   ¦   ¦       ¦   ¦   +---telemetry
+¦   ¦   ¦   ¦       ¦   ¦   +---utils
+¦   ¦   ¦   ¦       ¦   +---get_account
+¦   ¦   ¦   ¦       ¦   ¦   +---auth_flow
+¦   ¦   ¦   ¦       ¦   ¦   ¦   +---error_type
+¦   ¦   ¦   ¦       ¦   ¦   ¦   +---result
+¦   ¦   ¦   ¦       ¦   ¦   ¦   +---state
+¦   ¦   ¦   ¦       ¦   ¦   +---interaction_client
+¦   ¦   ¦   ¦       ¦   +---operating_context
+¦   ¦   ¦   ¦       ¦   +---reset_password
+¦   ¦   ¦   ¦       ¦   ¦   +---auth_flow
+¦   ¦   ¦   ¦       ¦   ¦   ¦   +---error_type
+¦   ¦   ¦   ¦       ¦   ¦   ¦   +---result
+¦   ¦   ¦   ¦       ¦   ¦   ¦   +---state
+¦   ¦   ¦   ¦       ¦   ¦   +---interaction_client
+¦   ¦   ¦   ¦       ¦   ¦       +---parameter
+¦   ¦   ¦   ¦       ¦   ¦       +---result
+¦   ¦   ¦   ¦       ¦   +---sign_in
+¦   ¦   ¦   ¦       ¦   ¦   +---auth_flow
+¦   ¦   ¦   ¦       ¦   ¦   ¦   +---error_type
+¦   ¦   ¦   ¦       ¦   ¦   ¦   +---result
+¦   ¦   ¦   ¦       ¦   ¦   ¦   +---state
+¦   ¦   ¦   ¦       ¦   ¦   +---interaction_client
+¦   ¦   ¦   ¦       ¦   ¦       +---parameter
+¦   ¦   ¦   ¦       ¦   ¦       +---result
+¦   ¦   ¦   ¦       ¦   +---sign_up
+¦   ¦   ¦   ¦       ¦       +---auth_flow
+¦   ¦   ¦   ¦       ¦       ¦   +---error_type
+¦   ¦   ¦   ¦       ¦       ¦   +---result
+¦   ¦   ¦   ¦       ¦       ¦   +---state
+¦   ¦   ¦   ¦       ¦       +---interaction_client
+¦   ¦   ¦   ¦       ¦           +---parameter
+¦   ¦   ¦   ¦       ¦           +---result
+¦   ¦   ¦   ¦       +---encode
+¦   ¦   ¦   ¦       +---error
+¦   ¦   ¦   ¦       +---event
+¦   ¦   ¦   ¦       +---interaction_client
+¦   ¦   ¦   ¦       +---interaction_handler
+¦   ¦   ¦   ¦       +---naa
+¦   ¦   ¦   ¦       ¦   +---mapping
+¦   ¦   ¦   ¦       +---navigation
+¦   ¦   ¦   ¦       +---network
+¦   ¦   ¦   ¦       +---operatingcontext
+¦   ¦   ¦   ¦       +---protocol
+¦   ¦   ¦   ¦       +---redirect_bridge
+¦   ¦   ¦   ¦       +---request
+¦   ¦   ¦   ¦       +---response
+¦   ¦   ¦   ¦       +---telemetry
+¦   ¦   ¦   ¦       +---utils
+¦   ¦   ¦   +---msal-common
+¦   ¦   ¦   ¦   +---browser
+¦   ¦   ¦   ¦   +---dist
+¦   ¦   ¦   ¦   ¦   +---account
+¦   ¦   ¦   ¦   ¦   +---authority
+¦   ¦   ¦   ¦   ¦   +---broker
+¦   ¦   ¦   ¦   ¦   ¦   +---nativeBroker
+¦   ¦   ¦   ¦   ¦   +---cache
+¦   ¦   ¦   ¦   ¦   ¦   +---entities
+¦   ¦   ¦   ¦   ¦   ¦   +---interface
+¦   ¦   ¦   ¦   ¦   ¦   +---persistence
+¦   ¦   ¦   ¦   ¦   ¦   +---utils
+¦   ¦   ¦   ¦   ¦   +---client
+¦   ¦   ¦   ¦   ¦   +---config
+¦   ¦   ¦   ¦   ¦   +---constants
+¦   ¦   ¦   ¦   ¦   +---crypto
+¦   ¦   ¦   ¦   ¦   +---error
+¦   ¦   ¦   ¦   ¦   +---logger
+¦   ¦   ¦   ¦   ¦   +---network
+¦   ¦   ¦   ¦   ¦   +---protocol
+¦   ¦   ¦   ¦   ¦   +---request
+¦   ¦   ¦   ¦   ¦   +---response
+¦   ¦   ¦   ¦   ¦   +---telemetry
+¦   ¦   ¦   ¦   ¦   ¦   +---performance
+¦   ¦   ¦   ¦   ¦   ¦   +---server
+¦   ¦   ¦   ¦   ¦   +---url
+¦   ¦   ¦   ¦   ¦   +---utils
+¦   ¦   ¦   ¦   +---dist-browser
+¦   ¦   ¦   ¦   ¦   +---account
+¦   ¦   ¦   ¦   ¦   +---authority
+¦   ¦   ¦   ¦   ¦   +---broker
+¦   ¦   ¦   ¦   ¦   ¦   +---nativeBroker
+¦   ¦   ¦   ¦   ¦   +---cache
+¦   ¦   ¦   ¦   ¦   ¦   +---entities
+¦   ¦   ¦   ¦   ¦   ¦   +---interface
+¦   ¦   ¦   ¦   ¦   ¦   +---persistence
+¦   ¦   ¦   ¦   ¦   ¦   +---utils
+¦   ¦   ¦   ¦   ¦   +---client
+¦   ¦   ¦   ¦   ¦   +---config
+¦   ¦   ¦   ¦   ¦   +---constants
+¦   ¦   ¦   ¦   ¦   +---crypto
+¦   ¦   ¦   ¦   ¦   +---error
+¦   ¦   ¦   ¦   ¦   +---logger
+¦   ¦   ¦   ¦   ¦   +---network
+¦   ¦   ¦   ¦   ¦   +---protocol
+¦   ¦   ¦   ¦   ¦   +---request
+¦   ¦   ¦   ¦   ¦   +---response
+¦   ¦   ¦   ¦   ¦   +---telemetry
+¦   ¦   ¦   ¦   ¦   ¦   +---performance
+¦   ¦   ¦   ¦   ¦   ¦   +---server
+¦   ¦   ¦   ¦   ¦   +---url
+¦   ¦   ¦   ¦   ¦   +---utils
+¦   ¦   ¦   ¦   +---lib
+¦   ¦   ¦   ¦   ¦   +---types
+¦   ¦   ¦   ¦   ¦       +---account
+¦   ¦   ¦   ¦   ¦       +---authority
+¦   ¦   ¦   ¦   ¦       +---broker
+¦   ¦   ¦   ¦   ¦       ¦   +---nativeBroker
+¦   ¦   ¦   ¦   ¦       +---cache
+¦   ¦   ¦   ¦   ¦       ¦   +---entities
+¦   ¦   ¦   ¦   ¦       ¦   +---interface
+¦   ¦   ¦   ¦   ¦       ¦   +---persistence
+¦   ¦   ¦   ¦   ¦       ¦   +---utils
+¦   ¦   ¦   ¦   ¦       +---client
+¦   ¦   ¦   ¦   ¦       +---config
+¦   ¦   ¦   ¦   ¦       +---constants
+¦   ¦   ¦   ¦   ¦       +---crypto
+¦   ¦   ¦   ¦   ¦       +---error
+¦   ¦   ¦   ¦   ¦       +---logger
+¦   ¦   ¦   ¦   ¦       +---network
+¦   ¦   ¦   ¦   ¦       +---protocol
+¦   ¦   ¦   ¦   ¦       +---request
+¦   ¦   ¦   ¦   ¦       +---response
+¦   ¦   ¦   ¦   ¦       +---telemetry
+¦   ¦   ¦   ¦   ¦       ¦   +---performance
+¦   ¦   ¦   ¦   ¦       ¦   +---server
+¦   ¦   ¦   ¦   ¦       +---url
+¦   ¦   ¦   ¦   ¦       +---utils
+¦   ¦   ¦   ¦   +---node
+¦   ¦   ¦   ¦   +---src
+¦   ¦   ¦   ¦       +---account
+¦   ¦   ¦   ¦       +---authority
+¦   ¦   ¦   ¦       +---broker
+¦   ¦   ¦   ¦       ¦   +---nativeBroker
+¦   ¦   ¦   ¦       +---cache
+¦   ¦   ¦   ¦       ¦   +---entities
+¦   ¦   ¦   ¦       ¦   +---interface
+¦   ¦   ¦   ¦       ¦   +---persistence
+¦   ¦   ¦   ¦       ¦   +---utils
+¦   ¦   ¦   ¦       +---client
+¦   ¦   ¦   ¦       +---config
+¦   ¦   ¦   ¦       +---constants
+¦   ¦   ¦   ¦       +---crypto
+¦   ¦   ¦   ¦       +---error
+¦   ¦   ¦   ¦       +---logger
+¦   ¦   ¦   ¦       +---network
+¦   ¦   ¦   ¦       +---protocol
+¦   ¦   ¦   ¦       +---request
+¦   ¦   ¦   ¦       +---response
+¦   ¦   ¦   ¦       +---telemetry
+¦   ¦   ¦   ¦       ¦   +---performance
+¦   ¦   ¦   ¦       ¦   +---server
+¦   ¦   ¦   ¦       +---url
+¦   ¦   ¦   ¦       +---utils
+¦   ¦   ¦   +---msal-node
+¦   ¦   ¦       +---dist
+¦   ¦   ¦       ¦   +---cache
+¦   ¦   ¦       ¦   ¦   +---distributed
+¦   ¦   ¦       ¦   ¦   +---serializer
+¦   ¦   ¦       ¦   +---client
+¦   ¦   ¦       ¦   ¦   +---ManagedIdentitySources
+¦   ¦   ¦       ¦   +---config
+¦   ¦   ¦       ¦   +---crypto
+¦   ¦   ¦       ¦   +---error
+¦   ¦   ¦       ¦   +---network
+¦   ¦   ¦       ¦   +---protocol
+¦   ¦   ¦       ¦   +---request
+¦   ¦   ¦       ¦   +---response
+¦   ¦   ¦       ¦   +---retry
+¦   ¦   ¦       ¦   +---utils
+¦   ¦   ¦       +---lib
+¦   ¦   ¦       ¦   +---types
+¦   ¦   ¦       ¦       +---cache
+¦   ¦   ¦       ¦       ¦   +---distributed
+¦   ¦   ¦       ¦       ¦   +---serializer
+¦   ¦   ¦       ¦       +---client
+¦   ¦   ¦       ¦       ¦   +---ManagedIdentitySources
+¦   ¦   ¦       ¦       +---config
+¦   ¦   ¦       ¦       +---crypto
+¦   ¦   ¦       ¦       +---error
+¦   ¦   ¦       ¦       +---network
+¦   ¦   ¦       ¦       +---protocol
+¦   ¦   ¦       ¦       +---request
+¦   ¦   ¦       ¦       +---response
+¦   ¦   ¦       ¦       +---retry
+¦   ¦   ¦       ¦       +---utils
+¦   ¦   ¦       +---src
+¦   ¦   ¦           +---cache
+¦   ¦   ¦           ¦   +---distributed
+¦   ¦   ¦           ¦   +---serializer
+¦   ¦   ¦           +---client
+¦   ¦   ¦           ¦   +---ManagedIdentitySources
+¦   ¦   ¦           +---config
+¦   ¦   ¦           +---crypto
+¦   ¦   ¦           +---error
+¦   ¦   ¦           +---network
+¦   ¦   ¦           +---protocol
+¦   ¦   ¦           +---request
+¦   ¦   ¦           +---response
+¦   ¦   ¦           +---retry
+¦   ¦   ¦           +---utils
+¦   ¦   +---@azure-rest
+¦   ¦   ¦   +---core-client
+¦   ¦   ¦       +---dist
+¦   ¦   ¦           +---browser
+¦   ¦   ¦           +---commonjs
+¦   ¦   ¦           +---esm
+¦   ¦   ¦           +---react-native
+¦   ¦   +---@js-joda
+¦   ¦   ¦   +---core
+¦   ¦   ¦       +---dist
+¦   ¦   ¦       +---src
+¦   ¦   ¦       ¦   +---chrono
+¦   ¦   ¦       ¦   +---format
+¦   ¦   ¦       ¦   ¦   +---parser
+¦   ¦   ¦       ¦   +---temporal
+¦   ¦   ¦       ¦   +---zone
+¦   ¦   ¦       +---typings
+¦   ¦   +---@tediousjs
+¦   ¦   ¦   +---connection-string
+¦   ¦   ¦       +---lib
+¦   ¦   ¦           +---builder
+¦   ¦   ¦           +---parser
+¦   ¦   +---@types
+¦   ¦   ¦   +---node
+¦   ¦   ¦   ¦   +---assert
+¦   ¦   ¦   ¦   +---compatibility
+¦   ¦   ¦   ¦   +---dns
+¦   ¦   ¦   ¦   +---fs
+¦   ¦   ¦   ¦   +---inspector
+¦   ¦   ¦   ¦   +---path
+¦   ¦   ¦   ¦   +---readline
+¦   ¦   ¦   ¦   +---stream
+¦   ¦   ¦   ¦   +---test
+¦   ¦   ¦   ¦   +---timers
+¦   ¦   ¦   ¦   +---ts5.6
+¦   ¦   ¦   ¦   ¦   +---compatibility
+¦   ¦   ¦   ¦   +---ts5.7
+¦   ¦   ¦   ¦   ¦   +---compatibility
+¦   ¦   ¦   ¦   +---util
+¦   ¦   ¦   ¦   +---web-globals
+¦   ¦   ¦   +---readable-stream
+¦   ¦   +---@typespec
+¦   ¦   ¦   +---ts-http-runtime
+¦   ¦   ¦       +---dist
+¦   ¦   ¦           +---browser
+¦   ¦   ¦           ¦   +---abort-controller
+¦   ¦   ¦           ¦   +---auth
+¦   ¦   ¦           ¦   +---client
+¦   ¦   ¦           ¦   +---logger
+¦   ¦   ¦           ¦   +---policies
+¦   ¦   ¦           ¦   ¦   +---auth
+¦   ¦   ¦           ¦   +---retryStrategies
+¦   ¦   ¦           ¦   +---util
+¦   ¦   ¦           +---commonjs
+¦   ¦   ¦           ¦   +---abort-controller
+¦   ¦   ¦           ¦   +---auth
+¦   ¦   ¦           ¦   +---client
+¦   ¦   ¦           ¦   +---logger
+¦   ¦   ¦           ¦   +---policies
+¦   ¦   ¦           ¦   ¦   +---auth
+¦   ¦   ¦           ¦   +---retryStrategies
+¦   ¦   ¦           ¦   +---util
+¦   ¦   ¦           +---esm
+¦   ¦   ¦           ¦   +---abort-controller
+¦   ¦   ¦           ¦   +---auth
+¦   ¦   ¦           ¦   +---client
+¦   ¦   ¦           ¦   +---logger
+¦   ¦   ¦           ¦   +---policies
+¦   ¦   ¦           ¦   ¦   +---auth
+¦   ¦   ¦           ¦   +---retryStrategies
+¦   ¦   ¦           ¦   +---util
+¦   ¦   ¦           +---react-native
+¦   ¦   ¦               +---abort-controller
+¦   ¦   ¦               +---auth
+¦   ¦   ¦               +---client
+¦   ¦   ¦               +---logger
+¦   ¦   ¦               +---policies
+¦   ¦   ¦               ¦   +---auth
+¦   ¦   ¦               +---retryStrategies
+¦   ¦   ¦               +---util
+¦   ¦   +---abort-controller
+¦   ¦   ¦   +---dist
+¦   ¦   +---accepts
+¦   ¦   +---agent-base
+¦   ¦   ¦   +---dist
+¦   ¦   +---anymatch
+¦   ¦   +---array-flatten
+¦   ¦   +---asynckit
+¦   ¦   ¦   +---lib
+¦   ¦   +---axios
+¦   ¦   ¦   +---dist
+¦   ¦   ¦   ¦   +---browser
+¦   ¦   ¦   ¦   +---esm
+¦   ¦   ¦   ¦   +---node
+¦   ¦   ¦   +---lib
+¦   ¦   ¦       +---adapters
+¦   ¦   ¦       +---cancel
+¦   ¦   ¦       +---core
+¦   ¦   ¦       +---defaults
+¦   ¦   ¦       +---env
+¦   ¦   ¦       ¦   +---classes
+¦   ¦   ¦       +---helpers
+¦   ¦   ¦       +---platform
+¦   ¦   ¦           +---browser
+¦   ¦   ¦           ¦   +---classes
+¦   ¦   ¦           +---common
+¦   ¦   ¦           +---node
+¦   ¦   ¦               +---classes
+¦   ¦   +---balanced-match
+¦   ¦   ¦   +---dist
+¦   ¦   ¦       +---commonjs
+¦   ¦   ¦       +---esm
+¦   ¦   +---base64-js
+¦   ¦   +---bcryptjs
+¦   ¦   ¦   +---.vscode
+¦   ¦   ¦   +---bin
+¦   ¦   ¦   +---dist
+¦   ¦   ¦   +---externs
+¦   ¦   ¦   +---scripts
+¦   ¦   ¦   +---src
+¦   ¦   ¦   ¦   +---bcrypt
+¦   ¦   ¦   ¦       +---prng
+¦   ¦   ¦   ¦       +---util
+¦   ¦   ¦   +---tests
+¦   ¦   +---binary-extensions
+¦   ¦   +---bl
+¦   ¦   ¦   +---.github
+¦   ¦   ¦   ¦   +---workflows
+¦   ¦   ¦   +---test
+¦   ¦   +---body-parser
+¦   ¦   ¦   +---lib
+¦   ¦   ¦   ¦   +---types
+¦   ¦   ¦   +---node_modules
+¦   ¦   ¦       +---debug
+¦   ¦   ¦       ¦   +---src
+¦   ¦   ¦       +---ms
+¦   ¦   ¦       +---qs
+¦   ¦   ¦           +---.github
+¦   ¦   ¦           +---dist
+¦   ¦   ¦           +---lib
+¦   ¦   ¦           +---test
+¦   ¦   +---brace-expansion
+¦   ¦   ¦   +---dist
+¦   ¦   ¦       +---commonjs
+¦   ¦   ¦       +---esm
+¦   ¦   +---braces
+¦   ¦   ¦   +---lib
+¦   ¦   +---buffer
+¦   ¦   +---buffer-equal-constant-time
+¦   ¦   +---bundle-name
+¦   ¦   +---bytes
+¦   ¦   +---call-bind-apply-helpers
+¦   ¦   ¦   +---.github
+¦   ¦   ¦   +---test
+¦   ¦   +---call-bound
+¦   ¦   ¦   +---.github
+¦   ¦   ¦   +---test
+¦   ¦   +---chokidar
+¦   ¦   ¦   +---lib
+¦   ¦   ¦   +---types
+¦   ¦   +---combined-stream
+¦   ¦   ¦   +---lib
+¦   ¦   +---commander
+¦   ¦   ¦   +---lib
+¦   ¦   ¦   +---typings
+¦   ¦   +---content-disposition
+¦   ¦   +---content-type
+¦   ¦   +---cookie
+¦   ¦   +---cookie-signature
+¦   ¦   +---cors
+¦   ¦   ¦   +---lib
+¦   ¦   +---dayjs
+¦   ¦   ¦   +---esm
+¦   ¦   ¦   ¦   +---locale
+¦   ¦   ¦   ¦   +---plugin
+¦   ¦   ¦   ¦       +---advancedFormat
+¦   ¦   ¦   ¦       +---arraySupport
+¦   ¦   ¦   ¦       +---badMutable
+¦   ¦   ¦   ¦       +---bigIntSupport
+¦   ¦   ¦   ¦       +---buddhistEra
+¦   ¦   ¦   ¦       +---calendar
+¦   ¦   ¦   ¦       +---customParseFormat
+¦   ¦   ¦   ¦       +---dayOfYear
+¦   ¦   ¦   ¦       +---devHelper
+¦   ¦   ¦   ¦       +---duration
+¦   ¦   ¦   ¦       +---isBetween
+¦   ¦   ¦   ¦       +---isLeapYear
+¦   ¦   ¦   ¦       +---isMoment
+¦   ¦   ¦   ¦       +---isoWeek
+¦   ¦   ¦   ¦       +---isoWeeksInYear
+¦   ¦   ¦   ¦       +---isSameOrAfter
+¦   ¦   ¦   ¦       +---isSameOrBefore
+¦   ¦   ¦   ¦       +---isToday
+¦   ¦   ¦   ¦       +---isTomorrow
+¦   ¦   ¦   ¦       +---isYesterday
+¦   ¦   ¦   ¦       +---localeData
+¦   ¦   ¦   ¦       +---localizedFormat
+¦   ¦   ¦   ¦       +---minMax
+¦   ¦   ¦   ¦       +---negativeYear
+¦   ¦   ¦   ¦       +---objectSupport
+¦   ¦   ¦   ¦       +---pluralGetSet
+¦   ¦   ¦   ¦       +---preParsePostFormat
+¦   ¦   ¦   ¦       +---quarterOfYear
+¦   ¦   ¦   ¦       +---relativeTime
+¦   ¦   ¦   ¦       +---timezone
+¦   ¦   ¦   ¦       +---toArray
+¦   ¦   ¦   ¦       +---toObject
+¦   ¦   ¦   ¦       +---updateLocale
+¦   ¦   ¦   ¦       +---utc
+¦   ¦   ¦   ¦       +---weekday
+¦   ¦   ¦   ¦       +---weekOfYear
+¦   ¦   ¦   ¦       +---weekYear
+¦   ¦   ¦   +---locale
+¦   ¦   ¦   +---plugin
+¦   ¦   +---debug
+¦   ¦   ¦   +---src
+¦   ¦   +---default-browser
+¦   ¦   +---default-browser-id
+¦   ¦   +---define-lazy-prop
+¦   ¦   +---delayed-stream
+¦   ¦   ¦   +---lib
+¦   ¦   +---depd
+¦   ¦   ¦   +---lib
+¦   ¦   ¦       +---browser
+¦   ¦   +---destroy
+¦   ¦   +---dotenv
+¦   ¦   ¦   +---lib
+¦   ¦   +---dunder-proto
+¦   ¦   ¦   +---.github
+¦   ¦   ¦   +---test
+¦   ¦   +---ecdsa-sig-formatter
+¦   ¦   ¦   +---src
+¦   ¦   +---ee-first
+¦   ¦   +---encodeurl
+¦   ¦   +---es-define-property
+¦   ¦   ¦   +---.github
+¦   ¦   ¦   +---test
+¦   ¦   +---es-errors
+¦   ¦   ¦   +---.github
+¦   ¦   ¦   +---test
+¦   ¦   +---es-object-atoms
+¦   ¦   ¦   +---.github
+¦   ¦   ¦   +---test
+¦   ¦   +---es-set-tostringtag
+¦   ¦   ¦   +---test
+¦   ¦   +---escape-html
+¦   ¦   +---etag
+¦   ¦   +---event-target-shim
+¦   ¦   ¦   +---dist
+¦   ¦   +---events
+¦   ¦   ¦   +---.github
+¦   ¦   ¦   +---tests
+¦   ¦   +---express
+¦   ¦   ¦   +---lib
+¦   ¦   ¦   ¦   +---middleware
+¦   ¦   ¦   ¦   +---router
+¦   ¦   ¦   +---node_modules
+¦   ¦   ¦       +---debug
+¦   ¦   ¦       ¦   +---src
+¦   ¦   ¦       +---ms
+¦   ¦   ¦       +---qs
+¦   ¦   ¦           +---.github
+¦   ¦   ¦           +---dist
+¦   ¦   ¦           +---lib
+¦   ¦   ¦           +---test
+¦   ¦   +---fill-range
+¦   ¦   +---finalhandler
+¦   ¦   ¦   +---node_modules
+¦   ¦   ¦       +---debug
+¦   ¦   ¦       ¦   +---src
+¦   ¦   ¦       +---ms
+¦   ¦   +---follow-redirects
+¦   ¦   +---form-data
+¦   ¦   ¦   +---lib
+¦   ¦   ¦   +---node_modules
+¦   ¦   +---forwarded
+¦   ¦   +---fresh
+¦   ¦   +---function-bind
+¦   ¦   ¦   +---.github
+¦   ¦   ¦   +---test
+¦   ¦   +---get-intrinsic
+¦   ¦   ¦   +---.github
+¦   ¦   ¦   +---test
+¦   ¦   +---get-proto
+¦   ¦   ¦   +---.github
+¦   ¦   ¦   +---test
+¦   ¦   +---glob-parent
+¦   ¦   +---gopd
+¦   ¦   ¦   +---.github
+¦   ¦   ¦   +---test
+¦   ¦   +---has-flag
+¦   ¦   +---has-symbols
+¦   ¦   ¦   +---.github
+¦   ¦   ¦   +---test
+¦   ¦   ¦       +---shams
+¦   ¦   +---has-tostringtag
+¦   ¦   ¦   +---.github
+¦   ¦   ¦   +---test
+¦   ¦   ¦       +---shams
+¦   ¦   +---hasown
+¦   ¦   ¦   +---.github
+¦   ¦   +---http-errors
+¦   ¦   +---http-proxy-agent
+¦   ¦   ¦   +---dist
+¦   ¦   +---https-proxy-agent
+¦   ¦   ¦   +---dist
+¦   ¦   +---iconv-lite
+¦   ¦   ¦   +---encodings
+¦   ¦   ¦   ¦   +---tables
+¦   ¦   ¦   +---lib
+¦   ¦   +---ieee754
+¦   ¦   +---ignore-by-default
+¦   ¦   +---inherits
+¦   ¦   +---ipaddr.js
+¦   ¦   ¦   +---lib
+¦   ¦   +---is-binary-path
+¦   ¦   +---is-docker
+¦   ¦   +---is-extglob
+¦   ¦   +---is-glob
+¦   ¦   +---is-inside-container
+¦   ¦   +---is-number
+¦   ¦   +---is-wsl
+¦   ¦   +---js-md4
+¦   ¦   ¦   +---build
+¦   ¦   ¦   +---doc
+¦   ¦   ¦   ¦   +---fonts
+¦   ¦   ¦   ¦   +---scripts
+¦   ¦   ¦   ¦   ¦   +---prettify
+¦   ¦   ¦   ¦   +---styles
+¦   ¦   ¦   +---src
+¦   ¦   ¦   +---tests
+¦   ¦   +---jsonwebtoken
+¦   ¦   ¦   +---lib
+¦   ¦   +---jwa
+¦   ¦   +---jws
+¦   ¦   ¦   +---lib
+¦   ¦   +---lodash.includes
+¦   ¦   +---lodash.isboolean
+¦   ¦   +---lodash.isinteger
+¦   ¦   +---lodash.isnumber
+¦   ¦   +---lodash.isplainobject
+¦   ¦   +---lodash.isstring
+¦   ¦   +---lodash.once
+¦   ¦   +---math-intrinsics
+¦   ¦   ¦   +---.github
+¦   ¦   ¦   +---constants
+¦   ¦   ¦   +---test
+¦   ¦   +---media-typer
+¦   ¦   +---merge-descriptors
+¦   ¦   +---methods
+¦   ¦   +---mime
+¦   ¦   ¦   +---src
+¦   ¦   +---mime-db
+¦   ¦   +---mime-types
+¦   ¦   +---minimatch
+¦   ¦   ¦   +---dist
+¦   ¦   ¦       +---commonjs
+¦   ¦   ¦       +---esm
+¦   ¦   +---ms
+¦   ¦   +---mssql
+¦   ¦   ¦   +---bin
+¦   ¦   ¦   +---lib
+¦   ¦   ¦       +---base
+¦   ¦   ¦       +---error
+¦   ¦   ¦       +---msnodesqlv8
+¦   ¦   ¦       +---tedious
+¦   ¦   +---native-duplexpair
+¦   ¦   ¦   +---test
+¦   ¦   +---negotiator
+¦   ¦   ¦   +---lib
+¦   ¦   +---nodemailer
+¦   ¦   ¦   +---lib
+¦   ¦   ¦       +---addressparser
+¦   ¦   ¦       +---base64
+¦   ¦   ¦       +---dkim
+¦   ¦   ¦       +---fetch
+¦   ¦   ¦       +---json-transport
+¦   ¦   ¦       +---mail-composer
+¦   ¦   ¦       +---mailer
+¦   ¦   ¦       +---mime-funcs
+¦   ¦   ¦       +---mime-node
+¦   ¦   ¦       +---punycode
+¦   ¦   ¦       +---qp
+¦   ¦   ¦       +---sendmail-transport
+¦   ¦   ¦       +---ses-transport
+¦   ¦   ¦       +---shared
+¦   ¦   ¦       +---smtp-connection
+¦   ¦   ¦       +---smtp-pool
+¦   ¦   ¦       +---smtp-transport
+¦   ¦   ¦       +---stream-transport
+¦   ¦   ¦       +---well-known
+¦   ¦   ¦       +---xoauth2
+¦   ¦   +---nodemon
+¦   ¦   ¦   +---bin
+¦   ¦   ¦   +---doc
+¦   ¦   ¦   ¦   +---cli
+¦   ¦   ¦   +---lib
+¦   ¦   ¦       +---cli
+¦   ¦   ¦       +---config
+¦   ¦   ¦       +---help
+¦   ¦   ¦       +---monitor
+¦   ¦   ¦       +---rules
+¦   ¦   ¦       +---utils
+¦   ¦   +---normalize-path
+¦   ¦   +---object-assign
+¦   ¦   +---object-inspect
+¦   ¦   ¦   +---.github
+¦   ¦   ¦   +---example
+¦   ¦   ¦   +---test
+¦   ¦   ¦       +---browser
+¦   ¦   +---on-finished
+¦   ¦   +---open
+¦   ¦   +---parseurl
+¦   ¦   +---path-to-regexp
+¦   ¦   +---picomatch
+¦   ¦   ¦   +---lib
+¦   ¦   +---process
+¦   ¦   +---proxy-addr
+¦   ¦   +---proxy-from-env
+¦   ¦   +---pstree.remy
+¦   ¦   ¦   +---lib
+¦   ¦   ¦   +---tests
+¦   ¦   ¦       +---fixtures
+¦   ¦   +---qs
+¦   ¦   ¦   +---.github
+¦   ¦   ¦   +---dist
+¦   ¦   ¦   +---lib
+¦   ¦   ¦   +---test
+¦   ¦   +---range-parser
+¦   ¦   +---raw-body
+¦   ¦   +---readable-stream
+¦   ¦   ¦   +---lib
+¦   ¦   ¦       +---internal
+¦   ¦   ¦       ¦   +---streams
+¦   ¦   ¦       +---ours
+¦   ¦   ¦       ¦   +---util
+¦   ¦   ¦       +---stream
+¦   ¦   +---readdirp
+¦   ¦   +---rfdc
+¦   ¦   ¦   +---.github
+¦   ¦   ¦   ¦   +---workflows
+¦   ¦   ¦   +---test
+¦   ¦   +---run-applescript
+¦   ¦   +---safe-buffer
+¦   ¦   +---safer-buffer
+¦   ¦   +---scmp
+¦   ¦   ¦   +---benchmark
+¦   ¦   ¦   +---lib
+¦   ¦   ¦   +---test
+¦   ¦   +---semver
+¦   ¦   ¦   +---bin
+¦   ¦   ¦   +---classes
+¦   ¦   ¦   +---functions
+¦   ¦   ¦   +---internal
+¦   ¦   ¦   +---ranges
+¦   ¦   +---send
+¦   ¦   ¦   +---node_modules
+¦   ¦   ¦       +---debug
+¦   ¦   ¦           +---node_modules
+¦   ¦   ¦           ¦   +---ms
+¦   ¦   ¦           +---src
+¦   ¦   +---serve-static
+¦   ¦   +---setprototypeof
+¦   ¦   ¦   +---test
+¦   ¦   +---side-channel
+¦   ¦   ¦   +---.github
+¦   ¦   ¦   +---test
+¦   ¦   +---side-channel-list
+¦   ¦   ¦   +---.github
+¦   ¦   ¦   +---test
+¦   ¦   +---side-channel-map
+¦   ¦   ¦   +---.github
+¦   ¦   ¦   +---test
+¦   ¦   +---side-channel-weakmap
+¦   ¦   ¦   +---.github
+¦   ¦   ¦   +---test
+¦   ¦   +---simple-update-notifier
+¦   ¦   ¦   +---build
+¦   ¦   ¦   +---src
+¦   ¦   +---sprintf-js
+¦   ¦   ¦   +---dist
+¦   ¦   ¦   +---src
+¦   ¦   +---statuses
+¦   ¦   +---string_decoder
+¦   ¦   ¦   +---lib
+¦   ¦   +---supports-color
+¦   ¦   +---tarn
+¦   ¦   ¦   +---dist
+¦   ¦   +---tedious
+¦   ¦   ¦   +---benchmarks
+¦   ¦   ¦   ¦   +---bulk-load
+¦   ¦   ¦   ¦   +---connection
+¦   ¦   ¦   ¦   +---query
+¦   ¦   ¦   ¦   +---request
+¦   ¦   ¦   ¦   +---token-parser
+¦   ¦   ¦   +---lib
+¦   ¦   ¦   ¦   +---always-encrypted
+¦   ¦   ¦   ¦   +---data-types
+¦   ¦   ¦   ¦   +---errors
+¦   ¦   ¦   ¦   +---token
+¦   ¦   ¦   ¦   +---tracking-buffer
+¦   ¦   ¦   ¦   +---utils
+¦   ¦   ¦   +---node_modules
+¦   ¦   ¦   ¦   +---iconv-lite
+¦   ¦   ¦   ¦       +---.github
+¦   ¦   ¦   ¦       +---.idea
+¦   ¦   ¦   ¦       ¦   +---codeStyles
+¦   ¦   ¦   ¦       ¦   +---inspectionProfiles
+¦   ¦   ¦   ¦       +---encodings
+¦   ¦   ¦   ¦       ¦   +---tables
+¦   ¦   ¦   ¦       +---lib
+¦   ¦   ¦   +---types
+¦   ¦   +---to-regex-range
+¦   ¦   +---toidentifier
+¦   ¦   +---touch
+¦   ¦   ¦   +---bin
+¦   ¦   +---tslib
+¦   ¦   ¦   +---modules
+¦   ¦   +---twilio
+¦   ¦   ¦   +---lib
+¦   ¦   ¦   ¦   +---auth_strategy
+¦   ¦   ¦   ¦   +---base
+¦   ¦   ¦   ¦   +---credential_provider
+¦   ¦   ¦   ¦   +---http
+¦   ¦   ¦   ¦   ¦   +---bearer_token
+¦   ¦   ¦   ¦   +---jwt
+¦   ¦   ¦   ¦   ¦   +---taskrouter
+¦   ¦   ¦   ¦   ¦   +---validation
+¦   ¦   ¦   ¦   +---rest
+¦   ¦   ¦   ¦   ¦   +---accounts
+¦   ¦   ¦   ¦   ¦   ¦   +---v1
+¦   ¦   ¦   ¦   ¦   ¦       +---credential
+¦   ¦   ¦   ¦   ¦   +---api
+¦   ¦   ¦   ¦   ¦   ¦   +---v2010
+¦   ¦   ¦   ¦   ¦   ¦       +---account
+¦   ¦   ¦   ¦   ¦   ¦           +---address
+¦   ¦   ¦   ¦   ¦   ¦           +---availablePhoneNumberCountry
+¦   ¦   ¦   ¦   ¦   ¦           +---call
+¦   ¦   ¦   ¦   ¦   ¦           +---conference
+¦   ¦   ¦   ¦   ¦   ¦           +---incomingPhoneNumber
+¦   ¦   ¦   ¦   ¦   ¦           ¦   +---assignedAddOn
+¦   ¦   ¦   ¦   ¦   ¦           +---message
+¦   ¦   ¦   ¦   ¦   ¦           +---queue
+¦   ¦   ¦   ¦   ¦   ¦           +---recording
+¦   ¦   ¦   ¦   ¦   ¦           ¦   +---addOnResult
+¦   ¦   ¦   ¦   ¦   ¦           ¦       +---payload
+¦   ¦   ¦   ¦   ¦   ¦           +---sip
+¦   ¦   ¦   ¦   ¦   ¦           ¦   +---credentialList
+¦   ¦   ¦   ¦   ¦   ¦           ¦   +---domain
+¦   ¦   ¦   ¦   ¦   ¦           ¦   ¦   +---authTypes
+¦   ¦   ¦   ¦   ¦   ¦           ¦   ¦       +---authTypeCalls
+¦   ¦   ¦   ¦   ¦   ¦           ¦   ¦       +---authTypeRegistrations
+¦   ¦   ¦   ¦   ¦   ¦           ¦   +---ipAccessControlList
+¦   ¦   ¦   ¦   ¦   ¦           +---usage
+¦   ¦   ¦   ¦   ¦   ¦               +---record
+¦   ¦   ¦   ¦   ¦   +---assistants
+¦   ¦   ¦   ¦   ¦   ¦   +---v1
+¦   ¦   ¦   ¦   ¦   ¦       +---assistant
+¦   ¦   ¦   ¦   ¦   ¦       +---knowledge
+¦   ¦   ¦   ¦   ¦   ¦       +---session
+¦   ¦   ¦   ¦   ¦   +---bulkexports
+¦   ¦   ¦   ¦   ¦   ¦   +---v1
+¦   ¦   ¦   ¦   ¦   ¦       +---export
+¦   ¦   ¦   ¦   ¦   +---chat
+¦   ¦   ¦   ¦   ¦   ¦   +---v1
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---service
+¦   ¦   ¦   ¦   ¦   ¦   ¦       +---channel
+¦   ¦   ¦   ¦   ¦   ¦   ¦       +---user
+¦   ¦   ¦   ¦   ¦   ¦   +---v2
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---service
+¦   ¦   ¦   ¦   ¦   ¦   ¦       +---channel
+¦   ¦   ¦   ¦   ¦   ¦   ¦       +---user
+¦   ¦   ¦   ¦   ¦   ¦   +---v3
+¦   ¦   ¦   ¦   ¦   +---content
+¦   ¦   ¦   ¦   ¦   ¦   +---v1
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---content
+¦   ¦   ¦   ¦   ¦   ¦   +---v2
+¦   ¦   ¦   ¦   ¦   +---conversations
+¦   ¦   ¦   ¦   ¦   ¦   +---v1
+¦   ¦   ¦   ¦   ¦   ¦       +---configuration
+¦   ¦   ¦   ¦   ¦   ¦       +---conversation
+¦   ¦   ¦   ¦   ¦   ¦       ¦   +---message
+¦   ¦   ¦   ¦   ¦   ¦       +---service
+¦   ¦   ¦   ¦   ¦   ¦       ¦   +---configuration
+¦   ¦   ¦   ¦   ¦   ¦       ¦   +---conversation
+¦   ¦   ¦   ¦   ¦   ¦       ¦   ¦   +---message
+¦   ¦   ¦   ¦   ¦   ¦       ¦   +---user
+¦   ¦   ¦   ¦   ¦   ¦       +---user
+¦   ¦   ¦   ¦   ¦   +---events
+¦   ¦   ¦   ¦   ¦   ¦   +---v1
+¦   ¦   ¦   ¦   ¦   ¦       +---schema
+¦   ¦   ¦   ¦   ¦   ¦       +---sink
+¦   ¦   ¦   ¦   ¦   ¦       +---subscription
+¦   ¦   ¦   ¦   ¦   +---flexApi
+¦   ¦   ¦   ¦   ¦   ¦   +---v1
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---interaction
+¦   ¦   ¦   ¦   ¦   ¦   ¦   ¦   +---interactionChannel
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---plugin
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---pluginConfiguration
+¦   ¦   ¦   ¦   ¦   ¦   +---v2
+¦   ¦   ¦   ¦   ¦   +---frontlineApi
+¦   ¦   ¦   ¦   ¦   ¦   +---v1
+¦   ¦   ¦   ¦   ¦   +---iam
+¦   ¦   ¦   ¦   ¦   ¦   +---v1
+¦   ¦   ¦   ¦   ¦   +---insights
+¦   ¦   ¦   ¦   ¦   ¦   +---v1
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---call
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---conference
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---room
+¦   ¦   ¦   ¦   ¦   ¦   +---v2
+¦   ¦   ¦   ¦   ¦   +---intelligence
+¦   ¦   ¦   ¦   ¦   ¦   +---v2
+¦   ¦   ¦   ¦   ¦   ¦       +---transcript
+¦   ¦   ¦   ¦   ¦   +---ipMessaging
+¦   ¦   ¦   ¦   ¦   ¦   +---v1
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---service
+¦   ¦   ¦   ¦   ¦   ¦   ¦       +---channel
+¦   ¦   ¦   ¦   ¦   ¦   ¦       +---user
+¦   ¦   ¦   ¦   ¦   ¦   +---v2
+¦   ¦   ¦   ¦   ¦   ¦       +---service
+¦   ¦   ¦   ¦   ¦   ¦           +---channel
+¦   ¦   ¦   ¦   ¦   ¦           +---user
+¦   ¦   ¦   ¦   ¦   +---knowledge
+¦   ¦   ¦   ¦   ¦   ¦   +---v1
+¦   ¦   ¦   ¦   ¦   ¦       +---knowledge
+¦   ¦   ¦   ¦   ¦   +---lookups
+¦   ¦   ¦   ¦   ¦   ¦   +---v1
+¦   ¦   ¦   ¦   ¦   ¦   +---v2
+¦   ¦   ¦   ¦   ¦   +---marketplace
+¦   ¦   ¦   ¦   ¦   ¦   +---v1
+¦   ¦   ¦   ¦   ¦   ¦       +---availableAddOn
+¦   ¦   ¦   ¦   ¦   ¦       +---installedAddOn
+¦   ¦   ¦   ¦   ¦   +---messaging
+¦   ¦   ¦   ¦   ¦   ¦   +---v1
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---brandRegistration
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---service
+¦   ¦   ¦   ¦   ¦   ¦   +---v2
+¦   ¦   ¦   ¦   ¦   +---monitor
+¦   ¦   ¦   ¦   ¦   ¦   +---v1
+¦   ¦   ¦   ¦   ¦   +---notify
+¦   ¦   ¦   ¦   ¦   ¦   +---v1
+¦   ¦   ¦   ¦   ¦   ¦       +---service
+¦   ¦   ¦   ¦   ¦   +---numbers
+¦   ¦   ¦   ¦   ¦   ¦   +---v1
+¦   ¦   ¦   ¦   ¦   ¦   +---v2
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---authorizationDocument
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---regulatoryCompliance
+¦   ¦   ¦   ¦   ¦   ¦   ¦       +---bundle
+¦   ¦   ¦   ¦   ¦   ¦   +---v3
+¦   ¦   ¦   ¦   ¦   +---oauth
+¦   ¦   ¦   ¦   ¦   ¦   +---v1
+¦   ¦   ¦   ¦   ¦   ¦   +---v2
+¦   ¦   ¦   ¦   ¦   +---preview
+¦   ¦   ¦   ¦   ¦   ¦   +---hosted_numbers
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---authorizationDocument
+¦   ¦   ¦   ¦   ¦   ¦   +---marketplace
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---availableAddOn
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---installedAddOn
+¦   ¦   ¦   ¦   ¦   ¦   +---wireless
+¦   ¦   ¦   ¦   ¦   ¦       +---sim
+¦   ¦   ¦   ¦   ¦   +---previewIam
+¦   ¦   ¦   ¦   ¦   ¦   +---v1
+¦   ¦   ¦   ¦   ¦   ¦   +---versionless
+¦   ¦   ¦   ¦   ¦   ¦       +---organization
+¦   ¦   ¦   ¦   ¦   +---pricing
+¦   ¦   ¦   ¦   ¦   ¦   +---v1
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---messaging
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---phoneNumber
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---voice
+¦   ¦   ¦   ¦   ¦   ¦   +---v2
+¦   ¦   ¦   ¦   ¦   ¦       +---voice
+¦   ¦   ¦   ¦   ¦   +---proxy
+¦   ¦   ¦   ¦   ¦   ¦   +---v1
+¦   ¦   ¦   ¦   ¦   ¦       +---service
+¦   ¦   ¦   ¦   ¦   ¦           +---session
+¦   ¦   ¦   ¦   ¦   ¦               +---participant
+¦   ¦   ¦   ¦   ¦   +---routes
+¦   ¦   ¦   ¦   ¦   ¦   +---v2
+¦   ¦   ¦   ¦   ¦   +---serverless
+¦   ¦   ¦   ¦   ¦   ¦   +---v1
+¦   ¦   ¦   ¦   ¦   ¦       +---service
+¦   ¦   ¦   ¦   ¦   ¦           +---asset
+¦   ¦   ¦   ¦   ¦   ¦           +---build
+¦   ¦   ¦   ¦   ¦   ¦           +---environment
+¦   ¦   ¦   ¦   ¦   ¦           +---function
+¦   ¦   ¦   ¦   ¦   ¦               +---functionVersion
+¦   ¦   ¦   ¦   ¦   +---studio
+¦   ¦   ¦   ¦   ¦   ¦   +---v1
+¦   ¦   ¦   ¦   ¦   ¦   ¦   +---flow
+¦   ¦   ¦   ¦   ¦   ¦   ¦       +---engagement
+¦   ¦   ¦   ¦   ¦   ¦   ¦       ¦   +---step
+¦   ¦   ¦   ¦   ¦   ¦   ¦       +---execution
+¦   ¦   ¦   ¦   ¦   ¦   ¦           +---executionStep
+¦   ¦   ¦   ¦   ¦   ¦   +---v2
+¦   ¦   ¦   ¦   ¦   ¦       +---flow
+¦   ¦   ¦   ¦   ¦   ¦           +---execution
+¦   ¦   ¦   ¦   ¦   ¦               +---executionStep
+¦   ¦   ¦   ¦   ¦   +---supersim
+¦   ¦   ¦   ¦   ¦   ¦   +---v1
+¦   ¦   ¦   ¦   ¦   ¦       +---networkAccessProfile
+¦   ¦   ¦   ¦   ¦   ¦       +---sim
+¦   ¦   ¦   ¦   ¦   +---sync
+¦   ¦   ¦   ¦   ¦   ¦   +---v1
+¦   ¦   ¦   ¦   ¦   ¦       +---service
+¦   ¦   ¦   ¦   ¦   ¦           +---document
+¦   ¦   ¦   ¦   ¦   ¦           +---syncList
+¦   ¦   ¦   ¦   ¦   ¦           +---syncMap
+¦   ¦   ¦   ¦   ¦   ¦           +---syncStream
+¦   ¦   ¦   ¦   ¦   +---taskrouter
+¦   ¦   ¦   ¦   ¦   ¦   +---v1
+¦   ¦   ¦   ¦   ¦   ¦       +---workspace
+¦   ¦   ¦   ¦   ¦   ¦           +---task
+¦   ¦   ¦   ¦   ¦   ¦           +---taskQueue
+¦   ¦   ¦   ¦   ¦   ¦           +---worker
+¦   ¦   ¦   ¦   ¦   ¦           +---workflow
+¦   ¦   ¦   ¦   ¦   +---trunking
+¦   ¦   ¦   ¦   ¦   ¦   +---v1
+¦   ¦   ¦   ¦   ¦   ¦       +---trunk
+¦   ¦   ¦   ¦   ¦   +---trusthub
+¦   ¦   ¦   ¦   ¦   ¦   +---v1
+¦   ¦   ¦   ¦   ¦   ¦       +---customerProfiles
+¦   ¦   ¦   ¦   ¦   ¦       +---trustProducts
+¦   ¦   ¦   ¦   ¦   +---verify
+¦   ¦   ¦   ¦   ¦   ¦   +---v2
+¦   ¦   ¦   ¦   ¦   ¦       +---service
+¦   ¦   ¦   ¦   ¦   ¦           +---entity
+¦   ¦   ¦   ¦   ¦   ¦           ¦   +---challenge
+¦   ¦   ¦   ¦   ¦   ¦           +---rateLimit
+¦   ¦   ¦   ¦   ¦   +---video
+¦   ¦   ¦   ¦   ¦   ¦   +---v1
+¦   ¦   ¦   ¦   ¦   ¦       +---room
+¦   ¦   ¦   ¦   ¦   ¦           +---participant
+¦   ¦   ¦   ¦   ¦   +---voice
+¦   ¦   ¦   ¦   ¦   ¦   +---v1
+¦   ¦   ¦   ¦   ¦   ¦       +---connectionPolicy
+¦   ¦   ¦   ¦   ¦   ¦       +---dialingPermissions
+¦   ¦   ¦   ¦   ¦   ¦           +---country
+¦   ¦   ¦   ¦   ¦   +---wireless
+¦   ¦   ¦   ¦   ¦       +---v1
+¦   ¦   ¦   ¦   ¦           +---sim
+¦   ¦   ¦   ¦   +---twiml
+¦   ¦   ¦   ¦   +---webhooks
+¦   ¦   ¦   +---node_modules
+¦   ¦   ¦       +---agent-base
+¦   ¦   ¦       ¦   +---dist
+¦   ¦   ¦       ¦   ¦   +---src
+¦   ¦   ¦       ¦   +---src
+¦   ¦   ¦       +---https-proxy-agent
+¦   ¦   ¦           +---dist
+¦   ¦   +---type-is
+¦   ¦   +---undefsafe
+¦   ¦   ¦   +---.github
+¦   ¦   ¦   ¦   +---workflows
+¦   ¦   ¦   +---lib
+¦   ¦   +---undici-types
+¦   ¦   +---unpipe
+¦   ¦   +---utils-merge
+¦   ¦   +---uuid
+¦   ¦   ¦   +---dist
+¦   ¦   ¦       +---bin
+¦   ¦   ¦       +---esm-browser
+¦   ¦   ¦       +---esm-node
+¦   ¦   ¦       +---umd
+¦   ¦   +---vary
+¦   ¦   +---wsl-utils
+¦   ¦   +---xmlbuilder
+¦   ¦       +---lib
+¦   ¦       +---typings
+¦   +---routes
+¦   +---utils
++---database
+¦   +---queries
++---frontend
+    +---admin
+    ¦   +---auth
+    ¦   ¦   +---css
+    ¦   ¦   +---html
+    ¦   ¦   +---js
+    ¦   +---dashboard
+    ¦   ¦   +---css
+    ¦   ¦   +---html
+    ¦   ¦   +---js
+    ¦   +---orders-management
+    ¦   ¦   +---css
+    ¦   ¦   +---html
+    ¦   ¦   +---js
+    ¦   +---password-requests
+    ¦   ¦   +---css
+    ¦   ¦   +---html
+    ¦   ¦   +---js
+    ¦   +---reports
+    ¦   ¦   +---css
+    ¦   ¦   +---html
+    ¦   ¦   +---js
+    ¦   +---settings
+    ¦   ¦   +---css
+    ¦   ¦   +---html
+    ¦   ¦   +---js
+    ¦   +---staff-management
+    ¦   ¦   +---css
+    ¦   ¦   +---html
+    ¦   ¦   +---js
+    ¦   +---tables-management
+    ¦   ¦   +---css
+    ¦   ¦   +---html
+    ¦   ¦   +---js
+    ¦   +---user-management
+    ¦       +---css
+    ¦       +---html
+    ¦       +---js
+    +---auth
+    ¦   +---css
+    ¦   +---html
+    ¦   +---js
+    +---shared
+    ¦   +---css
+    ¦   +---js
+    +---staff
+    ¦   +---auth
+    ¦   ¦   +---css
+    ¦   ¦   +---html
+    ¦   ¦   +---js
+    ¦   +---dashboard
+    ¦   ¦   +---css
+    ¦   ¦   +---html
+    ¦   ¦   +---js
+    ¦   +---orders
+    ¦   ¦   +---css
+    ¦   ¦   +---html
+    ¦   ¦   +---js
+    ¦   +---tables
+    ¦       +---css
+    ¦       +---html
+    ¦       +---js
+    +---user
+        +---email-verification
+        ¦   +---css
+        ¦   +---html
+        ¦   +---js
+        +---index
+        ¦   +---css
+        ¦   +---html
+        ¦   +---js
+        +---menu
+        ¦   +---css
+        ¦   +---html
+        ¦   +---js
+        +---orders
+        ¦   +---css
+        ¦   +---html
+        ¦   +---js
+        +---payment
+        ¦   +---css
+        ¦   +---html
+        ¦   +---js
+        +---phone-number
+        ¦   +---css
+        ¦   +---html
+        ¦   +---js
+        +---profile
+        ¦   +---css
+        ¦   +---html
+        ¦   +---js
+        +---settings
+        ¦   +---css
+        ¦   +---html
+        ¦   +---js
+        +---tables
+            +---css
+            +---html
+            +---js

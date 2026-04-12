@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Thông tin cá nhân - Cà Phê Thông Minh</title>
+    <link rel="stylesheet" href="../../../shared/css/global.css">
+    <link rel="stylesheet" href="../css/profile.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-mug-hot"></i>
+                <span>Cà Phê <span class="highlight">Thông Minh</span></span>
+            </div>
+            <div class="nav-links" id="navLinks">
+                <a href="../../index/html/index.html"><i class="fas fa-home"></i> Trang chủ</a>
+                <a href="../../menu/html/menu.html"><i class="fas fa-coffee"></i> Thực đơn</a>
+                <a href="../../tables/html/tables.html"><i class="fas fa-chair"></i> Đặt bàn</a>
+                <a href="../../orders/html/orders.html"><i class="fas fa-shopping-cart"></i> Đơn hàng <span id="cartCount" class="cart-badge">0</span></a>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <button class="profile-btn" id="profileBtn">
+                        <img id="avatarImg" class="avatar-small" src="https://ui-avatars.com/api/?background=E67E22&color=fff&rounded=true" alt="Avatar">
+                        <span id="userNameShort"></span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <a href="../profile/html/profile.html"><i class="fas fa-user-circle"></i> Thông tin cá nhân</a>
+                        <a href="../../settings/html/settings.html"><i class="fas fa-cog"></i> Cài đặt</a>
+                        <hr>
+                        <a href="#" id="logoutDropdownBtn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                    </div>
+                </div>
+            </div>
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="profile-hero">
+        <div class="profile-hero-overlay"></div>
+        <div class="profile-hero-content">
+            <h1>Thông tin <span class="highlight">cá nhân</span></h1>
+            <p>Quản lý thông tin tài khoản của bạn</p>
+        </div>
+    </section>
+
+    <!-- Profile Section -->
+    <section class="profile-section">
+        <div class="container">
+            <div class="profile-card">
+                <div class="profile-avatar">
+                    <img id="profileAvatar" class="avatar-large" src="https://ui-avatars.com/api/?background=E67E22&color=fff&rounded=true&size=128" alt="Avatar">
+                    <button class="change-avatar-btn" id="changeAvatarBtn">
+                        <i class="fas fa-camera"></i> Đổi ảnh đại diện
+                    </button>
+                    <input type="file" id="avatarUpload" accept="image/*" style="display: none;">
+                </div>
+                <div class="profile-info">
+                    <div class="info-group">
+                        <label>Họ và tên</label>
+                        <p id="fullName">Đang tải...</p>
+                    </div>
+                    <div class="info-group">
+                        <label>Email</label>
+                        <p id="email">Đang tải...</p>
+                    </div>
+                    <div class="info-group">
+                        <label>Số điện thoại</label>
+                        <p id="phone">Đang tải...</p>
+                    </div>
+                    <div class="info-group">
+                        <label>Ngày tham gia</label>
+                        <p id="joinedDate">Đang tải...</p>
+                    </div>
+                    <div class="info-group">
+                        <label>Vai trò</label>
+                        <p id="role">Đang tải...</p>
+                    </div>
+                    <div class="profile-actions">
+                        <button class="edit-btn" id="editProfileBtn">
+                            <i class="fas fa-edit"></i> Chỉnh sửa thông tin
+                        </button>
+                        <button class="change-password-btn" id="changePasswordBtn">
+                            <i class="fas fa-key"></i> Đổi mật khẩu
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Edit Profile Modal -->
+    <div id="editModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Chỉnh sửa thông tin</h3>
+                <button class="modal-close" id="closeEditModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Họ và tên</label>
+                    <input type="text" id="editFullName" placeholder="Nhập họ và tên">
+                </div>
+                <div class="form-group">
+                    <label>Số điện thoại</label>
+                    <input type="tel" id="editPhone" placeholder="Nhập số điện thoại">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="cancel-btn" id="cancelEditBtn">Hủy</button>
+                <button class="save-btn" id="saveEditBtn">Lưu thay đổi</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div id="passwordModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Đổi mật khẩu</h3>
+                <button class="modal-close" id="closePasswordModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Mật khẩu hiện tại</label>
+                    <input type="password" id="currentPassword" placeholder="Nhập mật khẩu hiện tại">
+                </div>
+                <div class="form-group">
+                    <label>Mật khẩu mới</label>
+                    <input type="password" id="newPassword" placeholder="Nhập mật khẩu mới (ít nhất 6 ký tự)">
+                </div>
+                <div class="form-group">
+                    <label>Xác nhận mật khẩu mới</label>
+                    <input type="password" id="confirmPassword" placeholder="Xác nhận mật khẩu mới">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="cancel-btn" id="cancelPasswordBtn">Hủy</button>
+                <button class="save-btn" id="savePasswordBtn">Đổi mật khẩu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-logo">
+                        <i class="fas fa-mug-hot"></i>
+                        <span>Cà Phê <span class="highlight">Thông Minh</span></span>
+                    </div>
+                    <p>Nơi hội tụ của những tín đồ cà phê và công nghệ hiện đại.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Liên hệ</h4>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Đường Cà Phê, Quận 1, TP.HCM</li>
+                        <li><i class="fas fa-phone"></i> 0965 147 941</li>
+                        <li><i class="fas fa-envelope"></i> vothanhdat101091@gmail.com</li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Giờ mở cửa</h4>
+                    <ul>
+                        <li><i class="fas fa-clock"></i> Thứ 2 - Thứ 6: 7:00 - 22:00</li>
+                        <li><i class="fas fa-clock"></i> Thứ 7 - CN: 8:00 - 23:00</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Cà Phê Thông Minh. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../../shared/js/api.js"></script>
+    <script src="../js/profile.js"></script>
+</body>
+</html>

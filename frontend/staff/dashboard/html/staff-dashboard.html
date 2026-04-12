@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Staff Dashboard - Cà Phê Thông Minh</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../css/staff-dashboard.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-mug-hot"></i>
+                <span>Cà Phê <span class="highlight">Thông Minh</span></span>
+                <span class="staff-badge">STAFF</span>
+            </div>
+            <div class="nav-links" id="navLinks">
+                <a href="#" class="active">
+                    <i class="fas fa-chart-line"></i> Dashboard
+                </a>
+                <a href="../tables/html/tables.html">
+                    <i class="fas fa-chair"></i> Quản lý bàn
+                </a>
+                <a href="../orders/html/orders.html">
+                    <i class="fas fa-receipt"></i> Đơn hàng
+                </a>
+            </div>
+            <div class="user-menu">
+                <div class="user-info">
+                    <img id="staffAvatar" class="avatar" src="https://ui-avatars.com/api/?background=00f3ff&color=fff&rounded=true" alt="Avatar">
+                    <span id="staffName">Nhân viên</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                </div>
+            </div>
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Shift Info -->
+        <div class="shift-card">
+            <div class="shift-info">
+                <i class="fas fa-clock"></i>
+                <div>
+                    <span class="shift-label">Ca làm việc hiện tại:</span>
+                    <span class="shift-value" id="shiftType">Sáng (07:00 - 12:00)</span>
+                </div>
+            </div>
+            <div class="shift-stats">
+                <div class="shift-stat">
+                    <span>Đã phục vụ:</span>
+                    <strong id="servedOrders">0</strong>
+                </div>
+                <div class="shift-stat">
+                    <span>Doanh thu ca:</span>
+                    <strong id="shiftRevenue">0₫</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-chair"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="totalTables">0</h3>
+                    <p>Tổng số bàn</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-spinner"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="pendingOrders">0</h3>
+                    <p>Đơn hàng chờ xử lý</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="completedOrders">0</h3>
+                    <p>Đã hoàn thành</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-chart-simple"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="todayRevenue">0₫</h3>
+                    <p>Doanh thu hôm nay</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tables Status -->
+        <div class="section-card">
+            <div class="section-header">
+                <h3><i class="fas fa-chair"></i> Trạng thái bàn</h3>
+                <a href="../tables/html/tables.html" class="view-all">Xem tất cả →</a>
+            </div>
+            <div class="tables-grid" id="tablesGrid">
+                <div class="loading-spinner">
+                    <i class="fas fa-spinner fa-spin"></i> Đang tải...
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Orders -->
+        <div class="section-card">
+            <div class="section-header">
+                <h3><i class="fas fa-clock"></i> Đơn hàng gần đây</h3>
+                <a href="../orders/html/orders.html" class="view-all">Xem tất cả →</a>
+            </div>
+            <div class="table-responsive">
+                <table class="orders-table">
+                    <thead>
+                        <tr>
+                            <th>Mã đơn</th>
+                            <th>Bàn</th>
+                            <th>Tổng tiền</th>
+                            <th>Thời gian</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recentOrdersBody">
+                        <tr>
+                            <td colspan="6" class="loading">Đang tải đơn hàng...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/staff-dashboard.js"></script>
+</body>
+</html>

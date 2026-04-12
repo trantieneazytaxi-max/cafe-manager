@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xác thực Email - Cà Phê Thông Minh</title>
+    <link rel="stylesheet" href="../../../shared/css/global.css">
+    <link rel="stylesheet" href="../css/email-verification.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div class="verification-container">
+        <div class="verification-card">
+            <!-- Back button -->
+            <a href="javascript:history.back()" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Quay lại
+            </a>
+
+            <!-- Header -->
+            <div class="verification-header">
+                <div class="verification-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <h1>Xác thực Email</h1>
+                <p>Nhập mã xác thực đã được gửi đến email của bạn</p>
+            </div>
+
+            <!-- Method Selection Dropdown -->
+            <div class="method-selector">
+                <label class="method-label">
+                    <i class="fas fa-shield-alt"></i> Phương thức xác thực
+                </label>
+                <div class="custom-dropdown" id="methodDropdown">
+                    <div class="dropdown-selected">
+                        <i class="fas fa-envelope"></i>
+                        <span>Xác thực qua Email</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="dropdown-options">
+                        <div class="dropdown-option" data-method="email">
+                            <i class="fas fa-envelope"></i>
+                            <span>Xác thực qua Email</span>
+                        </div>
+                        <div class="dropdown-option" data-method="phone">
+                            <i class="fas fa-phone-alt"></i>
+                            <span>Xác thực qua SMS</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Email Input Section -->
+            <div class="input-section" id="emailSection">
+                <div class="input-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="emailInput" placeholder="Nhập email của bạn" autocomplete="off">
+                </div>
+                <button class="send-btn" id="sendEmailBtn">
+                    <i class="fas fa-paper-plane"></i> Gửi mã xác thực
+                </button>
+            </div>
+
+            <!-- Phone Input Section (hidden initially) -->
+            <div class="input-section hidden" id="phoneSection">
+                <div class="input-group">
+                    <i class="fas fa-phone-alt"></i>
+                    <input type="tel" id="phoneInput" placeholder="Nhập số điện thoại (VD: 0912345678)" autocomplete="off">
+                </div>
+                <button class="send-btn" id="sendSmsBtn">
+                    <i class="fas fa-paper-plane"></i> Gửi mã xác thực
+                </button>
+            </div>
+
+            <!-- Timer & OTP Section -->
+            <div class="otp-section hidden" id="otpSection">
+                <div class="timer-container">
+                    <div class="timer-circle">
+                        <svg class="timer-svg" viewBox="0 0 100 100">
+                            <circle class="timer-bg" cx="50" cy="50" r="45"></circle>
+                            <circle class="timer-progress" cx="50" cy="50" r="45"></circle>
+                        </svg>
+                        <div class="timer-text">
+                            <span id="timerSeconds">60</span>
+                            <small>giây</small>
+                        </div>
+                    </div>
+                    <p class="timer-label">Mã xác thực có hiệu lực trong</p>
+                </div>
+
+                <div class="otp-input-group">
+                    <div class="otp-title">
+                        <i class="fas fa-key"></i>
+                        <span>Nhập mã xác thực</span>
+                    </div>
+                    <div class="otp-inputs" id="otpInputs">
+                        <input type="text" maxlength="1" class="otp-digit" data-index="0" autocomplete="off">
+                        <input type="text" maxlength="1" class="otp-digit" data-index="1" autocomplete="off">
+                        <input type="text" maxlength="1" class="otp-digit" data-index="2" autocomplete="off">
+                        <input type="text" maxlength="1" class="otp-digit" data-index="3" autocomplete="off">
+                        <input type="text" maxlength="1" class="otp-digit" data-index="4" autocomplete="off">
+                        <input type="text" maxlength="1" class="otp-digit" data-index="5" autocomplete="off">
+                    </div>
+                    <p class="otp-hint">Mã gồm 6 ký tự (chữ in hoa và số)</p>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="verify-btn" id="verifyBtn">
+                        <i class="fas fa-check-circle"></i> Xác thực
+                    </button>
+                    <button class="resend-btn hidden" id="resendBtn">
+                        <i class="fas fa-redo-alt"></i> Gửi lại mã
+                    </button>
+                </div>
+            </div>
+
+            <!-- Success Message -->
+            <div class="success-message hidden" id="successMessage">
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3>Xác thực thành công!</h3>
+                <p>Đang chuyển hướng...</p>
+            </div>
+
+            <!-- Info Note -->
+            <div class="info-note">
+                <i class="fas fa-info-circle"></i>
+                <span>Mã xác thực có hiệu lực trong 60 giây. Vui lòng không chia sẻ mã với bất kỳ ai.</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/email-verification.js"></script>
+</body>
+</html>
