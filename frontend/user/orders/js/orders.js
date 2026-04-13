@@ -5,7 +5,7 @@
 
 // State
 let cart = [];
-let selectedItems = new Set(); // Lưu index của item được chọn
+let selectedItems = new Set();
 
 // DOM Elements
 const cartItemsList = document.getElementById('cartItemsList');
@@ -17,44 +17,26 @@ const selectedCountEl = document.getElementById('selectedCount');
 const checkoutBtn = document.getElementById('checkoutBtn');
 const cartCountSpan = document.getElementById('cartCount');
 
-// Check authentication
 document.addEventListener('DOMContentLoaded', () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-        window.location.href = '../../../auth/html/auth.html';
-        return;
-    }
-    
     loadCart();
     initEventListeners();
     initMobileMenu();
-    
-    // Khởi tạo dropdown profile
     initDropdown();
     updateUserInfo();
-    initLogout();
-    
     updateNavbarCartCount();
 });
 
-// Load cart from localStorage
 function loadCart() {
     const savedCart = localStorage.getItem('cart');
-    if (savedCart) {
-        cart = JSON.parse(savedCart);
-    } else {
-        cart = [];
-    }
+    cart = savedCart ? JSON.parse(savedCart) : [];
     renderCart();
 }
 
-// Save cart to localStorage
 function saveCart() {
     localStorage.setItem('cart', JSON.stringify(cart));
     updateNavbarCartCount();
 }
 
-// Update cart count on navbar
 function updateNavbarCartCount() {
     const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
     if (cartCountSpan) {
@@ -63,10 +45,9 @@ function updateNavbarCartCount() {
     }
 }
 
-// Render cart items
 function renderCart() {
     if (!cartItemsList) return;
-    
+
     if (cart.length === 0) {
         cartItemsList.innerHTML = `
             <div class="empty-cart">
@@ -79,7 +60,7 @@ function renderCart() {
         if (checkoutBtn) checkoutBtn.disabled = true;
         return;
     }
-    
+
     cartItemsList.innerHTML = cart.map((item, index) => `
         <div class="cart-item" data-index="${index}">
             <div class="cart-item-select">
@@ -105,20 +86,18 @@ function renderCart() {
             </div>
         </div>
     `).join('');
-    
-    // Gắn sự kiện cho các nút
+
     attachItemEvents();
     updateSummary();
-    
+
     if (checkoutBtn) {
         checkoutBtn.disabled = selectedItems.size === 0;
     }
 }
 
-// Render tùy chọn của món (size, nhiệt độ)
 function renderItemOptions(item) {
     let optionsHtml = '';
-    
+
     if (item.size_id) {
         let sizeName = '';
         if (item.size_id === 1) sizeName = 'Size S (Nhỏ)';
@@ -126,7 +105,7 @@ function renderItemOptions(item) {
         else if (item.size_id === 3) sizeName = 'Size L (Lớn)';
         optionsHtml += `<span>${sizeName}</span>`;
     }
-    
+
     if (item.temp_id) {
         let tempName = '';
         if (item.temp_id === 1) tempName = 'Nóng';
@@ -134,15 +113,13 @@ function renderItemOptions(item) {
         else if (item.temp_id === 3) tempName = 'Đá';
         optionsHtml += `<span>${tempName}</span>`;
     }
-    
+
     return optionsHtml || '<span>Mặc định</span>';
 }
 
-// Gắn sự kiện cho các nút trong cart item
 function attachItemEvents() {
-    // Checkbox chọn item
     document.querySelectorAll('.item-checkbox').forEach(checkbox => {
-        checkbox.addEventListener('change', (e) => {
+        checkbox.addEventListener('change', () => {
             const index = parseInt(checkbox.getAttribute('data-index'));
             if (checkbox.checked) {
                 selectedItems.add(index);
@@ -154,26 +131,22 @@ function attachItemEvents() {
             if (checkoutBtn) checkoutBtn.disabled = selectedItems.size === 0;
         });
     });
-    
-    // Nút tăng số lượng
+
     document.querySelectorAll('.qty-plus').forEach(btn => {
-        btn.addEventListener('click', (e) => {
+        btn.addEventListener('click', () => {
             const index = parseInt(btn.getAttribute('data-index'));
             cart[index].quantity = (cart[index].quantity || 1) + 1;
             saveCart();
             renderCart();
         });
     });
-    
-    // Nút giảm số lượng
+
     document.querySelectorAll('.qty-minus').forEach(btn => {
-        btn.addEventListener('click', (e) => {
+        btn.addEventListener('click', () => {
             const index = parseInt(btn.getAttribute('data-index'));
             const newQuantity = (cart[index].quantity || 1) - 1;
             if (newQuantity <= 0) {
-                // Xóa item nếu số lượng = 0
                 cart.splice(index, 1);
-                // Cập nhật lại selectedItems
                 const newSelected = new Set();
                 selectedItems.forEach(i => {
                     if (i < index) newSelected.add(i);
@@ -187,13 +160,11 @@ function attachItemEvents() {
             renderCart();
         });
     });
-    
-    // Nút xóa item
+
     document.querySelectorAll('.cart-item-remove').forEach(btn => {
-        btn.addEventListener('click', (e) => {
+        btn.addEventListener('click', () => {
             const index = parseInt(btn.getAttribute('data-index'));
             cart.splice(index, 1);
-            // Cập nhật selectedItems
             const newSelected = new Set();
             selectedItems.forEach(i => {
                 if (i < index) newSelected.add(i);
@@ -206,7 +177,6 @@ function attachItemEvents() {
     });
 }
 
-// Cập nhật trạng thái checkbox "Chọn tất cả"
 function updateSelectAllCheckbox() {
     if (!selectAllCheckbox) return;
     const allChecked = cart.length > 0 && selectedItems.size === cart.length;
@@ -214,56 +184,50 @@ function updateSelectAllCheckbox() {
     selectAllCheckbox.indeterminate = selectedItems.size > 0 && selectedItems.size < cart.length;
 }
 
-// Cập nhật tổng tiền
 function updateSummary() {
     let subtotal = 0;
     let selectedCount = 0;
-    
+
     selectedItems.forEach(index => {
         const item = cart[index];
         if (item) {
-            subtotal += (item.price) * (item.quantity || 1);
+            subtotal += item.price * (item.quantity || 1);
             selectedCount++;
         }
     });
-    
+
     const tax = subtotal * 0.1;
     const total = subtotal + tax;
-    
+
     if (subtotalEl) subtotalEl.textContent = formatCurrency(subtotal);
     if (taxEl) taxEl.textContent = formatCurrency(tax);
     if (totalEl) totalEl.textContent = formatCurrency(total);
     if (selectedCountEl) selectedCountEl.textContent = selectedCount;
 }
 
-// Đặt hàng
 function checkout() {
     if (selectedItems.size === 0) {
         showToast('Vui lòng chọn ít nhất một món', 'error');
         return;
     }
-    
+
     const selectedCartItems = [];
     selectedItems.forEach(index => {
         selectedCartItems.push(cart[index]);
     });
-    
-    // Lưu đơn hàng tạm thời
+
     sessionStorage.setItem('tempOrder', JSON.stringify(selectedCartItems));
-    
     showToast('Chuyển sang trang thanh toán...', 'success');
-    
+
     setTimeout(() => {
         window.location.href = '../../payment/html/payment.html';
     }, 1000);
 }
 
-// Format currency
 function formatCurrency(amount) {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
 }
 
-// Escape HTML
 function escapeHtml(str) {
     if (!str) return '';
     return str
@@ -274,14 +238,13 @@ function escapeHtml(str) {
         .replace(/'/g, '&#39;');
 }
 
-// Show toast
 function showToast(message, type = 'success') {
     let toast = document.querySelector('.custom-toast');
     if (!toast) {
         toast = document.createElement('div');
         toast.className = 'custom-toast';
         document.body.appendChild(toast);
-        
+
         const style = document.createElement('style');
         style.textContent = `
             .custom-toast {
@@ -308,17 +271,16 @@ function showToast(message, type = 'success') {
         `;
         document.head.appendChild(style);
     }
-    
+
     toast.className = `custom-toast ${type}`;
     toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
     toast.style.display = 'flex';
-    
+
     setTimeout(() => {
         toast.style.display = 'none';
     }, 3000);
 }
 
-// Event listeners
 function initEventListeners() {
     if (selectAllCheckbox) {
         selectAllCheckbox.addEventListener('change', (e) => {
@@ -333,17 +295,16 @@ function initEventListeners() {
             if (checkoutBtn) checkoutBtn.disabled = selectedItems.size === 0;
         });
     }
-    
+
     if (checkoutBtn) {
         checkoutBtn.addEventListener('click', checkout);
     }
 }
 
-// Mobile menu
 function initMobileMenu() {
     const menuToggle = document.getElementById('menuToggle');
     const navLinks = document.getElementById('navLinks');
-    
+
     if (menuToggle && navLinks) {
         menuToggle.addEventListener('click', () => {
             navLinks.classList.toggle('active');
@@ -351,18 +312,17 @@ function initMobileMenu() {
     }
 }
 
-// ========== PROFILE DROPDOWN ==========
 function initDropdown() {
     const profileBtn = document.getElementById('profileBtn');
     const profileDropdown = document.getElementById('profileDropdown');
-    
+
     if (profileBtn) {
         profileBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             profileDropdown.classList.toggle('active');
         });
     }
-    
+
     document.addEventListener('click', () => {
         const dropdown = document.getElementById('profileDropdown');
         if (dropdown) dropdown.classList.remove('active');
@@ -371,27 +331,48 @@ function initDropdown() {
 
 function updateUserInfo() {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const token = localStorage.getItem('token');
     const avatarImg = document.getElementById('avatarImg');
     const userNameShort = document.getElementById('userNameShort');
     const savedAvatar = localStorage.getItem('userAvatar');
-    
+    const displayName = user.full_name || 'Khách';
+
     if (avatarImg) {
-        avatarImg.src = savedAvatar || `https://ui-avatars.com/api/?background=E67E22&color=fff&rounded=true&size=32&name=${encodeURIComponent(user.full_name || 'User')}`;
+        avatarImg.src = savedAvatar ||
+            `https://ui-avatars.com/api/?background=E67E22&color=fff&rounded=true&size=32&name=${encodeURIComponent(displayName)}`;
     }
     if (userNameShort) {
-        const shortName = user.full_name ? user.full_name.split(' ').pop() : 'User';
-        userNameShort.textContent = shortName;
+        userNameShort.textContent = user.full_name
+            ? user.full_name.split(' ').pop()
+            : 'Khách';
+    }
+
+    const dropdownMenu = document.getElementById('dropdownMenu');
+    if (dropdownMenu) {
+        if (token && user.full_name) {
+            dropdownMenu.innerHTML = `
+                <a href="../../profile/html/profile.html"><i class="fas fa-user-circle"></i> Thông tin cá nhân</a>
+                <a href="../../settings/html/settings.html"><i class="fas fa-cog"></i> Cài đặt</a>
+                <hr>
+                <a href="#" id="logoutDropdownBtn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+            `;
+            initLogout();
+        } else {
+            dropdownMenu.innerHTML = `
+                <a href="../../../auth/html/auth.html"><i class="fas fa-sign-in-alt"></i> Đăng nhập</a>
+            `;
+        }
     }
 }
 
 function initLogout() {
     const logoutBtn = document.getElementById('logoutDropdownBtn');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            localStorage.clear();
-            sessionStorage.clear();
-            window.location.href = '../../../auth/html/auth.html';
-        });
-    }
+    if (!logoutBtn) return;
+
+    logoutBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        localStorage.clear();
+        sessionStorage.clear();
+        window.location.href = '../../../auth/html/auth.html';
+    });
 }
