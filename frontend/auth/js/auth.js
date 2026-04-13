@@ -1,10 +1,5 @@
-/**
- * AUTH PAGE - CAFE MANAGEMENT
- * Xử lý đăng nhập, đăng ký, chọn phương thức xác thực
- */
 
-// API base URL (sẽ thay bằng URL thật khi có backend)
-const API_BASE_URL = 'http://localhost:5000/api';
+
 
 // DOM Elements
 const loginForm = document.getElementById('formLogin');
@@ -86,19 +81,7 @@ if (registerMethodDropdown) {
     });
 }
 
-// Check if already logged in
-document.addEventListener('DOMContentLoaded', () => {
-    const token = localStorage.getItem('token');
-    const role = localStorage.getItem('role');
-    
-    if (token) {
-        if (role === 'admin') {
-            window.location.href = '../../admin/dashboard/html/admin-dashboard.html';
-        } else if (role === 'staff') {
-            window.location.href = '../../user/index/html/index.html';
-        }
-    }
-    
+document.addEventListener('DOMContentLoaded', () => {    
     initTabSwitching();
     initPasswordToggle();
     initModalHandlers();

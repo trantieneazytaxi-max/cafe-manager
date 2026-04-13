@@ -38,6 +38,9 @@
                         <a href="#" id="logoutDropdownBtn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
                     </div>
                 </div>
+                <a href="http://localhost:5000/" class="btn-internal-login">
+                    <i class="fas fa-lock"></i> Nội bộ
+                </a>
             </div>
             <div class="menu-toggle" id="menuToggle">
                 <i class="fas fa-bars"></i>
@@ -214,8 +217,35 @@
     </footer>
 
     <script src="../../../shared/js/api.js"></script>
-    <script src="../../../shared/js/auth-check.js"></script>
     <script src="../js/index.js"></script>
+<!-- Option Modal -->
+<div id="optionModal" class="modal hidden">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalItemName">Tên món</h3>
+            <button id="closeModalBtn" class="close-btn">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div id="sizeOptions" class="option-group" style="display: none;">
+                <label>Kích thước:</label>
+                <div id="sizeButtons" class="option-buttons"></div>
+            </div>
+            <div id="tempOptions" class="option-group" style="display: none;">
+                <label>Nhiệt độ:</label>
+                <div id="tempButtons" class="option-buttons"></div>
+            </div>
+            <div class="price-display">
+                <span>Giá:</span>
+                <span id="displayPrice" class="price-value">0₫</span>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button id="cancelBtn" class="btn-secondary">Hủy</button>
+            <button id="confirmBtn" class="btn-primary">Thêm vào giỏ</button>
+        </div>
+    </div>
+</div>
 
+    
 </body>
 </html>
