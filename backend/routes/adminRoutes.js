@@ -34,34 +34,49 @@ router.get('/staff', async (req, res) => {
     }
 });
 
-// ========== 1. Lấy thống kê tổng quan ==========
+// ========== 1. Lấy thống kê tổng quan + dữ liệu biểu đồ ==========
 router.get('/stats', async (req, res) => {
     try {
-        const { range = 'day' } = req.query;
+        const { range = 'week' } = req.query;
         
         const now = new Date();
         let startDate, compareStartDate;
+        let groupBy = '';
+        let labels = [];
         
+        // Xác định khoảng thời gian
         switch(range) {
             case 'day':
                 startDate = new Date(now.setHours(0, 0, 0, 0));
                 compareStartDate = new Date(now);
                 compareStartDate.setDate(compareStartDate.getDate() - 1);
                 compareStartDate.setHours(0, 0, 0, 0);
+                groupBy = 'HOUR';
+                // Tạo labels cho 24 giờ
+                for (let i = 0; i <= 23; i++) labels.push(`${i}h`);
                 break;
             case 'week':
                 startDate = new Date(now);
                 startDate.setDate(now.getDate() - 7);
                 compareStartDate = new Date(now);
                 compareStartDate.setDate(now.getDate() - 14);
+                groupBy = 'DAY';
+                // Labels cho 7 ngày
+                labels = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'CN'];
                 break;
             case 'month':
                 startDate = new Date(now.getFullYear(), now.getMonth(), 1);
                 compareStartDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+                groupBy = 'DAY';
+                // Labels cho 4 tuần
+                labels = ['Tuần 1', 'Tuần 2', 'Tuần 3', 'Tuần 4'];
                 break;
             case 'year':
                 startDate = new Date(now.getFullYear(), 0, 1);
                 compareStartDate = new Date(now.getFullYear() - 1, 0, 1);
+                groupBy = 'MONTH';
+                // Labels cho 12 tháng
+                for (let i = 1; i <= 12; i++) labels.push(`Tháng ${i}`);
                 break;
             default:
                 startDate = new Date(now.setHours(0, 0, 0, 0));
@@ -69,63 +84,132 @@ router.get('/stats', async (req, res) => {
                 compareStartDate.setDate(compareStartDate.getDate() - 1);
         }
         
-        // Tổng doanh thu
-        const revenueResult = await executeQuery(`
-            SELECT ISNULL(SUM(total_amount), 0) as total
+        // 1. Tổng doanh thu và khách hàng kỳ hiện tại
+        const currentStats = await executeQuery(`
+            SELECT 
+                ISNULL(SUM(total_amount), 0) as totalRevenue,
+                COUNT(DISTINCT user_id) as totalCustomers,
+                COUNT(*) as totalOrders
             FROM Orders 
             WHERE status = 'paid' AND created_at >= @startDate
         `, { startDate: startDate });
         
-        const prevRevenueResult = await executeQuery(`
-            SELECT ISNULL(SUM(total_amount), 0) as total
+        // 2. Tổng doanh thu và khách hàng kỳ trước (để so sánh)
+        const prevStats = await executeQuery(`
+            SELECT 
+                ISNULL(SUM(total_amount), 0) as totalRevenue,
+                COUNT(DISTINCT user_id) as totalCustomers
             FROM Orders 
             WHERE status = 'paid' AND created_at >= @compareStartDate AND created_at < @startDate
         `, { compareStartDate: compareStartDate, startDate: startDate });
         
-        // Tổng đơn hàng
-        const ordersResult = await executeQuery(`
-            SELECT COUNT(*) as total FROM Orders WHERE created_at >= @startDate
-        `, { startDate: startDate });
+        // 3. Dữ liệu chi tiết cho biểu đồ (theo ngày/tuần/tháng)
+        let revenueData = [];
+        let customerData = [];
         
-        const prevOrdersResult = await executeQuery(`
-            SELECT COUNT(*) as total FROM Orders 
-            WHERE created_at >= @compareStartDate AND created_at < @startDate
-        `, { compareStartDate: compareStartDate, startDate: startDate });
+        if (range === 'week') {
+            // Lấy dữ liệu 7 ngày gần nhất
+            for (let i = 0; i < 7; i++) {
+                const date = new Date();
+                date.setDate(date.getDate() - (6 - i));
+                const dayStart = new Date(date);
+                dayStart.setHours(0, 0, 0, 0);
+                const dayEnd = new Date(date);
+                dayEnd.setHours(23, 59, 59, 999);
+                
+                const dayResult = await executeQuery(`
+                    SELECT 
+                        ISNULL(SUM(total_amount), 0) as revenue,
+                        COUNT(DISTINCT user_id) as customers
+                    FROM Orders 
+                    WHERE status = 'paid' AND created_at BETWEEN @start AND @end
+                `, { start: dayStart, end: dayEnd });
+                
+                revenueData.push(dayResult.recordset[0].revenue);
+                customerData.push(dayResult.recordset[0].customers);
+            }
+        } else if (range === 'month') {
+            // Lấy dữ liệu 4 tuần
+            for (let week = 1; week <= 4; week++) {
+                const weekStart = (week - 1) * 7 + 1;
+                const weekEnd = week * 7;
+                
+                const weekResult = await executeQuery(`
+                    SELECT 
+                        ISNULL(SUM(total_amount), 0) as revenue,
+                        COUNT(DISTINCT user_id) as customers
+                    FROM Orders 
+                    WHERE status = 'paid' 
+                        AND DAY(created_at) BETWEEN @startDay AND @endDay
+                        AND MONTH(created_at) = MONTH(GETDATE())
+                `, { startDay: weekStart, endDay: weekEnd });
+                
+                revenueData.push(weekResult.recordset[0].revenue);
+                customerData.push(weekResult.recordset[0].customers);
+            }
+        } else if (range === 'year') {
+            // Lấy dữ liệu 12 tháng
+            for (let month = 1; month <= 12; month++) {
+                const monthResult = await executeQuery(`
+                    SELECT 
+                        ISNULL(SUM(total_amount), 0) as revenue,
+                        COUNT(DISTINCT user_id) as customers
+                    FROM Orders 
+                    WHERE status = 'paid' 
+                        AND MONTH(created_at) = @month
+                        AND YEAR(created_at) = YEAR(GETDATE())
+                `, { month: month });
+                
+                revenueData.push(monthResult.recordset[0].revenue);
+                customerData.push(monthResult.recordset[0].customers);
+            }
+        } else {
+            // Mặc định: 24 giờ
+            for (let hour = 0; hour <= 23; hour++) {
+                const hourResult = await executeQuery(`
+                    SELECT 
+                        ISNULL(SUM(total_amount), 0) as revenue,
+                        COUNT(DISTINCT user_id) as customers
+                    FROM Orders 
+                    WHERE status = 'paid' 
+                        AND DATEPART(hour, created_at) = @hour
+                        AND CAST(created_at AS DATE) = CAST(GETDATE() AS DATE)
+                `, { hour: hour });
+                
+                revenueData.push(hourResult.recordset[0].revenue);
+                customerData.push(hourResult.recordset[0].customers);
+            }
+        }
         
-        // Tổng khách hàng
-        const customersResult = await executeQuery(`
-            SELECT COUNT(*) as total FROM Customers
-        `);
-        
-        const prevCustomersResult = await executeQuery(`
-            SELECT COUNT(*) as total FROM Customers 
-            WHERE created_at < @startDate
-        `, { startDate: startDate });
-        
-        const currentRevenue = revenueResult.recordset[0].total;
-        const prevRevenue = prevRevenueResult.recordset[0].total;
+        // Tính phần trăm thay đổi
+        const currentRevenue = currentStats.recordset[0].totalRevenue;
+        const prevRevenue = prevStats.recordset[0].totalRevenue;
         const revenueChange = prevRevenue === 0 ? 0 : ((currentRevenue - prevRevenue) / prevRevenue * 100).toFixed(1);
         
-        const currentOrders = ordersResult.recordset[0].total;
-        const prevOrders = prevOrdersResult.recordset[0].total;
-        const ordersChange = prevOrders === 0 ? 0 : ((currentOrders - prevOrders) / prevOrders * 100).toFixed(1);
-        
-        const currentCustomers = customersResult.recordset[0].total;
-        const prevCustomers = prevCustomersResult.recordset[0].total;
+        const currentCustomers = currentStats.recordset[0].totalCustomers;
+        const prevCustomers = prevStats.recordset[0].totalCustomers;
         const customersChange = prevCustomers === 0 ? 0 : ((currentCustomers - prevCustomers) / prevCustomers * 100).toFixed(1);
         
         res.json({
+            // Thống kê tổng quan
             totalRevenue: currentRevenue,
-            totalOrders: currentOrders,
+            totalOrders: currentStats.recordset[0].totalOrders,
             totalCustomers: currentCustomers,
             revenueChange: parseFloat(revenueChange),
-            ordersChange: parseFloat(ordersChange),
-            customersChange: parseFloat(customersChange)
+            ordersChange: parseFloat(revenueChange), // Tạm tính
+            customersChange: parseFloat(customersChange),
+            // Dữ liệu biểu đồ
+            labels: labels,
+            revenueData: revenueData,
+            customerData: customerData,
+            // Dữ liệu so sánh
+            prevTotalRevenue: prevRevenue,
+            prevTotalCustomers: prevCustomers
         });
         
     } catch (error) {
         console.error('Lỗi lấy stats:', error);
-        res.status(500).json({ message: 'Lỗi server' });
+        res.status(500).json({ message: 'Lỗi server: ' + error.message });
     }
 });
 

@@ -38,7 +38,7 @@ router.post('/create', async (req, res) => {
                 .input('table_id', sql.Int, table_id)
                 .input('user_id', sql.Int, user_id)
                 .input('total_amount', sql.Decimal(10,2), total_amount)
-                .input('status', sql.NVarChar(20), 'pending')
+                .input('status', sql.NVarChar(20), 'paid')
                 .input('note', sql.NVarChar(255), note || null)
                 .query(`
                     INSERT INTO Orders (table_id, user_id, total_amount, status, note, created_at)
