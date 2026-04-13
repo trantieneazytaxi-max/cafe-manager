@@ -26,12 +26,6 @@ const qrcodeDiv = document.getElementById('qrcode');
 
 // Check authentication
 document.addEventListener('DOMContentLoaded', () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-        window.location.href = '../../../auth/html/auth.html';
-        return;
-    }
-    
     loadOrderData();
     initPaymentMethodSwitch();
     initEventListeners();
@@ -391,15 +385,12 @@ function initMobileMenu() {
 
 // Logout
 function initLogout() {
-    const logoutBtn = document.getElementById('logoutBtn');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            localStorage.removeItem('role');
-            localStorage.removeItem('cart');
-            window.location.href = '../../../auth/html/auth.html';
-        });
-    }
+    const logoutBtn = document.getElementById('logoutDropdownBtn');
+    if (!logoutBtn) return;
+    logoutBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        localStorage.clear();
+        sessionStorage.clear();
+        window.location.href = '../../../auth/html/auth.html';
+    });
 }
