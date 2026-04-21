@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="../css/payment.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 </head>
 <body>
     <!-- Navbar -->
@@ -21,9 +20,21 @@
             <div class="nav-links" id="navLinks">
                 <a href="../../index/html/index.html"><i class="fas fa-home"></i> Trang chủ</a>
                 <a href="../../menu/html/menu.html"><i class="fas fa-coffee"></i> Thực đơn</a>
-                <a href="../../tables/html/tables.html"><i class="fas fa-chair"></i> Đặt bàn</a>
                 <a href="../../orders/html/orders.html"><i class="fas fa-shopping-cart"></i> Đơn hàng <span id="cartCount" class="cart-badge">0</span></a>
-                <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                
+                <div class="profile-dropdown" id="profileDropdown">
+                    <button class="profile-btn" id="profileBtn">
+                        <img id="avatarImg" class="avatar-small" src="https://ui-avatars.com/api/?background=E67E22&color=fff&rounded=true" alt="Avatar">
+                        <span id="userNameShort"></span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <a href="../../profile/html/profile.html"><i class="fas fa-user-circle"></i> Thông tin cá nhân</a>
+                        <a href="../../settings/html/settings.html"><i class="fas fa-cog"></i> Cài đặt</a>
+                        <hr>
+                        <a href="#" id="logoutDropdownBtn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                    </div>
+                </div>
             </div>
             <div class="menu-toggle" id="menuToggle">
                 <i class="fas fa-bars"></i>
@@ -83,12 +94,12 @@
                             </div>
                         </label>
                         <label class="method-option">
-                            <input type="radio" name="paymentMethod" value="bank">
+                            <input type="radio" name="paymentMethod" value="payos">
                             <div class="method-card">
-                                <i class="fas fa-university"></i>
+                                <i class="fas fa-credit-card"></i>
                                 <div>
-                                    <strong>Chuyển khoản ngân hàng</strong>
-                                    <p>Thanh toán qua tài khoản ngân hàng</p>
+                                    <strong>PayOS</strong>
+                                    <p>MoMo, ZaloPay, ATM, Visa/Mastercard...</p>
                                 </div>
                             </div>
                         </label>
@@ -109,34 +120,11 @@
                         </div>
                     </div>
 
-                    <!-- Bank Transfer Section -->
-                    <div id="bankSection" class="payment-detail-section hidden">
-                        <div class="bank-info">
-                            <h4>Thông tin chuyển khoản</h4>
-                            <div class="info-row">
-                                <span>Ngân hàng:</span>
-                                <strong>Vietcombank</strong>
-                            </div>
-                            <div class="info-row">
-                                <span>Số tài khoản:</span>
-                                <strong>1234567890</strong>
-                            </div>
-                            <div class="info-row">
-                                <span>Chủ tài khoản:</span>
-                                <strong>CA PHE THONG MINH</strong>
-                            </div>
-                            <div class="info-row">
-                                <span>Số tiền:</span>
-                                <strong id="bankAmount" class="highlight">0đ</strong>
-                            </div>
-                            <div class="info-row">
-                                <span>Nội dung:</span>
-                                <strong>TTDONHANG + [SĐT]</strong>
-                            </div>
-                        </div>
-                        <div class="qr-code">
-                            <div id="qrcode"></div>
-                            <p>Quét mã QR để chuyển khoản nhanh</p>
+                    <!-- PayOS Section -->
+                    <div id="payosSection" class="payment-detail-section hidden">
+                        <div class="payos-info">
+                            <i class="fas fa-info-circle"></i>
+                            <p>Bạn sẽ được chuyển đến trang thanh toán PayOS để hoàn tất giao dịch an toàn.</p>
                         </div>
                     </div>
 
@@ -178,15 +166,8 @@
                     <h4>Liên hệ</h4>
                     <ul>
                         <li><i class="fas fa-map-marker-alt"></i> 123 Đường Cà Phê, Quận 1, TP.HCM</li>
-                        <li><i class="fas fa-phone"></i> 1900 1234</li>
-                        <li><i class="fas fa-envelope"></i> hello@cafethongminh.com</li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Giờ mở cửa</h4>
-                    <ul>
-                        <li><i class="fas fa-clock"></i> Thứ 2 - Thứ 6: 7:00 - 22:00</li>
-                        <li><i class="fas fa-clock"></i> Thứ 7 - CN: 8:00 - 23:00</li>
+                        <li><i class="fas fa-phone"></i> 0965 147 941</li>
+                        <li><i class="fas fa-envelope"></i> vothanhdat101091@gmail.com</li>
                     </ul>
                 </div>
             </div>

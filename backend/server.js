@@ -13,6 +13,7 @@ const adminRoutes = require('./routes/adminRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const staffOrderRoutes = require('./routes/staffOrderRoutes');
 const forgotPasswordRoutes = require('./routes/forgotPasswordRoutes');
+const paymentRoutes = require('./routes/paymentRoutes'); // ✅ Đưa lên đây
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -62,6 +63,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/staff-orders', staffOrderRoutes);
 app.use('/api/forgot-password', forgotPasswordRoutes);
+app.use('/api/payment', paymentRoutes); // ✅ Đặt ở đây, sau khi middleware đã được khai báo
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -80,6 +82,10 @@ async function startServer() {
         
         app.listen(PORT, () => {
             console.log(`🚀 Server running on http://localhost:${PORT}`);
+            console.log(`🏠 Main page: http://localhost:${PORT}`);
+            console.log(`👤 User: http://localhost:${PORT}/user`);
+            console.log(`👨‍💼 Admin: http://localhost:${PORT}/admin`);
+            console.log(`👨‍🍳 Staff: http://localhost:${PORT}/staff`);
             console.log(`📋 Health check: http://localhost:${PORT}/api/health`);
         });
     } catch (error) {
