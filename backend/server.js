@@ -33,25 +33,25 @@ app.get('/', (req, res) => {
 
 // === Routes cho User ===
 app.get('/user', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/user/index/index.html'));
+    res.sendFile(path.join(__dirname, '../frontend/user/index/html/index.html'));
 });
 
 // === Routes cho Admin ===
 app.get('/admin', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/admin/dashboard/index.html'));
+    res.sendFile(path.join(__dirname, '../frontend/admin/dashboard/html/index.html'));
 });
 
 app.get('/admin/login', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/admin/auth/index.html'));
+    res.sendFile(path.join(__dirname, '../frontend/admin/auth/html/index.html'));
 });
 
 // === Routes cho Staff ===
 app.get('/staff', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/staff/dashboard/index.html'));
+    res.sendFile(path.join(__dirname, '../frontend/staff/dashboard/html/index.html'));
 });
 
 app.get('/staff/login', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/staff/auth/index.html'));
+    res.sendFile(path.join(__dirname, '../frontend/staff/auth/html/index.html'));
 });
 
 // === API Routes ===

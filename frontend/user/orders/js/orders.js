@@ -20,9 +20,6 @@ const cartCountSpan = document.getElementById('cartCount');
 document.addEventListener('DOMContentLoaded', () => {
     loadCart();
     initEventListeners();
-    initMobileMenu();
-    initDropdown();
-    updateUserInfo();
     updateNavbarCartCount();
 });
 
@@ -299,80 +296,4 @@ function initEventListeners() {
     if (checkoutBtn) {
         checkoutBtn.addEventListener('click', checkout);
     }
-}
-
-function initMobileMenu() {
-    const menuToggle = document.getElementById('menuToggle');
-    const navLinks = document.getElementById('navLinks');
-
-    if (menuToggle && navLinks) {
-        menuToggle.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-        });
-    }
-}
-
-function initDropdown() {
-    const profileBtn = document.getElementById('profileBtn');
-    const profileDropdown = document.getElementById('profileDropdown');
-
-    if (profileBtn) {
-        profileBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            profileDropdown.classList.toggle('active');
-        });
-    }
-
-    document.addEventListener('click', () => {
-        const dropdown = document.getElementById('profileDropdown');
-        if (dropdown) dropdown.classList.remove('active');
-    });
-}
-
-function updateUserInfo() {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    const token = localStorage.getItem('token');
-    const avatarImg = document.getElementById('avatarImg');
-    const userNameShort = document.getElementById('userNameShort');
-    const savedAvatar = localStorage.getItem('userAvatar');
-    const displayName = user.full_name || 'Khách';
-
-    if (avatarImg) {
-        avatarImg.src = savedAvatar ||
-            `https://ui-avatars.com/api/?background=E67E22&color=fff&rounded=true&size=32&name=${encodeURIComponent(displayName)}`;
-    }
-    if (userNameShort) {
-        userNameShort.textContent = user.full_name
-            ? user.full_name.split(' ').pop()
-            : 'Khách';
-    }
-
-    const dropdownMenu = document.getElementById('dropdownMenu');
-    if (dropdownMenu) {
-        if (token && user.full_name) {
-            dropdownMenu.innerHTML = `
-                <a href="../../profile/html/profile.html"><i class="fas fa-user-circle"></i> Thông tin cá nhân</a>
-                <a href="../../settings/html/settings.html"><i class="fas fa-cog"></i> Cài đặt</a>
-                <hr>
-                <a href="#" id="logoutDropdownBtn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
-            `;
-            initLogout();
-        } else {
-            dropdownMenu.innerHTML = `
-                <a href="../../../auth/html/auth.html"><i class="fas fa-sign-in-alt"></i> Đăng nhập</a>
-            `;
-        }
-    }
-}
-
-function initLogout() {
-    const logoutBtn = document.getElementById('logoutDropdownBtn');
-    if (!logoutBtn) return;
-
-    logoutBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        localStorage.clear();
-        sessionStorage.clear();
-        window.location.href = '../../../auth/html/auth.html';
-    });
 }

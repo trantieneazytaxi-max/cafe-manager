@@ -27,9 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
     loadOrderData();
     initPaymentMethodSwitch();
     initEventListeners();
-    initMobileMenu();
-    initLogout();
-    updateNavbarCartCount();
     
     // Kiểm tra callback từ PayOS
     checkPayOSCallback();
@@ -56,7 +53,11 @@ async function finalizePayOSOrder(orderCode) {
     const token = localStorage.getItem('token');
     
     try {
+        const selectedTableStr = sessionStorage.getItem('selectedTable');
+        const selectedTable = selectedTableStr ? JSON.parse(selectedTableStr) : null;
+        
         const orderData = {
+            table_id: selectedTable ? selectedTable.table_id : 1, // Fallback nếu lỗi
             items: orderItems.map(item => ({
                 item_id: item.item_id,
                 quantity: item.quantity || 1,
@@ -85,8 +86,7 @@ async function finalizePayOSOrder(orderCode) {
             sessionStorage.removeItem('tempOrder');
             sessionStorage.removeItem('payosOrderCode');
             
-            successModal.classList.remove('hidden');
-            showToast('Thanh toán PayOS thành công!', 'success');
+            window.location.href = '../../payment-success/html/payment-success.html';
         } else {
             throw new Error(data.message || 'Lưu đơn hàng thất bại');
         }
@@ -231,7 +231,17 @@ async function processOrder(paymentMethod) {
     confirmBtn.disabled = true;
 
     try {
+        const selectedTableStr = sessionStorage.getItem('selectedTable');
+        const selectedTable = selectedTableStr ? JSON.parse(selectedTableStr) : null;
+        
+        if (!selectedTable || !selectedTable.table_id) {
+            showToast('Vui lòng chọn bàn trước khi thanh toán', 'error');
+            setTimeout(() => window.location.href = '../../tables/html/tables.html', 1500);
+            return;
+        }
+
         const orderData = {
+            table_id: selectedTable.table_id,
             items: orderItems.map(item => ({
                 item_id: item.item_id,
                 quantity: item.quantity || 1,
@@ -258,7 +268,7 @@ async function processOrder(paymentMethod) {
         if (response.ok) {
             localStorage.removeItem('cart');
             sessionStorage.removeItem('tempOrder');
-            successModal.classList.remove('hidden');
+            window.location.href = '../../payment-success/html/payment-success.html';
         } else {
             throw new Error(data.message || 'Thanh toán thất bại');
         }
@@ -307,28 +317,4 @@ function showToast(message, type = 'success') {
     toast.textContent = message;
     toast.style.display = 'block';
     setTimeout(() => toast.style.display = 'none', 3000);
-}
-
-function initMobileMenu() {
-    const menuToggle = document.getElementById('menuToggle');
-    const navLinks = document.getElementById('navLinks');
-    if (menuToggle && navLinks) menuToggle.addEventListener('click', () => navLinks.classList.toggle('active'));
-}
-
-function initLogout() {
-    const logoutBtn = document.getElementById('logoutDropdownBtn');
-    if (logoutBtn) logoutBtn.addEventListener('click', () => {
-        localStorage.clear();
-        sessionStorage.clear();
-        window.location.href = '../../../auth/html/auth.html';
-    });
-}
-
-function updateNavbarCartCount() {
-    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    const count = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
-    document.querySelectorAll('.cart-badge').forEach(b => {
-        b.textContent = count;
-        b.style.display = count > 0 ? 'inline-block' : 'none';
-    });
 }

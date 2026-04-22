@@ -344,6 +344,42 @@ body {
     transform: translateY(-3px);
 }
 
+/* ========== OUR STORY SECTION ========== */
+.our-story {
+    padding: 5rem 2rem;
+    background-color: #FFF8F0;
+}
+
+.story-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+}
+
+.story-image img {
+    width: 100%;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(92, 58, 33, 0.15);
+}
+
+.story-content h2 {
+    font-size: 2.5rem;
+    color: #5C3A21;
+    margin: 1rem 0;
+}
+
+.story-content h2 .highlight {
+    color: #E67E22;
+}
+
+.story-content p {
+    font-size: 1.1rem;
+    color: #8B7355;
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+}
+
 /* ========== FEATURES SECTION ========== */
 .features {
     padding: 5rem 2rem;

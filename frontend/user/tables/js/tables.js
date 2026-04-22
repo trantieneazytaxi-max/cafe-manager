@@ -28,12 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
     loadSelectedTable();
     loadTables();
     initEventListeners();
-    initMobileMenu();
-    
-    // Khởi tạo dropdown profile
-    initDropdown();
-    updateUserInfo();
-    initLogout();
     
     updateNavbarCartCount();
 });
@@ -267,61 +261,4 @@ function showToast(message, type = 'success') {
     setTimeout(() => {
         toast.style.display = 'none';
     }, 3000);
-}
-
-// Mobile menu
-function initMobileMenu() {
-    const menuToggle = document.getElementById('menuToggle');
-    const navLinks = document.getElementById('navLinks');
-    
-    if (menuToggle && navLinks) {
-        menuToggle.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-        });
-    }
-}
-
-// ========== PROFILE DROPDOWN ==========
-function initDropdown() {
-    const profileBtn = document.getElementById('profileBtn');
-    const profileDropdown = document.getElementById('profileDropdown');
-    
-    if (profileBtn) {
-        profileBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            profileDropdown.classList.toggle('active');
-        });
-    }
-    
-    document.addEventListener('click', () => {
-        const dropdown = document.getElementById('profileDropdown');
-        if (dropdown) dropdown.classList.remove('active');
-    });
-}
-
-function updateUserInfo() {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    const avatarImg = document.getElementById('avatarImg');
-    const userNameShort = document.getElementById('userNameShort');
-    const savedAvatar = localStorage.getItem('userAvatar');
-    
-    if (avatarImg) {
-        avatarImg.src = savedAvatar || `https://ui-avatars.com/api/?background=E67E22&color=fff&rounded=true&size=32&name=${encodeURIComponent(user.full_name || 'User')}`;
-    }
-    if (userNameShort) {
-        const shortName = user.full_name ? user.full_name.split(' ').pop() : 'User';
-        userNameShort.textContent = shortName;
-    }
-}
-
-function initLogout() {
-    const logoutBtn = document.getElementById('logoutDropdownBtn');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            localStorage.clear();
-            sessionStorage.clear();
-            window.location.href = '../../../auth/html/auth.html';
-        });
-    }
 }

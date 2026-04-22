@@ -48,8 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     loadUserData();
     initEventListeners();
-    initDropdown();
-    initMobileMenu();
     updateNavbarCartCount();
 });
 
@@ -203,32 +201,7 @@ async function changePassword() {
     }
 }
 
-// Dropdown
-function initDropdown() {
-    if (profileBtn) {
-        profileBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            profileDropdown.classList.toggle('active');
-        });
-    }
-    
-    document.addEventListener('click', () => {
-        profileDropdown.classList.remove('active');
-    });
-}
 
-// Logout from dropdown
-function initLogout() {
-    const logoutDropdownBtn = document.getElementById('logoutDropdownBtn');
-    if (logoutDropdownBtn) {
-        logoutDropdownBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            localStorage.clear();
-            sessionStorage.clear();
-            window.location.href = '../../../auth/html/auth.html';
-        });
-    }
-}
 
 // Event listeners
 function initEventListeners() {
@@ -315,16 +288,4 @@ function showToast(message, type = 'success') {
     setTimeout(() => {
         toast.style.display = 'none';
     }, 3000);
-}
-
-// Mobile menu
-function initMobileMenu() {
-    const menuToggle = document.getElementById('menuToggle');
-    const navLinks = document.getElementById('navLinks');
-    
-    if (menuToggle && navLinks) {
-        menuToggle.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-        });
-    }
 }

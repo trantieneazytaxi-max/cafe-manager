@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Giỏ hàng - Cà Phê Thông Minh</title>
+    <title>Thanh toán thành công - Cà Phê Thông Minh</title>
     <link rel="stylesheet" href="../../../shared/css/global.css">
-    <link rel="stylesheet" href="../css/orders.css">
+    <link rel="stylesheet" href="../css/payment-success.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
@@ -20,10 +20,8 @@
             <div class="nav-links" id="navLinks">
                 <a href="../../index/html/index.html"><i class="fas fa-home"></i> Trang chủ</a>
                 <a href="../../menu/html/menu.html"><i class="fas fa-coffee"></i> Thực đơn</a>
-                <a href="../../tables/html/tables.html"><i class="fas fa-chair"></i> Đặt bàn</a>
-                <a href="#" class="active"><i class="fas fa-shopping-cart"></i> Đơn hàng <span id="cartCount" class="cart-badge" style="display: none;">0</span></a>
+                <a href="../../orders/html/orders.html"><i class="fas fa-shopping-cart"></i> Đơn hàng</a>
                 
-                <!-- Profile Dropdown -->
                 <div class="profile-dropdown" id="profileDropdown">
                     <button class="profile-btn" id="profileBtn">
                         <img id="avatarImg" class="avatar-small" src="https://ui-avatars.com/api/?background=E67E22&color=fff&rounded=true" alt="Avatar">
@@ -44,71 +42,48 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="cart-hero">
-        <div class="cart-hero-overlay"></div>
-        <div class="cart-hero-content">
-            <h1>Giỏ hàng <span class="highlight">của bạn</span></h1>
-            <p>Xem lại đơn hàng trước khi đặt bàn</p>
-        </div>
-    </section>
-
-    <!-- Cart Section -->
-    <section class="cart-section">
-        <div class="container">
-            <div class="cart-layout">
-                <!-- Cart Items -->
-                <div class="cart-items">
-                    <div class="cart-header">
-                        <div class="select-all">
-                            <input type="checkbox" id="selectAllCheckbox">
-                            <label for="selectAllCheckbox">Chọn tất cả</label>
-                        </div>
-                        <div class="cart-header-info">
-                            <span>Sản phẩm</span>
-                            <span>Đơn giá</span>
-                            <span>Số lượng</span>
-                            <span>Thành tiền</span>
-                        </div>
+    <!-- Success Section -->
+    <section class="success-section">
+        <div class="success-container">
+            <div class="success-card">
+                <div class="success-icon-wrapper">
+                    <div class="success-icon">
+                        <i class="fas fa-check"></i>
                     </div>
-                    
-                    <div id="cartItemsList" class="cart-items-list">
-                        <div class="empty-cart">
-                            <i class="fas fa-shopping-cart"></i>
-                            <h3>Giỏ hàng trống</h3>
-                            <p>Hãy thêm món từ <a href="../../menu/html/menu.html">Thực đơn</a></p>
-                        </div>
+                    <div class="pulse-rings">
+                        <div class="ring"></div>
+                        <div class="ring"></div>
+                        <div class="ring"></div>
+                    </div>
+                </div>
+                
+                <h1 class="success-title">Thanh toán thành công!</h1>
+                <p class="success-message">Cảm ơn bạn đã tin tưởng và sử dụng dịch vụ của Cà Phê Thông Minh. Đơn hàng của bạn đã được ghi nhận và đang được chuẩn bị.</p>
+                
+                <div class="success-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Thời gian:</span>
+                        <span class="detail-value" id="orderTime">--:-- --/--/----</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Trạng thái:</span>
+                        <span class="detail-value status-success">Đã xác nhận</span>
                     </div>
                 </div>
 
-                <!-- Cart Summary -->
-                <div class="cart-summary">
-                    <h3>Thông tin đơn hàng</h3>
-                    <div class="summary-row">
-                        <span>Tạm tính:</span>
-                        <span id="subtotal">0đ</span>
-                    </div>
-                    <div class="summary-row">
-                        <span>Thuế VAT (10%):</span>
-                        <span id="tax">0đ</span>
-                    </div>
-                    <div class="summary-row total">
-                        <span>Tổng cộng:</span>
-                        <span id="total">0đ</span>
-                    </div>
-                    <div class="summary-row">
-                        <span>Đã chọn:</span>
-                        <span id="selectedCount">0</span>
-                    </div>
-                    <button class="checkout-btn" id="checkoutBtn" disabled>
-                        <i class="fas fa-credit-card"></i> Đặt hàng
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="window.location.href='../../orders/html/orders.html'">
+                        <i class="fas fa-receipt"></i> Theo dõi đơn hàng
                     </button>
-                    <button class="continue-btn" onclick="window.location.href='../../menu/html/menu.html'">
-                        <i class="fas fa-plus-circle"></i> Thêm món
+                    <button class="btn btn-secondary" onclick="window.location.href='../../index/html/index.html'">
+                        <i class="fas fa-home"></i> Về trang chủ
                     </button>
                 </div>
             </div>
         </div>
+        
+        <!-- Confetti Canvas -->
+        <canvas id="confetti-canvas"></canvas>
     </section>
 
     <!-- Footer -->
@@ -130,13 +105,6 @@
                         <li><i class="fas fa-envelope"></i> vothanhdat101091@gmail.com</li>
                     </ul>
                 </div>
-                <div class="footer-col">
-                    <h4>Giờ mở cửa</h4>
-                    <ul>
-                        <li><i class="fas fa-clock"></i> Thứ 2 - Thứ 6: 7:00 - 22:00</li>
-                        <li><i class="fas fa-clock"></i> Thứ 7 - CN: 8:00 - 23:00</li>
-                    </ul>
-                </div>
             </div>
             <div class="footer-bottom">
                 <p>&copy; 2026 Cà Phê Thông Minh. All rights reserved.</p>
@@ -144,8 +112,9 @@
         </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="../../../shared/js/api.js"></script>
-    <script src="../js/orders.js"></script>
+    <script src="../js/payment-success.js"></script>
     <script src="../../../shared/js/global.js"></script>
 </body>
 </html>

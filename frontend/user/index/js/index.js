@@ -26,11 +26,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     await loadFeaturedMenu();
     initCounterAnimation();
-    initMobileMenu();
-    initDropdown();
-    updateUserInfo();
-    initLogout();
-    updateCartBadge();
 });
 
 function initModalElements() {
@@ -308,99 +303,7 @@ function initCounterAnimation() {
     counters.forEach(counter => observer.observe(counter));
 }
 
-function initMobileMenu() {
-    const menuToggle = document.getElementById('menuToggle');
-    const navLinks = document.getElementById('navLinks');
 
-    if (menuToggle && navLinks) {
-        menuToggle.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-        });
-    }
-}
-
-function updateCartBadge() {
-    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
-    const badges = document.querySelectorAll('.cart-badge');
-    badges.forEach(badge => {
-        if (totalItems > 0) {
-            badge.textContent = totalItems;
-            badge.style.display = 'inline-block';
-        } else {
-            badge.style.display = 'none';
-        }
-    });
-}
-
-function initDropdown() {
-    const profileBtn = document.getElementById('profileBtn');
-    const profileDropdown = document.getElementById('profileDropdown');
-
-    if (profileBtn) {
-        profileBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            profileDropdown.classList.toggle('active');
-        });
-    }
-
-    document.addEventListener('click', () => {
-        const dropdown = document.getElementById('profileDropdown');
-        if (dropdown) dropdown.classList.remove('active');
-    });
-}
-
-function updateUserInfo() {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    const token = localStorage.getItem('token');
-    const avatarImg = document.getElementById('avatarImg');
-    const userNameShort = document.getElementById('userNameShort');
-    const savedAvatar = localStorage.getItem('userAvatar');
-
-    const displayName = user.full_name || 'Khách';
-
-    if (avatarImg) {
-        avatarImg.src = savedAvatar ||
-            `https://ui-avatars.com/api/?background=E67E22&color=fff&rounded=true&size=32&name=${encodeURIComponent(displayName)}`;
-    }
-    if (userNameShort) {
-        userNameShort.textContent = user.full_name
-            ? user.full_name.split(' ').pop()
-            : 'Khách';
-    }
-
-    // Thay đổi dropdown theo trạng thái đăng nhập
-    const dropdownMenu = document.getElementById('dropdownMenu');
-    if (dropdownMenu) {
-        if (token && user.full_name) {
-            // Đã đăng nhập → hiện đầy đủ
-            dropdownMenu.innerHTML = `
-                <a href="../../profile/html/profile.html"><i class="fas fa-user-circle"></i> Thông tin cá nhân</a>
-                <a href="../../settings/html/settings.html"><i class="fas fa-cog"></i> Cài đặt</a>
-                <hr>
-                <a href="#" id="logoutDropdownBtn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
-            `;
-            initLogout(); // gắn lại event sau khi render
-        } else {
-            // Khách vãng lai → chỉ hiện đăng nhập
-            dropdownMenu.innerHTML = `
-                <a href="../../../auth/html/auth.html"><i class="fas fa-sign-in-alt"></i> Đăng nhập</a>
-            `;
-        }
-    }
-}
-
-function initLogout() {
-    const logoutBtn = document.getElementById('logoutDropdownBtn');
-    if (!logoutBtn) return;
-
-    logoutBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        localStorage.clear();
-        sessionStorage.clear();
-        window.location.href = '../../../auth/html/auth.html';
-    });
-}
 
 function showToast(message, type = 'success') {
     let toast = document.querySelector('.custom-toast');
