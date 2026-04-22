@@ -1,5 +1,3 @@
-
-
 # ☕ Cà Phê Thông Minh - Smart Coffee Management System
 
 Hệ thống quản lý quán cà phê hiện đại hỗ trợ đặt món tại bàn, thanh toán QR và quản lý doanh thu thời gian thực.
