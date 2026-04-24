@@ -141,6 +141,20 @@ router.post('/create', optionalToken, async (req, res) => {
                     `);
             }
             
+            // 5. Cập nhật điểm tích lũy (nếu có user)
+            let earnedPoints = 0;
+            if (user_id) {
+                earnedPoints = Math.floor(total_amount / 10000); // 1 điểm cho mỗi 10.000 VNĐ
+                if (earnedPoints > 0) {
+                    await transaction.request()
+                        .input('user_id', sql.Int, user_id)
+                        .input('points', sql.Int, earnedPoints)
+                        .query(`
+                            UPDATE Users SET loyalty_points = ISNULL(loyalty_points, 0) + @points WHERE user_id = @user_id
+                        `);
+                }
+            }
+
             // Commit transaction
             await transaction.commit();
             
@@ -148,7 +162,8 @@ router.post('/create', optionalToken, async (req, res) => {
                 success: true, 
                 message: 'Đặt hàng thành công', 
                 order_id: orderId,
-                order_code: finalOrderCode
+                order_code: finalOrderCode,
+                earned_points: earnedPoints
             });
             
         } catch (error) {

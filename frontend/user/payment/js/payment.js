@@ -519,6 +519,10 @@ async function processOrder(paymentMethod) {
             if (data.order_code) {
                 sessionStorage.setItem('lastOrderCode', data.order_code);
             }
+            // Lưu số điểm tích lũy được
+            if (data.earned_points) {
+                sessionStorage.setItem('lastEarnedPoints', data.earned_points);
+            }
             
             // Chuyển hướng
             if (paymentMethod === 'cash') {

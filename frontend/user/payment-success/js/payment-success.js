@@ -24,6 +24,17 @@ function initOrderInfo() {
         statusEl.textContent = 'Chờ thanh toán tại quầy';
         statusEl.className = 'detail-value status-pending';
     }
+
+    // Hiển thị điểm tích lũy (nếu có)
+    const earnedPoints = sessionStorage.getItem('lastEarnedPoints');
+    if (earnedPoints && parseInt(earnedPoints) > 0) {
+        const pointsRow = document.getElementById('earnedPointsRow');
+        const pointsDisplay = document.getElementById('earnedPointsDisplay');
+        if (pointsRow && pointsDisplay) {
+            pointsRow.style.display = 'flex';
+            pointsDisplay.textContent = `+${earnedPoints} điểm`;
+        }
+    }
 }
 
 function initTime() {
