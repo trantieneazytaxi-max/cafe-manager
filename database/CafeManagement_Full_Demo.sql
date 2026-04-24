@@ -175,6 +175,19 @@ CREATE TABLE PasswordResets (
 );
 GO
 
+-- Staff Profile
+CREATE TABLE StaffProfile (
+    user_id INT PRIMARY KEY,
+    position NVARCHAR(100),
+    salary DECIMAL(15,2),
+    hire_date DATE,
+    cccd NVARCHAR(20),
+    address NVARCHAR(255),
+    updated_at DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+);
+GO
+
 -- Settings
 CREATE TABLE Settings (
     setting_id INT IDENTITY(1,1) PRIMARY KEY,

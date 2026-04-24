@@ -35,9 +35,7 @@ router.post('/create', optionalToken, async (req, res) => {
         
         const user_id = req.user ? req.user.userId : null;
         
-        if (order_type === 'dine-in' && !table_id) {
-            return res.status(400).json({ message: 'Vui lòng chọn bàn khi dùng tại chỗ' });
-        }
+
         
         if (!items || items.length === 0) {
             return res.status(400).json({ message: 'Giỏ hàng trống' });

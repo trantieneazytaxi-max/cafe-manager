@@ -447,6 +447,11 @@ async function processPayOS() {
 }
 
 // Process cash order
+function resetConfirmBtn(btn, originalText) {
+    btn.innerHTML = originalText;
+    btn.disabled = false;
+}
+
 async function processOrder(paymentMethod) {
     const token = localStorage.getItem('token');
     const confirmBtn = document.getElementById('confirmBtn');
@@ -466,10 +471,12 @@ async function processOrder(paymentMethod) {
         // Validate guest info - Chỉ bắt buộc với Mang đi / Giao hàng
         if (orderType !== 'dine-in' && (!guestName || !guestPhone)) {
             showToast('Vui lòng nhập họ tên và số điện thoại để chúng tôi liên hệ', 'error');
+            resetConfirmBtn(confirmBtn, originalText);
             return;
         }
         if (orderType === 'delivery' && !deliveryAddress) {
             showToast('Vui lòng nhập địa chỉ giao hàng', 'error');
+            resetConfirmBtn(confirmBtn, originalText);
             return;
         }
 
