@@ -84,7 +84,7 @@ CREATE TABLE Orders (
     table_id INT NULL,
     user_id INT NULL,
     total_amount DECIMAL(10, 2) DEFAULT 0,
-    status NVARCHAR(20) CHECK (status IN ('pending', 'paid', 'cancelled')) DEFAULT 'pending',
+    status NVARCHAR(20) CHECK (status IN ('pending', 'paid', 'confirmed', 'preparing', 'ready', 'completed', 'cancelled')) DEFAULT 'pending',
     note NVARCHAR(255),
     order_code NVARCHAR(20),
     discount_id INT NULL,

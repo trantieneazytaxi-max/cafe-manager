@@ -99,21 +99,18 @@ function renderCart() {
 
 function renderItemOptions(item) {
     let optionsHtml = '';
+    const cust = item.customizations || {};
 
-    if (item.size_id) {
-        let sizeName = '';
-        if (item.size_id === 1) sizeName = 'Size S (Nhỏ)';
-        else if (item.size_id === 2) sizeName = 'Size M (Vừa)';
-        else if (item.size_id === 3) sizeName = 'Size L (Lớn)';
-        optionsHtml += `<span>${sizeName}</span>`;
+    if (cust.size) {
+        optionsHtml += `<span>Size: ${cust.size}</span>`;
     }
 
-    if (item.temp_id) {
-        let tempName = '';
-        if (item.temp_id === 1) tempName = 'Nóng';
-        else if (item.temp_id === 2) tempName = 'Lạnh';
-        else if (item.temp_id === 3) tempName = 'Đá';
-        optionsHtml += `<span>${tempName}</span>`;
+    if (cust.toppings && cust.toppings.length > 0) {
+        optionsHtml += `<span>Topping: ${cust.toppings.join(', ')}</span>`;
+    }
+
+    if (cust.note) {
+        optionsHtml += `<span class="item-note"><i class="fas fa-comment-dots"></i> ${escapeHtml(cust.note)}</span>`;
     }
 
     return optionsHtml || '<span>Mặc định</span>';
@@ -218,7 +215,9 @@ function checkout() {
         selectedCartItems.push(cart[index]);
     });
 
+    const orderNote = document.getElementById('orderNote')?.value || '';
     sessionStorage.setItem('tempOrder', JSON.stringify(selectedCartItems));
+    sessionStorage.setItem('tempOrderNote', orderNote);
     showToast('Chuyển sang trang thanh toán...', 'success');
 
     setTimeout(() => {

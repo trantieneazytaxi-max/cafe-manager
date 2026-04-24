@@ -1092,6 +1092,8 @@ body.sidebar-collapsed .main-content {
     padding: 2.5rem;
     width: 90%;
     max-width: 550px;
+    max-height: 90vh;
+    overflow-y: auto;
     transform: translateY(30px);
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     box-shadow: 0 0 50px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 243, 255, 0.1);

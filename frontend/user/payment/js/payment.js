@@ -497,7 +497,7 @@ async function processOrder(paymentMethod) {
             guest_name: guestName || (orderType === 'dine-in' ? 'Khách tại bàn' : 'Khách vãng lai'),
             guest_phone: guestPhone || null,
             delivery_address: deliveryAddress || null,
-            note: `Thanh toán tiền mặt - ${new Date().toLocaleString('vi-VN')}`
+            note: (sessionStorage.getItem('tempOrderNote') || '') + (paymentMethod === 'cash' ? ` (Thanh toán tiền mặt)` : ` (Thanh toán online)`)
         };
         
         const response = await fetch('http://localhost:5000/api/orders/create', {

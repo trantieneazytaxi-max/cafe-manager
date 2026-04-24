@@ -170,4 +170,28 @@ router.put('/:orderId(\\d+)/confirm', async (req, res) => {
     }
 });
 
+// Cập nhật trạng thái đơn hàng (Lifecycle)
+router.put('/:orderId(\\d+)/status', async (req, res) => {
+    try {
+        const { orderId } = req.params;
+        const { status } = req.body;
+        
+        const validStatuses = ['pending', 'paid', 'confirmed', 'preparing', 'ready', 'completed', 'cancelled'];
+        if (!validStatuses.includes(status)) {
+            return res.status(400).json({ message: 'Trạng thái không hợp lệ' });
+        }
+        
+        await executeQuery(`
+            UPDATE Orders 
+            SET status = @status, updated_at = GETDATE()
+            WHERE order_id = @orderId
+        `, { status: status, orderId: orderId });
+        
+        res.json({ success: true, message: 'Cập nhật trạng thái thành công' });
+    } catch (error) {
+        console.error('Lỗi cập nhật trạng thái:', error);
+        res.status(500).json({ message: 'Lỗi server' });
+    }
+});
+
 module.exports = router;

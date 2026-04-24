@@ -353,6 +353,38 @@ body {
     color: #e74c3c;
 }
 
+.status-confirmed {
+    background: #d4e6f1;
+    color: #2980b9;
+}
+
+.status-preparing {
+    background: #fcf3cf;
+    color: #f39c12;
+}
+
+.status-ready {
+    background: #d5f5e3;
+    color: #27ae60;
+}
+
+.status-completed {
+    background: #d6eaf8;
+    color: #3498db;
+}
+
+.order-note-small {
+    font-size: 0.7rem;
+    color: #95a5a6;
+    font-style: italic;
+    margin-top: 2px;
+}
+
+.action-group {
+    display: flex;
+    gap: 0.5rem;
+}
+
 .action-btn {
     background: none;
     border: none;

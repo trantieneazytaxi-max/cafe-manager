@@ -37,6 +37,9 @@ document.addEventListener('DOMContentLoaded', () => {
     initMobileMenu();
     initUserMenu();
     initLogout();
+
+    // Tự động làm mới mỗi 10 giây
+    setInterval(loadOrders, 10000);
 });
 
 // Load staff info
@@ -75,15 +78,16 @@ async function loadOrders() {
 
 // Update statistics
 function updateStats() {
-    const pending = orders.filter(o => o.status === 'pending').length;
-    const completed = orders.filter(o => o.status === 'paid').length;
+    const activeStatuses = ['pending', 'paid', 'confirmed', 'preparing', 'ready'];
+    const pending = orders.filter(o => activeStatuses.includes(o.status)).length;
+    const completed = orders.filter(o => o.status === 'completed').length;
     
     // Tính doanh thu hôm nay (sử dụng ngày địa phương)
     const now = new Date();
     const todayStr = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
     
     const todayRevenue = orders
-        .filter(o => o.status === 'paid' && o.created_at?.split('T')[0] === todayStr)
+        .filter(o => (o.status === 'completed' || o.status === 'paid') && o.created_at?.split('T')[0] === todayStr)
         .reduce((sum, o) => sum + (o.total_amount || 0), 0);
     
     if (pendingCountEl) pendingCountEl.textContent = pending;
@@ -121,22 +125,65 @@ function renderOrders() {
         <tr>
             <td>${order.order_code || '#' + order.order_id}</td>
             <td>Bàn ${order.table_number || '---'}</td>
-            <td>${order.customer_name || 'Khách lẻ'}</td>
+            <td>
+                <div>${order.customer_name || 'Khách lẻ'}</div>
+                ${order.note ? `<div class="order-note-small"><i class="fas fa-comment-dots"></i> ${order.note}</div>` : ''}
+            </td>
             <td>${formatCurrency(order.total_amount)}</td>
             <td>${formatDate(order.created_at)}</td>
             <td><span class="status-badge status-${order.status}">${getStatusText(order.status)}</span></td>
             <td>
-                <button class="action-btn btn-view" onclick="viewOrderDetail(${order.order_id})">
-                    <i class="fas fa-eye"></i>
-                </button>
-                ${order.status === 'pending' ? `
-                    <button class="action-btn btn-confirm-order" onclick="confirmOrder(${order.order_id})">
-                        <i class="fas fa-check-circle"></i>
+                <div class="action-group">
+                    <button class="action-btn btn-view" onclick="viewOrderDetail(${order.order_id})" title="Xem chi tiết">
+                        <i class="fas fa-eye"></i>
                     </button>
-                ` : ''}
+                    ${renderStatusFlowButtons(order)}
+                </div>
             </td>
-        </table>
+        </tr>
     `).join('');
+}
+
+function renderStatusFlowButtons(order) {
+    switch(order.status) {
+        case 'pending':
+            return `<button class="action-btn btn-confirm-order" onclick="updateStatus(${order.order_id}, 'confirmed')" title="Xác nhận"><i class="fas fa-check"></i></button>`;
+        case 'paid':
+        case 'confirmed':
+            return `<button class="action-btn" style="background: #f1c40f;" onclick="updateStatus(${order.order_id}, 'preparing')" title="Bắt đầu làm"><i class="fas fa-coffee"></i></button>`;
+        case 'preparing':
+            return `<button class="action-btn" style="background: #00ff88; color: #05050a;" onclick="updateStatus(${order.order_id}, 'ready')" title="Xong món"><i class="fas fa-bell"></i></button>`;
+        case 'ready':
+            return `<button class="action-btn" style="background: #3498db;" onclick="updateStatus(${order.order_id}, 'completed')" title="Giao xong"><i class="fas fa-flag-checkered"></i></button>`;
+        default:
+            return '';
+    }
+}
+
+async function updateStatus(orderId, status) {
+    if (!confirm(`Chuyển đơn hàng sang trạng thái "${getStatusText(status)}"?`)) return;
+    
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`http://localhost:5000/api/staff-orders/${orderId}/status`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ status })
+        });
+        
+        if (response.ok) {
+            showToast('Cập nhật trạng thái thành công');
+            loadOrders();
+        } else {
+            const data = await response.json();
+            throw new Error(data.message || 'Lỗi khi cập nhật');
+        }
+    } catch (error) {
+        showToast(error.message, 'error');
+    }
 }
 
 // View order detail
@@ -197,6 +244,13 @@ function renderOrderDetail(order) {
                 <span>Trạng thái:</span>
                 <span class="status-badge status-${order.status}">${getStatusText(order.status)}</span>
             </div>
+            ${order.note ? `
+            <div class="info-row" style="flex-direction: column; align-items: flex-start; gap: 5px;">
+                <span>Ghi chú của khách:</span>
+                <div style="background: #fdf2e9; padding: 8px 12px; border-radius: 8px; border-left: 4px solid #e67e22; width: 100%; font-size: 0.85rem;">
+                    ${escapeHtml(order.note)}
+                </div>
+            </div>` : ''}
         </div>
         
         <h4 style="margin: 1rem 0 0.5rem;">Chi tiết món</h4>
@@ -240,9 +294,33 @@ function renderOrderDetail(order) {
         });
     }
     
-    // Hiển thị/ẩn nút xác nhận
-    if (confirmOrderBtn) {
-        confirmOrderBtn.style.display = order.status === 'pending' ? 'block' : 'none';
+    // Cập nhật nút trong footer modal
+    const modalFooter = document.querySelector('.modal-footer');
+    if (modalFooter) {
+        let footerHtml = `<button type="button" class="btn-cancel" onclick="document.getElementById('orderModal').classList.add('hidden')">ĐÓNG</button>`;
+        
+        const nextBtn = getNextStatusButton(order);
+        if (nextBtn) {
+            footerHtml += nextBtn;
+        }
+        
+        modalFooter.innerHTML = footerHtml;
+    }
+}
+
+function getNextStatusButton(order) {
+    switch(order.status) {
+        case 'pending':
+            return `<button type="button" class="btn-confirm" onclick="updateStatus(${order.order_id}, 'confirmed')">XÁC NHẬN ĐƠN</button>`;
+        case 'paid':
+        case 'confirmed':
+            return `<button type="button" class="btn-confirm" style="background: #f1c40f;" onclick="updateStatus(${order.order_id}, 'preparing')">BẮT ĐẦU CHẾ BIẾN</button>`;
+        case 'preparing':
+            return `<button type="button" class="btn-confirm" style="background: #00ff88; color: #05050a;" onclick="updateStatus(${order.order_id}, 'ready')">BÁO CÓ HÀNG</button>`;
+        case 'ready':
+            return `<button type="button" class="btn-confirm" style="background: #3498db;" onclick="updateStatus(${order.order_id}, 'completed')">HOÀN THÀNH</button>`;
+        default:
+            return '';
     }
 }
 
@@ -301,8 +379,12 @@ function formatDateTime(dateStr) {
 
 function getStatusText(status) {
     switch(status) {
-        case 'pending': return 'Chờ xử lý';
+        case 'pending': return 'Chờ xác nhận';
         case 'paid': return 'Đã thanh toán';
+        case 'confirmed': return 'Đã xác nhận';
+        case 'preparing': return 'Đang làm';
+        case 'ready': return 'Có hàng';
+        case 'completed': return 'Hoàn thành';
         case 'cancelled': return 'Đã hủy';
         default: return status;
     }

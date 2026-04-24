@@ -178,7 +178,7 @@ router.post('/create', optionalToken, async (req, res) => {
 });
 
 // ========== 2. Lấy lịch sử đơn hàng của user hiện tại ==========
-router.get('/history', async (req, res) => {
+router.get('/history', verifyToken, async (req, res) => {
     try {
         const user_id = req.user.userId;
         
@@ -208,7 +208,7 @@ router.get('/history', async (req, res) => {
 });
 
 // ========== 3. Lấy chi tiết đơn hàng ==========
-router.get('/:orderId', async (req, res) => {
+router.get('/:orderId', verifyToken, async (req, res) => {
     try {
         const { orderId } = req.params;
         const user_id = req.user.userId;
@@ -256,6 +256,44 @@ router.get('/:orderId', async (req, res) => {
         
     } catch (error) {
         console.error('Lỗi lấy chi tiết đơn hàng:', error);
+        res.status(500).json({ message: 'Lỗi server' });
+    }
+});
+
+// ========== 4. Theo dõi đơn hàng (Công khai - Cho phép Guest tra cứu) ==========
+router.get('/track/:query', async (req, res) => {
+    try {
+        const { query } = req.params; 
+        
+        if (!query || query === 'undefined') {
+            return res.status(400).json({ message: 'Thiếu mã đơn hàng' });
+        }
+        
+        const result = await executeQuery(`
+            SELECT 
+                o.order_id,
+                o.order_code,
+                o.table_id,
+                t.table_number,
+                o.total_amount,
+                o.status,
+                o.order_type,
+                o.guest_name,
+                o.note,
+                o.created_at,
+                o.updated_at
+            FROM Orders o
+            LEFT JOIN Tables t ON o.table_id = t.table_id
+            WHERE CAST(o.order_id AS NVARCHAR) = @query OR o.order_code = @query
+        `, { query: query });
+        
+        if (result.recordset.length === 0) {
+            return res.status(404).json({ message: 'Không tìm thấy đơn hàng' });
+        }
+        
+        res.json(result.recordset[0]);
+    } catch (error) {
+        console.error('Lỗi theo dõi đơn hàng:', error);
         res.status(500).json({ message: 'Lỗi server' });
     }
 });

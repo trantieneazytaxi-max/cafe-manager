@@ -10,6 +10,13 @@ document.addEventListener('DOMContentLoaded', () => {
     loadItems();
     
     document.getElementById('itemForm').addEventListener('submit', handleFormSubmit);
+    
+    // Close modal on outside click
+    document.getElementById('itemModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeModal();
+        }
+    });
 });
 
 async function loadCategories() {

@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Theo dõi đơn hàng - Cà Phê Thông Minh</title>
+    <link rel="stylesheet" href="../../../shared/css/global.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #5C3A21;
+            --accent-color: #E67E22;
+            --bg-color: #FFF8F0;
+            --card-bg: #FFFFFF;
+            --text-main: #3D2B1F;
+            --text-muted: #8B7355;
+            --border-color: #F5E6D3;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        /* Navbar Style from Index */
+        .navbar {
+            background: #FFFFFF;
+            box-shadow: 0 2px 20px rgba(92, 58, 33, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .logo i { color: var(--accent-color); margin-right: 0.5rem; }
+        .logo .highlight { color: var(--accent-color); }
+
+        /* Tracking Section */
+        .tracking-section {
+            padding: 4rem 1rem;
+            background: linear-gradient(135deg, #FFF8F0 0%, #F5E6D3 100%);
+        }
+
+        .tracking-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .tracking-card {
+            background: var(--card-bg);
+            border-radius: 32px;
+            padding: 3rem;
+            box-shadow: 0 10px 40px rgba(92, 58, 33, 0.1);
+            position: relative;
+            border: 1px solid var(--border-color);
+        }
+
+        .tracking-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .tracking-header h1 {
+            color: var(--primary-color);
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 800;
+        }
+
+        .order-meta {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .highlight-code {
+            color: var(--accent-color);
+            font-weight: 700;
+            background: #fdf2e9;
+            padding: 2px 12px;
+            border-radius: 8px;
+        }
+
+        /* Timeline Progress */
+        .timeline {
+            position: relative;
+            margin: 4rem 0;
+            padding-left: 60px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 25px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: #F5E6D3;
+            border-radius: 2px;
+        }
+
+        .progress-line {
+            position: absolute;
+            left: 25px;
+            top: 0;
+            width: 4px;
+            background: linear-gradient(to bottom, #E67E22, #F39C12);
+            z-index: 1;
+            transition: height 1s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 2px;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 3rem;
+            opacity: 0.5;
+            transition: all 0.5s ease;
+        }
+
+        .timeline-item.active, .timeline-item.completed {
+            opacity: 1;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -42px;
+            top: 5px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #fff;
+            border: 4px solid #F5E6D3;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item.active::before {
+            border-color: var(--accent-color);
+            background: var(--accent-color);
+            box-shadow: 0 0 0 5px rgba(230, 126, 34, 0.2);
+            transform: scale(1.2);
+        }
+
+        .timeline-item.completed::before {
+            border-color: #27ae60;
+            background: #27ae60;
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            font-size: 10px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .timeline-content h3 {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.4rem;
+            font-weight: 700;
+        }
+
+        .timeline-content p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .timeline-item.active .timeline-content h3 {
+            color: var(--accent-color);
+        }
+
+        /* Order Info Grid */
+        .order-info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+
+        .info-box {
+            background: #FFF8F0;
+            padding: 1.5rem;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .info-box span {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .info-box p {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .highlight-text {
+            color: var(--accent-color) !important;
+        }
+
+        .btn-home {
+            margin-top: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 1.2rem;
+            background: var(--primary-color);
+            color: #fff;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(92, 58, 33, 0.2);
+        }
+
+        .btn-home:hover {
+            background: #3D2B1F;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(92, 58, 33, 0.3);
+        }
+
+        @media (max-width: 600px) {
+            .order-info-grid { grid-template-columns: 1fr; }
+            .tracking-card { padding: 2rem 1.5rem; }
+            .tracking-header h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar from Global -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-mug-hot"></i>
+                <span>Cà Phê <span class="highlight">Thông Minh</span></span>
+            </div>
+            <div class="nav-links" id="navLinks">
+                <a href="../../index/html/index.html"><i class="fas fa-home"></i> Trang chủ</a>
+                <a href="../../menu/html/menu.html"><i class="fas fa-coffee"></i> Thực đơn</a>
+                <a href="../../offers/html/offers.html"><i class="fas fa-gift"></i> Ưu đãi</a>
+                <a href="../../tables/html/tables.html"><i class="fas fa-chair"></i> Đặt bàn</a>
+                <a href="../../orders/html/orders.html"><i class="fas fa-shopping-cart"></i> Giỏ hàng <span id="cartCount" class="cart-badge" style="display: none;">0</span></a>
+                <a href="../../history/html/history.html"><i class="fas fa-history"></i> Lịch sử</a>
+                
+                <div class="profile-dropdown" id="profileDropdown">
+                    <button class="profile-btn" id="profileBtn">
+                        <img id="avatarImg" class="avatar-small" src="https://ui-avatars.com/api/?background=E67E22&color=fff&rounded=true" alt="Avatar">
+                        <span id="userNameShort"></span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <a href="../../profile/html/profile.html"><i class="fas fa-user-circle"></i> Thông tin cá nhân</a>
+                        <a href="../../history/html/history.html"><i class="fas fa-history"></i> Lịch sử đơn hàng</a>
+                        <a href="../../settings/html/settings.html"><i class="fas fa-cog"></i> Cài đặt</a>
+                        <hr>
+                        <a href="#" id="logoutDropdownBtn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                    </div>
+                </div>
+            </div>
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <section class="tracking-section">
+        <div class="tracking-container">
+            <div class="tracking-card">
+                <div class="tracking-header">
+                    <h1>Theo dõi đơn hàng</h1>
+                    <div class="order-meta">
+                        <span>Mã đơn: <span class="highlight-code" id="orderCode">#CM-XXXX</span></span>
+                        <span>|</span>
+                        <span id="orderDate">--:-- --/--/----</span>
+                    </div>
+                </div>
+
+                <div class="timeline">
+                    <div class="progress-line" id="progressLine" style="height: 0%;"></div>
+                    
+                    <div class="timeline-item" id="step-pending">
+                        <div class="timeline-content">
+                            <h3>Chờ xác nhận</h3>
+                            <p>Đơn hàng đã được gửi đến quán và đang chờ nhân viên kiểm duyệt.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item" id="step-confirmed">
+                        <div class="timeline-content">
+                            <h3>Đã xác nhận</h3>
+                            <p>Quán đã tiếp nhận đơn hàng và chuẩn bị nguyên liệu.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item" id="step-preparing">
+                        <div class="timeline-content">
+                            <h3>Đang pha chế</h3>
+                            <p>Barista đang tâm huyết chuẩn bị thức uống cho bạn.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item" id="step-ready">
+                        <div class="timeline-content">
+                            <h3>Sẵn sàng phục vụ</h3>
+                            <p>Món của bạn đã xong! Vui lòng đến quầy nhận hoặc chờ nhân viên mang đến.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item" id="step-completed">
+                        <div class="timeline-content">
+                            <h3>Hoàn thành</h3>
+                            <p>Cảm ơn bạn đã thưởng thức cà phê tại quán. Hẹn gặp lại!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="order-info-grid">
+                    <div class="info-box">
+                        <span>Hình thức</span>
+                        <p id="orderType">Đang cập nhật...</p>
+                    </div>
+                    <div class="info-box">
+                        <span>Vị trí / Khách</span>
+                        <p id="orderLocation">Đang cập nhật...</p>
+                    </div>
+                    <div class="info-box">
+                        <span>Tổng thanh toán</span>
+                        <p id="orderTotal" class="highlight-text">0đ</p>
+                    </div>
+                    <div class="info-box">
+                        <span>Ghi chú</span>
+                        <p id="orderNote" style="font-size: 0.9rem; font-weight: 400; color: var(--text-muted);">Không có ghi chú</p>
+                    </div>
+                </div>
+
+                <a href="../../index/html/index.html" class="btn-home">
+                    <i class="fas fa-arrow-left"></i> QUAY LẠI TRANG CHỦ
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer from Global -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-logo">
+                        <i class="fas fa-mug-hot"></i>
+                        <span>Cà Phê <span class="highlight">Thông Minh</span></span>
+                    </div>
+                    <p>Nơi hội tụ của những tín đồ cà phê và công nghệ hiện đại.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Liên hệ</h4>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Đường Cà Phê, Quận 1, TP.HCM</li>
+                        <li><i class="fas fa-phone"></i> 0965 147 941</li>
+                        <li><i class="fas fa-envelope"></i> vothanhdat101091@gmail.com</li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Giờ mở cửa</h4>
+                    <ul>
+                        <li><i class="fas fa-clock"></i> Thứ 2 - Thứ 6: 7:00 - 22:00</li>
+                        <li><i class="fas fa-clock"></i> Thứ 7 - CN: 8:00 - 23:00</li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Theo dõi</h4>
+                    <p>Nhận ưu đãi độc quyền qua email</p>
+                    <div class="newsletter">
+                        <input type="email" placeholder="Email của bạn">
+                        <button><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Cà Phê Thông Minh. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../order-tracking/js/order-tracking.js"></script>
+    <!-- Add shared JS for Navbar logic -->
+    <script src="../../../shared/js/global.js"></script>
+</body>
+</html>

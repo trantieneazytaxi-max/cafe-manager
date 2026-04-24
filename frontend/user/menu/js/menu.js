@@ -138,6 +138,7 @@ function openOptionModal(id) {
     
     const optionsBody = document.getElementById('custOptionsBody');
     optionsBody.innerHTML = '';
+    if (document.getElementById('itemNote')) document.getElementById('itemNote').value = '';
 
     const custom = typeof item.customizations === 'string' ? JSON.parse(item.customizations) : item.customizations;
 
@@ -219,7 +220,8 @@ function addToCartWithOptions() {
         quantity: 1,
         customizations: {
             size: selectedSize ? selectedSize.name : 'Mặc định',
-            toppings: selectedToppings.map(t => t.name)
+            toppings: selectedToppings.map(t => t.name),
+            note: document.getElementById('itemNote')?.value || ''
         },
         image_url: currentSelectedItem.image_url
     };
