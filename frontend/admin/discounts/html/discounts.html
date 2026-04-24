@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý mã giảm giá | Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../dashboard/css/admin-dashboard.css">
+    <link rel="stylesheet" href="../css/discounts.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar (Copy from dashboard) -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-mug-hot"></i>
+                    <span>Cà Phê <span class="highlight">Thông Minh</span></span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="../../dashboard/html/admin-dashboard.html" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="../../staff-management/html/staff-management.html" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>Quản lý nhân viên</span>
+                </a>
+                <a href="#" class="nav-item active">
+                    <i class="fas fa-ticket-alt"></i>
+                    <span>Mã giảm giá</span>
+                </a>
+                <a href="../../password-requests/html/password-requests.html" class="nav-item">
+                    <i class="fas fa-key"></i>
+                    <span>Yêu cầu mật khẩu</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="logout-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="top-bar">
+                <h2>Quản lý mã giảm giá</h2>
+                <button class="btn-primary" id="addDiscountBtn">
+                    <i class="fas fa-plus"></i> Tạo mã mới
+                </button>
+            </div>
+
+            <!-- Discount List -->
+            <div class="discount-grid" id="discountGrid">
+                <!-- Cards will be loaded by JS -->
+                <div class="loading">Đang tải...</div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Create Discount Modal -->
+    <div id="discountModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Tạo mã giảm giá mới</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <form id="discountForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Mã giảm giá</label>
+                        <input type="text" id="code" name="code" placeholder="VD: GIAM20" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Mô tả</label>
+                        <input type="text" id="description" name="description" placeholder="VD: Giảm 20k cho đơn từ 100k">
+                    </div>
+                    <div class="form-group">
+                        <label>Loại giảm giá</label>
+                        <select id="discount_type" name="discount_type" required>
+                            <option value="percentage">Phần trăm (%)</option>
+                            <option value="fixed">Số tiền cố định (đ)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Giá trị giảm</label>
+                        <input type="number" id="discount_value" name="discount_value" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Đơn tối thiểu</label>
+                        <input type="number" id="min_order_amount" name="min_order_amount" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Giảm tối đa (cho %)</label>
+                        <input type="number" id="max_discount_amount" name="max_discount_amount">
+                    </div>
+                    <div class="form-group">
+                        <label>Giới hạn lượt dùng</label>
+                        <input type="number" id="usage_limit" name="usage_limit">
+                    </div>
+                    <div class="form-group">
+                        <label>Ngày hết hạn</label>
+                        <input type="date" id="expiry_date" name="expiry_date">
+                    </div>
+                    <div class="form-group">
+                        <label>Phân loại mã</label>
+                        <select id="type" name="type">
+                            <option value="manual">Thủ công</option>
+                            <option value="loyalty">Đổi điểm</option>
+                            <option value="weekly">Hàng tuần</option>
+                            <option value="new_member">Thành viên mới</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="pointsGroup" style="display: none;">
+                        <label>Điểm yêu cầu</label>
+                        <input type="number" id="points_required" name="points_required" value="0">
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="cancelBtn">Hủy</button>
+                    <button type="submit" class="btn-primary">Lưu mã</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/discounts.js"></script>
+</body>
+</html>

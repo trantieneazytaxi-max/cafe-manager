@@ -1,0 +1,235 @@
+/* Offers Page Styles */
+.main-content {
+    padding-top: 80px; /* Space for fixed navbar */
+    min-height: 100vh;
+    background-color: #fcf8f5;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Header */
+.offers-header {
+    background: linear-gradient(135deg, #5c3a21, #2c1a0e);
+    color: white;
+    padding: 60px 0;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.offers-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+}
+
+.offers-header p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.badge {
+    background: #e67e22;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+    display: inline-block;
+}
+
+/* Loyalty Hero */
+.loyalty-hero {
+    background: white;
+    border-radius: 24px;
+    padding: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    margin-bottom: 40px;
+    border: 1px solid #eee;
+}
+
+.points-label {
+    color: #666;
+    font-size: 1rem;
+    margin-bottom: 5px;
+}
+
+.points-value {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #e67e22;
+    line-height: 1;
+    margin-bottom: 10px;
+}
+
+.loyalty-icon {
+    font-size: 4rem;
+    color: #f1c40f;
+    opacity: 0.3;
+}
+
+.hidden { display: none; }
+
+/* Tabs */
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+    justify-content: center;
+}
+
+.tab-btn {
+    padding: 10px 25px;
+    border-radius: 30px;
+    border: 1px solid #ddd;
+    background: white;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.tab-btn.active {
+    background: #5c3a21;
+    color: white;
+    border-color: #5c3a21;
+}
+
+/* Offers Grid */
+.offers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 25px;
+    padding-bottom: 60px;
+}
+
+.offer-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #eee;
+    transition: transform 0.3s;
+}
+
+.offer-card:hover {
+    transform: translateY(-5px);
+}
+
+.offer-top {
+    padding: 25px;
+    background: #fff8f0;
+    border-bottom: 1px dashed #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.offer-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #5c3a21;
+}
+
+.offer-type-badge {
+    background: #5c3a21;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.offer-content {
+    padding: 25px;
+    flex-grow: 1;
+}
+
+.offer-content h3 {
+    font-size: 1.25rem;
+    margin-bottom: 10px;
+    color: #2c1a0e;
+}
+
+.offer-content p {
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 15px;
+}
+
+.offer-meta {
+    font-size: 0.8rem;
+    color: #888;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.offer-footer {
+    padding: 20px 25px;
+    border-top: 1px solid #f5f5f5;
+}
+
+.btn-redeem {
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    border: none;
+    background: #e67e22;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-redeem:hover { background: #d35400; }
+.btn-redeem:disabled { background: #ccc; cursor: not-allowed; }
+
+.copy-code {
+    display: flex;
+    gap: 10px;
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #eee;
+}
+
+.code-text {
+    flex-grow: 1;
+    font-family: monospace;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #e67e22;
+}
+
+.btn-copy {
+    background: none;
+    border: none;
+    color: #5c3a21;
+    cursor: pointer;
+}
+
+.loading {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 100px 0;
+    font-size: 1.2rem;
+    color: #888;
+}
+
+@media (max-width: 768px) {
+    .loyalty-hero { flex-direction: column; text-align: center; gap: 20px; }
+    .offers-header h1 { font-size: 2rem; }
+    .offers-grid { grid-template-columns: 1fr; }
+}

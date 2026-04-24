@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const role = localStorage.getItem('role');
     
     if (!token || role !== 'staff') {
-        window.location.href = '../../auth/html/staff-login.html';
+        window.location.href = '../../../auth/html/staff-login.html';
         return;
     }
     
@@ -78,10 +78,12 @@ function updateStats() {
     const pending = orders.filter(o => o.status === 'pending').length;
     const completed = orders.filter(o => o.status === 'paid').length;
     
-    // Tính doanh thu hôm nay
-    const today = new Date().toISOString().split('T')[0];
+    // Tính doanh thu hôm nay (sử dụng ngày địa phương)
+    const now = new Date();
+    const todayStr = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
+    
     const todayRevenue = orders
-        .filter(o => o.status === 'paid' && o.created_at?.split('T')[0] === today)
+        .filter(o => o.status === 'paid' && o.created_at?.split('T')[0] === todayStr)
         .reduce((sum, o) => sum + (o.total_amount || 0), 0);
     
     if (pendingCountEl) pendingCountEl.textContent = pending;
@@ -117,7 +119,7 @@ function renderOrders() {
     
     ordersTableBody.innerHTML = filtered.map(order => `
         <tr>
-            <td>#${order.order_id}</td>
+            <td>${order.order_code || '#' + order.order_id}</td>
             <td>Bàn ${order.table_number || '---'}</td>
             <td>${order.customer_name || 'Khách lẻ'}</td>
             <td>${formatCurrency(order.total_amount)}</td>
@@ -177,7 +179,7 @@ function renderOrderDetail(order) {
         <div class="order-info">
             <div class="info-row">
                 <span>Mã đơn hàng:</span>
-                <span>#${order.order_id}</span>
+                <span class="highlight-code">#${order.order_code || order.order_id}</span>
             </div>
             <div class="info-row">
                 <span>Bàn:</span>
@@ -209,7 +211,34 @@ function renderOrderDetail(order) {
                 <tr><td colspan="3" style="text-align: right;"><strong>Tổng cộng:</strong></td><td class="total-row">${formatCurrency(order.total_amount)}</td></tr>
             </tfoot>
         </table>
+
+        ${order.status === 'pending' ? `
+        <div class="staff-payment-calc" style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 12px; border: 1px solid #dee2e6;">
+            <h4 style="margin-bottom: 10px; color: #2c3e50;"><i class="fas fa-calculator"></i> Xử lý thanh toán</h4>
+            <div style="display: flex; gap: 15px; align-items: flex-end;">
+                <div style="flex: 1;">
+                    <label style="display: block; font-size: 13px; margin-bottom: 5px; color: #666;">Tiền khách đưa:</label>
+                    <input type="number" id="staffCashAmount" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc;" placeholder="Nhập số tiền...">
+                </div>
+                <div style="flex: 1;">
+                    <label style="display: block; font-size: 13px; margin-bottom: 5px; color: #666;">Tiền thừa trả khách:</label>
+                    <div id="staffChangeAmount" style="padding: 10px; font-weight: 700; color: #e67e22; font-size: 18px;">0₫</div>
+                </div>
+            </div>
+        </div>
+        ` : ''}
     `;
+
+    // Thêm listener cho calculator
+    const cashInput = document.getElementById('staffCashAmount');
+    if (cashInput) {
+        cashInput.addEventListener('input', () => {
+            const given = parseFloat(cashInput.value) || 0;
+            const total = order.total_amount || 0;
+            const change = given - total;
+            document.getElementById('staffChangeAmount').textContent = formatCurrency(Math.max(0, change));
+        });
+    }
     
     // Hiển thị/ẩn nút xác nhận
     if (confirmOrderBtn) {
@@ -406,7 +435,7 @@ function initLogout() {
             e.preventDefault();
             localStorage.clear();
             sessionStorage.clear();
-            window.location.href = '../../auth/html/staff-login.html';
+            window.location.href = '../../../auth/html/staff-login.html';
         });
     }
 }

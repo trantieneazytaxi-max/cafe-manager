@@ -1,475 +1,260 @@
 /**
- * MENU PAGE - CAFE MANAGEMENT
- * Lấy dữ liệu từ database thật qua API
+ * USER MENU - RESTORED COFFEE THEME WITH NEW FEATURES
  */
 
-// State
 let allItems = [];
 let categories = [];
-let currentCategory = 'all';
-let searchKeyword = '';
 let cart = JSON.parse(localStorage.getItem('cart') || '[]');
 
-// DOM Elements
-const menuGrid = document.getElementById('menuGrid');
-const categoryTabs = document.getElementById('categoryTabs');
-const searchInput = document.getElementById('searchInput');
-
-// Modal elements
-let optionModal, modalItemName, sizeButtons, tempButtons, displayPrice, closeModalBtn, cancelBtn, confirmBtn;
-
-// Modal state
+// Modal State
 let currentSelectedItem = null;
-let selectedSizeId = null;
-let selectedTempId = null;
-let currentPrice = 0;
+let selectedSize = null;
+let selectedToppings = [];
+let currentBasePrice = 0;
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Xóa kiểm tra token - khách vãng lai được phép vào
-    initModalElements();
+    initModalEvents();
     loadCategories();
     loadMenuItems();
-    initEventListeners();
+    initSearch();
     updateNavbarCartCount();
 });
 
-function initModalElements() {
-    optionModal = document.getElementById('optionModal');
-    modalItemName = document.getElementById('modalItemName');
-    sizeButtons = document.getElementById('sizeButtons');
-    tempButtons = document.getElementById('tempButtons');
-    displayPrice = document.getElementById('displayPrice');
-    closeModalBtn = document.getElementById('closeModalBtn');
-    cancelBtn = document.getElementById('cancelBtn');
-    confirmBtn = document.getElementById('confirmBtn');
+function initModalEvents() {
+    const closeBtn = document.getElementById('closeModalBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const confirmBtn = document.getElementById('confirmBtn');
+    const modal = document.getElementById('optionModal');
 
-    if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
-    if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
-    if (confirmBtn) confirmBtn.addEventListener('click', addToCartWithOptions);
-
-    if (optionModal) {
-        optionModal.addEventListener('click', (e) => {
-            if (e.target === optionModal) closeModal();
-        });
+    if (closeBtn) closeBtn.onclick = closeModal;
+    if (cancelBtn) cancelBtn.onclick = closeModal;
+    if (confirmBtn) confirmBtn.onclick = addToCartWithOptions;
+    if (modal) {
+        modal.onclick = (e) => { if (e.target === modal) closeModal(); };
     }
 }
 
 async function loadCategories() {
     try {
         const response = await fetch('http://localhost:5000/api/menu/categories');
-        const data = await response.json();
-        if (response.ok) {
-            categories = data;
-        } else {
-            throw new Error('Không thể tải danh mục');
-        }
-        renderCategories();
-    } catch (error) {
-        console.error('Lỗi tải danh mục:', error);
-        showToast('Không thể tải danh mục', 'error');
-    }
-}
-
-function renderCategories() {
-    if (!categoryTabs) return;
-
-    categoryTabs.innerHTML = `
-        <div class="category-tab ${currentCategory === 'all' ? 'active' : ''}" data-category="all">
-            <i class="fas fa-utensils"></i>
-            <span>Tất cả</span>
-        </div>
-        ${categories.map(cat => `
-            <div class="category-tab ${currentCategory === cat.category_id ? 'active' : ''}" data-category="${cat.category_id}">
-                <i class="fas fa-tag"></i>
-                <span>${escapeHtml(cat.category_name)}</span>
-            </div>
-        `).join('')}
-    `;
-
-    document.querySelectorAll('.category-tab').forEach(tab => {
-        tab.addEventListener('click', () => {
-            document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-            currentCategory = tab.getAttribute('data-category');
-            filterAndRenderItems();
-        });
-    });
+        categories = await response.json();
+        renderCategoryTabs();
+    } catch (error) { console.error('Lỗi tải danh mục:', error); }
 }
 
 async function loadMenuItems() {
     try {
         const response = await fetch('http://localhost:5000/api/menu/items');
-        const data = await response.json();
-        if (response.ok) {
-            allItems = data;
-        } else {
-            throw new Error('Không thể tải thực đơn');
-        }
-        filterAndRenderItems();
+        allItems = await response.json();
+        renderMenu();
     } catch (error) {
         console.error('Lỗi tải thực đơn:', error);
-        showToast('Không thể tải thực đơn', 'error');
-        menuGrid.innerHTML = `
-            <div class="no-results">
-                <i class="fas fa-exclamation-triangle"></i>
-                <h3>Không thể tải dữ liệu</h3>
-                <p>Vui lòng thử lại sau</p>
-            </div>
-        `;
+        document.getElementById('menuGrid').innerHTML = '<p style="text-align: center; grid-column: 1/-1;">Lỗi tải dữ liệu. Vui lòng thử lại.</p>';
     }
 }
 
-function filterAndRenderItems() {
-    let filtered = [...allItems];
+function renderCategoryTabs() {
+    const container = document.getElementById('categoryTabs');
+    const tabsHtml = categories.map(cat => `
+        <div class="category-tab" data-category="${cat.category_id}">
+            <i class="fas fa-coffee"></i>
+            <span>${cat.category_name}</span>
+        </div>
+    `).join('');
+    container.innerHTML = `
+        <div class="category-tab active" data-category="all">
+            <i class="fas fa-utensils"></i>
+            <span>Tất cả</span>
+        </div>
+    ` + tabsHtml;
 
-    if (currentCategory !== 'all') {
-        filtered = filtered.filter(item => item.category_id == currentCategory);
-    }
-
-    if (searchKeyword) {
-        const keyword = searchKeyword.toLowerCase();
-        filtered = filtered.filter(item =>
-            item.item_name.toLowerCase().includes(keyword) ||
-            (item.description && item.description.toLowerCase().includes(keyword))
-        );
-    }
-
-    renderMenuItems(filtered);
+    document.querySelectorAll('.category-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            renderMenu(tab.dataset.category);
+        });
+    });
 }
 
-function renderMenuItems(items) {
-    if (!menuGrid) return;
+function renderMenu(categoryId = 'all') {
+    const menuGrid = document.getElementById('menuGrid');
+    const recommendedGrid = document.getElementById('recommendedGrid');
+    const recommendedSection = document.getElementById('recommendedSection');
 
-    if (items.length === 0) {
-        menuGrid.innerHTML = `
-            <div class="no-results">
-                <i class="fas fa-search"></i>
-                <h3>Không tìm thấy món ăn</h3>
-                <p>Vui lòng thử lại với từ khóa khác</p>
-            </div>
-        `;
-        return;
+    // 1. Render Recommended
+    const recommendedItems = allItems.filter(i => i.is_recommended && !i.is_paused);
+    if (recommendedItems.length > 0 && categoryId === 'all') {
+        recommendedSection.style.display = 'block';
+        recommendedGrid.innerHTML = recommendedItems.map(item => renderItemCard(item)).join('');
+    } else {
+        recommendedSection.style.display = 'none';
     }
 
-    menuGrid.innerHTML = items.map(item => `
-        <div class="menu-card" data-item-id="${item.item_id}">
+    // 2. Render Main Menu
+    let filteredItems = allItems;
+    if (categoryId !== 'all') {
+        filteredItems = allItems.filter(item => item.category_id == categoryId);
+    }
+    
+    menuGrid.innerHTML = filteredItems.map(item => renderItemCard(item)).join('');
+}
+
+function renderItemCard(item) {
+    const isPaused = item.is_paused;
+    return `
+        <div class="menu-card ${isPaused ? 'paused' : ''}" onclick="${isPaused ? '' : `openOptionModal(${item.item_id})`}">
+            ${item.is_recommended ? '<span class="hot-badge"><i class="fas fa-fire"></i> HOT</span>' : ''}
+            ${isPaused ? '<span class="paused-badge">HẾT HÀNG</span>' : ''}
             <div class="menu-card-img">
-                <img src="${item.image_url || 'https://via.placeholder.com/300x200?text=No+Image'}"
-                    alt="${escapeHtml(item.item_name)}"
-                    style="width: 100%; height: 100%; object-fit: cover;">
-                <span class="category-badge">${escapeHtml(item.category_name)}</span>
-                <span class="price-badge">${formatCurrency(item.price)}</span>
+                <img src="${item.image_url || 'https://via.placeholder.com/300x200?text=Coffee'}" alt="${item.item_name}" style="width: 100%; height: 100%; object-fit: cover;">
+                <span class="category-badge">${item.category_name}</span>
             </div>
             <div class="menu-card-content">
-                <h3>${escapeHtml(item.item_name)}</h3>
-                <p>${escapeHtml(item.description || 'Món ngon đặc sắc')}</p>
+                <h3>${item.item_name}</h3>
+                <p>${item.description || 'Hương vị thơm ngon khó cưỡng.'}</p>
                 <div class="menu-card-footer">
-                    <div class="quantity-control" data-item-id="${item.item_id}">
-                        <button class="qty-minus" data-id="${item.item_id}">-</button>
-                        <span class="qty-value" id="qty-${item.item_id}">${getCartQuantity(item.item_id)}</span>
-                        <button class="qty-plus" data-id="${item.item_id}">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" data-id="${item.item_id}">
-                        <i class="fas fa-cart-plus"></i> Thêm
+                    <span class="price-badge">${formatCurrency(item.price)}</span>
+                    <button class="add-to-cart-btn" ${isPaused ? 'disabled' : ''}>
+                        <i class="fas fa-cart-plus"></i> ${isPaused ? 'Hết hàng' : 'Chọn'}
                     </button>
                 </div>
             </div>
         </div>
-    `).join('');
-
-    attachCartEvents();
+    `;
 }
 
-function getCartQuantity(itemId) {
-    const cartItem = cart.find(item => item.item_id === itemId);
-    return cartItem ? cartItem.quantity : 0;
-}
-
-function updateQuantityDisplay(itemId) {
-    const qtySpan = document.getElementById(`qty-${itemId}`);
-    if (qtySpan) {
-        qtySpan.textContent = getCartQuantity(itemId);
-    }
-}
-
-function updateQuantity(itemId, delta) {
-    const cartItem = cart.find(item => item.item_id === itemId);
-    const item = allItems.find(i => i.item_id === itemId);
+function openOptionModal(id) {
+    const item = allItems.find(i => i.item_id == id);
     if (!item) return;
 
-    if (cartItem) {
-        const newQuantity = cartItem.quantity + delta;
-        if (newQuantity <= 0) {
-            cart = cart.filter(item => item.item_id !== itemId);
-        } else {
-            cartItem.quantity = newQuantity;
+    currentSelectedItem = item;
+    currentBasePrice = item.price;
+    selectedSize = null;
+    selectedToppings = [];
+
+    document.getElementById('modalItemName').textContent = item.item_name;
+    document.getElementById('modalItemDesc').textContent = item.description || '';
+    
+    const optionsBody = document.getElementById('custOptionsBody');
+    optionsBody.innerHTML = '';
+
+    const custom = typeof item.customizations === 'string' ? JSON.parse(item.customizations) : item.customizations;
+
+    if (custom) {
+        // Sizes
+        if (custom.sizes && custom.sizes.length > 0) {
+            const sizeHtml = `
+                <div class="cust-group">
+                    <label class="cust-label">Chọn kích cỡ:</label>
+                    <div class="cust-options">
+                        ${custom.sizes.map(s => `
+                            <button class="option-btn" onclick="selectSize(this, '${s.name}', ${s.extraPrice})">${s.name} (+${formatCurrency(s.extraPrice)})</button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            optionsBody.insertAdjacentHTML('beforeend', sizeHtml);
         }
-    } else if (delta > 0) {
-        cart.push({
-            item_id: item.item_id,
-            item_name: item.item_name,
-            price: item.price,
-            quantity: 1
-        });
+
+        // Toppings
+        if (custom.toppings && custom.toppings.length > 0) {
+            const toppingHtml = `
+                <div class="cust-group">
+                    <label class="cust-label">Thêm topping:</label>
+                    <div class="cust-options">
+                        ${custom.toppings.map(t => `
+                            <button class="option-btn" onclick="toggleTopping(this, '${t.name}', ${t.price})">${t.name} (+${formatCurrency(t.price)})</button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            optionsBody.insertAdjacentHTML('beforeend', toppingHtml);
+        }
     }
 
+    calculatePrice();
+    document.getElementById('optionModal').classList.remove('hidden');
+}
+
+function closeModal() {
+    document.getElementById('optionModal').classList.add('hidden');
+}
+
+function selectSize(btn, name, extra) {
+    btn.parentElement.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    selectedSize = { name, extra };
+    calculatePrice();
+}
+
+function toggleTopping(btn, name, price) {
+    btn.classList.toggle('selected');
+    if (btn.classList.contains('selected')) {
+        selectedToppings.push({ name, price });
+    } else {
+        selectedToppings = selectedToppings.filter(t => t.name !== name);
+    }
+    calculatePrice();
+}
+
+function calculatePrice() {
+    let total = currentBasePrice;
+    if (selectedSize) total += selectedSize.extra;
+    selectedToppings.forEach(t => total += t.price);
+    document.getElementById('displayPrice').textContent = formatCurrency(total);
+}
+
+function addToCartWithOptions() {
+    if (!currentSelectedItem) return;
+
+    let finalPrice = currentBasePrice;
+    if (selectedSize) finalPrice += selectedSize.extra;
+    selectedToppings.forEach(t => finalPrice += t.price);
+
+    const cartItem = {
+        item_id: currentSelectedItem.item_id,
+        item_name: currentSelectedItem.item_name,
+        price: finalPrice,
+        quantity: 1,
+        customizations: {
+            size: selectedSize ? selectedSize.name : 'Mặc định',
+            toppings: selectedToppings.map(t => t.name)
+        },
+        image_url: currentSelectedItem.image_url
+    };
+
+    cart.push(cartItem);
     localStorage.setItem('cart', JSON.stringify(cart));
-    updateQuantityDisplay(itemId);
     updateNavbarCartCount();
-    showToast(`Đã ${delta > 0 ? 'thêm' : 'cập nhật'} ${item.item_name} vào giỏ hàng`, 'success');
+    closeModal();
+    alert(`Đã thêm ${currentSelectedItem.item_name} vào giỏ hàng!`);
 }
 
 function formatCurrency(amount) {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
 }
 
-function escapeHtml(str) {
-    if (!str) return '';
-    return str
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-}
-
-function showToast(message, type = 'success') {
-    let toast = document.querySelector('.custom-toast');
-    if (!toast) {
-        toast = document.createElement('div');
-        toast.className = 'custom-toast';
-        document.body.appendChild(toast);
-
-        const style = document.createElement('style');
-        style.textContent = `
-            .custom-toast {
-                position: fixed;
-                bottom: 20px;
-                right: 20px;
-                padding: 12px 20px;
-                border-radius: 12px;
-                color: white;
-                font-size: 0.9rem;
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                z-index: 1000;
-                animation: slideInRight 0.3s ease;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            }
-            .custom-toast.success { background: #10B981; }
-            .custom-toast.error { background: #EF4444; }
-            .custom-toast.info { background: #3B82F6; }
-            @keyframes slideInRight {
-                from { transform: translateX(100%); opacity: 0; }
-                to { transform: translateX(0); opacity: 1; }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-
-    toast.className = `custom-toast ${type}`;
-    toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
-    toast.style.display = 'flex';
-
-    setTimeout(() => { toast.style.display = 'none'; }, 3000);
-}
-
-function initEventListeners() {
-    if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-            searchKeyword = e.target.value.trim();
-            filterAndRenderItems();
-        });
-    }
-}
-
-
-
-function openOptionModal(item) {
-    if (!optionModal) return;
-    currentSelectedItem = item;
-    selectedSizeId = null;
-    selectedTempId = null;
-    if (modalItemName) modalItemName.textContent = item.item_name;
-    loadItemOptions(item.item_id);
-}
-
-async function loadItemOptions(itemId) {
-    try {
-        const response = await fetch(`http://localhost:5000/api/menu/items/${itemId}/options`);
-        const data = await response.json();
-
-        const sizeOptionsDiv = document.getElementById('sizeOptions');
-        if (sizeOptionsDiv) {
-            if (data.has_size && data.sizes && data.sizes.length > 0) {
-                sizeOptionsDiv.style.display = 'block';
-                if (sizeButtons) {
-                    sizeButtons.innerHTML = data.sizes.map(size => `
-                        <button class="option-btn" data-size-id="${size.size_id}" data-multiplier="${size.price_multiplier}">
-                            ${size.size_name} (${size.size_code})
-                        </button>
-                    `).join('');
-
-                    document.querySelectorAll('[data-size-id]').forEach(btn => {
-                        btn.addEventListener('click', () => {
-                            document.querySelectorAll('[data-size-id]').forEach(b => b.classList.remove('selected'));
-                            btn.classList.add('selected');
-                            selectedSizeId = parseInt(btn.getAttribute('data-size-id'));
-                            calculatePrice();
-                        });
-                    });
-                }
-            } else {
-                sizeOptionsDiv.style.display = 'none';
-            }
-        }
-
-        const tempOptionsDiv = document.getElementById('tempOptions');
-        if (tempOptionsDiv) {
-            if (data.has_temperature && data.temperatures && data.temperatures.length > 0) {
-                tempOptionsDiv.style.display = 'block';
-
-                let temperaturesToShow = [...data.temperatures];
-                const coldOnlyItems = [10, 11, 12];
-                if (coldOnlyItems.includes(currentSelectedItem?.item_id)) {
-                    temperaturesToShow = data.temperatures.filter(t => t.temp_code !== 'HOT');
-                }
-
-                if (tempButtons) {
-                    tempButtons.innerHTML = temperaturesToShow.map(temp => `
-                        <button class="option-btn" data-temp-id="${temp.temp_id}">
-                            ${temp.temp_name}
-                        </button>
-                    `).join('');
-
-                    document.querySelectorAll('[data-temp-id]').forEach(btn => {
-                        btn.addEventListener('click', () => {
-                            document.querySelectorAll('[data-temp-id]').forEach(b => b.classList.remove('selected'));
-                            btn.classList.add('selected');
-                            selectedTempId = parseInt(btn.getAttribute('data-temp-id'));
-                            calculatePrice();
-                        });
-                    });
-                }
-            } else {
-                tempOptionsDiv.style.display = 'none';
-            }
-        }
-
-        if (!data.has_size && !data.has_temperature) {
-            currentPrice = currentSelectedItem.price;
-            if (displayPrice) displayPrice.textContent = formatCurrency(currentPrice);
-        }
-
-        if (optionModal) optionModal.classList.remove('hidden');
-
-    } catch (error) {
-        console.error('Lỗi tải tùy chọn:', error);
-        showToast('Không thể tải tùy chọn', 'error');
-    }
-}
-
-async function calculatePrice() {
-    if (!currentSelectedItem) return;
-    try {
-        const response = await fetch(`http://localhost:5000/api/menu/items/${currentSelectedItem.item_id}/calculate-price`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ size_id: selectedSizeId, temp_id: selectedTempId })
-        });
-        const data = await response.json();
-        currentPrice = data.final_price;
-        if (displayPrice) displayPrice.textContent = formatCurrency(currentPrice);
-    } catch (error) {
-        console.error('Lỗi tính giá:', error);
-    }
-}
-
-function addToCartWithOptions() {
-    if (!currentSelectedItem) return;
-
-    const cartItem = {
-        item_id: currentSelectedItem.item_id,
-        item_name: currentSelectedItem.item_name,
-        price: currentPrice || currentSelectedItem.price,
-        original_price: currentSelectedItem.price,
-        quantity: 1,
-        size_id: selectedSizeId,
-        temp_id: selectedTempId
-    };
-
-    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    cart.push(cartItem);
-    localStorage.setItem('cart', JSON.stringify(cart));
-
-    showToast(`Đã thêm ${currentSelectedItem.item_name} vào giỏ hàng`, 'success');
-    closeModal();
-    updateNavbarCartCount();
-}
-
-function closeModal() {
-    if (optionModal) optionModal.classList.add('hidden');
-}
-
-function attachCartEvents() {
-    document.querySelectorAll('.menu-card').forEach(card => {
-        card.removeEventListener('click', handleCardClick);
-        card.addEventListener('click', handleCardClick);
-    });
-
-    document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
-        btn.removeEventListener('click', handleAddToCartClick);
-        btn.addEventListener('click', handleAddToCartClick);
-    });
-
-    document.querySelectorAll('.qty-minus').forEach(btn => {
-        btn.removeEventListener('click', handleMinusClick);
-        btn.addEventListener('click', handleMinusClick);
-    });
-
-    document.querySelectorAll('.qty-plus').forEach(btn => {
-        btn.removeEventListener('click', handlePlusClick);
-        btn.addEventListener('click', handlePlusClick);
-    });
-}
-
-function handleCardClick(e) {
-    if (e.target.closest('.qty-minus') ||
-        e.target.closest('.qty-plus') ||
-        e.target.closest('.add-to-cart-btn')) return;
-    const itemId = parseInt(e.currentTarget.getAttribute('data-item-id'));
-    const item = allItems.find(i => i.item_id === itemId);
-    if (item) openOptionModal(item);
-}
-
-function handleAddToCartClick(e) {
-    e.stopPropagation();
-    const id = parseInt(e.currentTarget.getAttribute('data-id'));
-    const item = allItems.find(i => i.item_id === id);
-    if (item) openOptionModal(item);
-}
-
-function handleMinusClick(e) {
-    e.stopPropagation();
-    updateQuantity(parseInt(e.currentTarget.getAttribute('data-id')), -1);
-}
-
-function handlePlusClick(e) {
-    e.stopPropagation();
-    updateQuantity(parseInt(e.currentTarget.getAttribute('data-id')), 1);
-}
-
 function updateNavbarCartCount() {
-    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
-    const badges = document.querySelectorAll('.cart-badge');
-    badges.forEach(badge => {
-        if (totalItems > 0) {
-            badge.textContent = totalItems;
-            badge.style.display = 'inline-block';
-        } else {
-            badge.style.display = 'none';
-        }
-    });
+    const total = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+    const badge = document.getElementById('cartCount');
+    if (badge) {
+        badge.textContent = total;
+        badge.style.display = total > 0 ? 'inline-block' : 'none';
+    }
+}
+
+function initSearch() {
+    const input = document.getElementById('searchInput');
+    if (input) {
+        input.addEventListener('input', (e) => {
+            const keyword = e.target.value.toLowerCase();
+            const filtered = allItems.filter(i => 
+                i.item_name.toLowerCase().includes(keyword) || 
+                (i.description && i.description.toLowerCase().includes(keyword))
+            );
+            document.getElementById('recommendedSection').style.display = keyword ? 'none' : 'block';
+            document.getElementById('menuGrid').innerHTML = filtered.map(item => renderItemCard(item)).join('');
+        });
+    }
 }

@@ -26,10 +26,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const role = localStorage.getItem('role');
     
     if (!token || role !== 'staff') {
-        window.location.href = '../../auth/html/staff-login.html';
+        window.location.href = '../../../auth/html/staff-login.html';
         return;
     }
     
+    // Khởi tạo
     loadStaffInfo();
     loadDashboardData();
     loadTables();
@@ -63,20 +64,19 @@ async function loadDashboardData() {
         });
         const tables = await tablesResponse.json();
         
-        const totalTables = tables.length;
-        const occupiedTables = tables.filter(t => t.status === 'occupied').length;
-        
-        if (totalTablesEl) totalTablesEl.textContent = totalTables;
+        if (totalTablesEl) totalTablesEl.textContent = tables.length;
         
         // Thống kê đơn hàng
-        const ordersResponse = await fetch('http://localhost:5000/api/orders/staff/stats', {
+        const ordersResponse = await fetch('http://localhost:5000/api/staff-orders/stats', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        const stats = await ordersResponse.json();
         
-        if (pendingOrdersEl) pendingOrdersEl.textContent = stats.pendingOrders || 0;
-        if (completedOrdersEl) completedOrdersEl.textContent = stats.completedOrders || 0;
-        if (todayRevenueEl) todayRevenueEl.textContent = formatCurrency(stats.todayRevenue || 0);
+        if (ordersResponse.ok) {
+            const stats = await ordersResponse.json();
+            if (pendingOrdersEl) pendingOrdersEl.textContent = stats.pendingOrders || 0;
+            if (completedOrdersEl) completedOrdersEl.textContent = stats.completedOrders || 0;
+            if (todayRevenueEl) todayRevenueEl.textContent = formatCurrency(stats.todayRevenue || 0);
+        }
         
         // Thông tin ca làm
         loadShiftInfo();
@@ -158,12 +158,16 @@ function getStatusText(status) {
 async function loadRecentOrders() {
     try {
         const token = localStorage.getItem('token');
-        const response = await fetch('http://localhost:5000/api/orders/staff/recent', {
+        const response = await fetch('http://localhost:5000/api/staff-orders/recent', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        const orders = await response.json();
         
-        renderRecentOrders(orders);
+        if (response.ok) {
+            const orders = await response.json();
+            renderRecentOrders(orders);
+        } else {
+            throw new Error('Failed to fetch recent orders');
+        }
     } catch (error) {
         console.error('Lỗi tải đơn hàng:', error);
         if (recentOrdersBody) {
@@ -184,7 +188,7 @@ function renderRecentOrders(orders) {
     recentOrdersBody.innerHTML = orders.map(order => `
         <tr>
             <td>#${order.order_id}</td>
-            <td>Bàn ${order.table_number}</td>
+            <td>${order.table_number ? 'Bàn ' + order.table_number : 'Mang đi/Giao hàng'}</td>
             <td>${formatCurrency(order.total_amount)}</td>
             <td>${new Date(order.created_at).toLocaleTimeString('vi-VN')}</td>
             <td><span class="status-badge status-${order.status}">${getOrderStatusText(order.status)}</span></td>
@@ -216,7 +220,7 @@ window.confirmOrder = async function(orderId) {
     
     try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`http://localhost:5000/api/orders/${orderId}/confirm`, {
+        const response = await fetch(`http://localhost:5000/api/staff-orders/${orderId}/confirm`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -322,78 +326,28 @@ function initMobileMenu() {
     }
 }
 
-// Check authentication
-document.addEventListener('DOMContentLoaded', () => {
-    const token = localStorage.getItem('token');
-    const role = localStorage.getItem('role');
-    
-    if (!token || role !== 'staff') {
-        window.location.href = '../../auth/html/staff-login.html';
-        return;
-    }
-    
-    // 🆕 Kiểm tra tài khoản có còn hoạt động không
-    checkAccountStatus();
-    
-    loadStaffInfo();
-    loadDashboardData();
-    loadTables();
-    loadRecentOrders();
-    initEventListeners();
-    initMobileMenu();
-});
-
-// 🆕 Kiểm tra trạng thái tài khoản
-async function checkAccountStatus() {
-    try {
-        const token = localStorage.getItem('token');
-        console.log('Checking account status with token:', token);
-        
-        const response = await fetch('http://localhost:5000/api/auth/check-status', {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-        
-        console.log('Check status response status:', response.status);
-        
-        if (!response.ok) {
-            console.log('Account is deactivated, logging out...');
-            logoutAndRedirect();
-        }
-    } catch (error) {
-        console.error('Check status error:', error);
-    }
-}
-
-function logoutAndRedirect() {
-    localStorage.clear();
-    sessionStorage.clear();
-    showToast('Tài khoản của bạn đã bị vô hiệu hóa! Vui lòng liên hệ quản trị viên.', 'error');
-    setTimeout(() => {
-        window.location.href = '../../auth/html/staff-login.html';
-    }, 2000);
-}
-
-// Kiểm tra trạng thái tài khoản định kỳ
+// Check status periodically
 let statusCheckInterval = null;
 
-function startStatusCheck() {
+async function startStatusCheck() {
     if (statusCheckInterval) clearInterval(statusCheckInterval);
     
     statusCheckInterval = setInterval(async () => {
         try {
             const token = localStorage.getItem('token');
+            if (!token) return;
+
             const response = await fetch('http://localhost:5000/api/auth/check-status', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             
             if (!response.ok) {
-                // Token không hợp lệ hoặc tài khoản bị vô hiệu hóa
                 logoutAndRedirect();
             }
         } catch (error) {
             console.error('Status check error:', error);
         }
-    }, 30000); // Kiểm tra mỗi 30 giây
+    }, 30000);
 }
 
 function logoutAndRedirect() {
@@ -402,9 +356,6 @@ function logoutAndRedirect() {
     sessionStorage.clear();
     showToast('Tài khoản của bạn đã bị vô hiệu hóa!', 'error');
     setTimeout(() => {
-        window.location.href = '../../auth/html/staff-login.html';
+        window.location.href = '../../../auth/html/staff-login.html';
     }, 2000);
 }
-
-// Gọi startStatusCheck() sau khi đăng nhập thành công
-startStatusCheck();

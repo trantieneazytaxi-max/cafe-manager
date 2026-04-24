@@ -35,4 +35,21 @@ function isStaff(req, res, next) {
     next();
 }
 
-module.exports = { verifyToken, isAdmin, isStaff };
+// 🆕 Token không bắt buộc (cho Takeaway)
+function optionalToken(req, res, next) {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        req.user = null;
+        return next();
+    }
+    const token = authHeader.split(' ')[1];
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'my_secret_key');
+        req.user = decoded;
+    } catch (error) {
+        req.user = null;
+    }
+    next();
+}
+
+module.exports = { verifyToken, isAdmin, isStaff, optionalToken };

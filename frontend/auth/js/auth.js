@@ -324,7 +324,7 @@ async function mockRegister(fullName, email, phone, password, verificationMethod
                 email: email,
                 phone: phone,
                 password: password,
-                role: 'staff'
+                role: 'customer'
             })
         });
         

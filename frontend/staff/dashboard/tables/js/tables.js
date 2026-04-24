@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const role = localStorage.getItem('role');
     
     if (!token || role !== 'staff') {
-        window.location.href = '../../auth/html/staff-login.html';
+        window.location.href = '../../../auth/html/staff-login.html';
         return;
     }
     
@@ -204,12 +204,10 @@ async function updateTableStatus(tableId, newStatus) {
 // Close modals
 function closeTableModal() {
     tableModal.classList.add('hidden');
-    currentTable = null;
 }
 
 function closeConfirmModal() {
     confirmModal.classList.add('hidden');
-    newStatus = null;
 }
 
 // Event listeners
@@ -356,7 +354,7 @@ function initLogout() {
             e.preventDefault();
             localStorage.clear();
             sessionStorage.clear();
-            window.location.href = '../../auth/html/staff-login.html';
+            window.location.href = '../../../auth/html/staff-login.html';
         });
     }
 }

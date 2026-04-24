@@ -26,17 +26,39 @@ router.post('/register', async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
         
         // Tạo user mới
-        await executeQuery(
+        const userResult = await executeQuery(
             `INSERT INTO Users (full_name, email, phone, password_hash, role, is_active) 
+             OUTPUT INSERTED.user_id
              VALUES (@full_name, @email, @phone, @password_hash, @role, 1)`,
             {
                 full_name: full_name,
                 email: email,
                 phone: phone,
                 password_hash: hashedPassword,
-                role: role || 'staff'
+                role: role || 'customer'
             }
         );
+
+        const newUserId = userResult.recordset[0].user_id;
+
+        // 🆕 Tặng mã giảm giá cho thành viên mới (nếu có)
+        try {
+            const welcomeCode = await executeQuery(`
+                SELECT TOP 1 code_id FROM DiscountCodes 
+                WHERE type = 'new_member' AND is_active = 1 
+                AND (usage_limit IS NULL OR usage_count < usage_limit)
+                AND (expiry_date IS NULL OR expiry_date > GETDATE())
+            `);
+
+            if (welcomeCode.recordset.length > 0) {
+                await executeQuery(`
+                    INSERT INTO UserDiscounts (user_id, code_id) 
+                    VALUES (@userId, @codeId)
+                `, { userId: newUserId, codeId: welcomeCode.recordset[0].code_id });
+            }
+        } catch (couponError) {
+            console.error('Lỗi tặng coupon thành viên mới:', couponError);
+        }
         
         res.json({ success: true, message: 'Đăng ký thành công' });
         

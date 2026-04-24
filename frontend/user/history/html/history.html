@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lịch sử đơn hàng | Cà Phê Thông Minh</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../../shared/css/global.css">
+    <link rel="stylesheet" href="../css/history.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo" onclick="window.location.href='../../index/html/index.html'" style="cursor: pointer;">
+                <i class="fas fa-mug-hot"></i>
+                <span>Cà Phê <span class="highlight">Thông Minh</span></span>
+            </div>
+            <div class="nav-links" id="navLinks">
+                <a href="../../index/html/index.html"><i class="fas fa-home"></i> Trang chủ</a>
+                <a href="../../menu/html/menu.html"><i class="fas fa-coffee"></i> Thực đơn</a>
+                <a href="../../offers/html/offers.html"><i class="fas fa-gift"></i> Ưu đãi</a>
+                <a href="../../tables/html/tables.html"><i class="fas fa-chair"></i> Đặt bàn</a>
+                <a href="../../orders/html/orders.html"><i class="fas fa-shopping-cart"></i> Giỏ hàng <span id="cartCount" class="cart-badge" style="display: none;">0</span></a>
+                <a href="#" class="active"><i class="fas fa-history"></i> Lịch sử</a>
+                
+                <!-- Profile Dropdown -->
+                <div class="profile-dropdown" id="profileDropdown">
+                    <button class="profile-btn" id="profileBtn">
+                        <img id="avatarImg" class="avatar-small" src="https://ui-avatars.com/api/?background=E67E22&color=fff&rounded=true" alt="Avatar">
+                        <span id="userNameShort"></span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <a href="../../profile/html/profile.html"><i class="fas fa-user-circle"></i> Thông tin cá nhân</a>
+                        <a href="../../history/html/history.html"><i class="fas fa-history"></i> Lịch sử đơn hàng</a>
+                        <a href="../../settings/html/settings.html"><i class="fas fa-cog"></i> Cài đặt</a>
+                        <hr>
+                        <a href="#" id="logoutDropdownBtn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                    </div>
+                </div>
+            </div>
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h1>Lịch sử đơn hàng</h1>
+        </div>
+
+        <!-- Loyalty Points -->
+        <div class="loyalty-card">
+            <div class="loyalty-info">
+                <h3>Điểm tích lũy hiện có</h3>
+                <div class="loyalty-points" id="loyaltyPoints">0</div>
+            </div>
+            <div class="loyalty-icon">
+                <i class="fas fa-star"></i>
+            </div>
+        </div>
+
+        <!-- 🆕 Redeem Section -->
+        <div class="section-title">
+            <h3><i class="fas fa-gift"></i> Đổi điểm nhận quà</h3>
+        </div>
+        <div class="redeem-list" id="redeemList">
+            <div class="loading">Đang tải ưu đãi...</div>
+        </div>
+
+        <div class="section-title" style="margin-top: 40px;">
+            <h3><i class="fas fa-receipt"></i> Lịch sử đơn hàng</h3>
+        </div>
+        <div class="history-list" id="historyList">
+            <div class="no-orders">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Đang tải lịch sử...</p>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/history.js"></script>
+</body>
+</html>

@@ -138,6 +138,34 @@
     font-weight: 600;
 }
 
+.highlight-code {
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 700;
+    color: var(--primary-color);
+    background-color: rgba(230, 126, 34, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+}
+
+.status-pending {
+    color: #f39c12;
+    background-color: rgba(243, 156, 18, 0.1);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+}
+
+.btn-pdf {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.btn-pdf:hover {
+    background-color: #c0392b;
+    transform: translateY(-2px);
+}
+
 .status-success {
     color: #2ecc71;
     background-color: rgba(46, 204, 113, 0.1);
@@ -151,6 +179,7 @@
     gap: 16px;
     flex-direction: column;
     animation: fadeIn 0.5s ease 0.7s both;
+    margin-top: 30px;
 }
 
 .btn {
@@ -170,14 +199,15 @@
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    background: #000;
     color: white;
-    box-shadow: 0 10px 20px rgba(230, 126, 34, 0.2);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 15px 25px rgba(230, 126, 34, 0.3);
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.3);
+    background: #222;
 }
 
 .btn-secondary {
@@ -192,7 +222,6 @@
     background-color: rgba(230, 126, 34, 0.05);
 }
 
-/* Canvas for Confetti */
 #confetti-canvas {
     position: absolute;
     top: 0;

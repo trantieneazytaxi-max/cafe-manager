@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Tạm dừng món - Staff | Cà Phê Thông Minh</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../css/staff-dashboard.css">
+    <style>
+        .item-list-card { background: #fff; border-radius: 16px; padding: 1.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .item-row { display: flex; align-items: center; justify-content: space-between; padding: 1rem; border-bottom: 1px solid #f0f0f0; transition: all 0.2s ease; }
+        .item-row:hover { background: #f9f9f9; }
+        .item-info { display: flex; align-items: center; gap: 1rem; }
+        .item-thumb { width: 50px; height: 50px; border-radius: 12px; object-fit: cover; }
+        .item-name { font-weight: 600; color: #1a1a1a; }
+        .item-cat { font-size: 0.8rem; color: #8892b0; }
+        .switch { position: relative; display: inline-block; width: 60px; height: 34px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #2ecc71; }
+        input:checked + .slider:before { transform: translateX(26px); }
+        .status-text { font-size: 0.8rem; font-weight: 700; margin-right: 10px; }
+        .status-available { color: #2ecc71; }
+        .status-paused { color: #e74c3c; }
+    </style>
+</head>
+<body>
+    <!-- Navbar (shared staff header) -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-mug-hot"></i>
+                <span>Cà Phê <span class="highlight">Thông Minh</span></span>
+                <span class="staff-badge">STAFF</span>
+            </div>
+            <div class="nav-links" id="navLinks">
+                <a href="staff-dashboard.html">
+                    <i class="fas fa-chart-line"></i> Dashboard
+                </a>
+                <a href="../tables/html/tables.html">
+                    <i class="fas fa-chair"></i> Quản lý bàn
+                </a>
+                <a href="../orders/html/orders.html">
+                    <i class="fas fa-receipt"></i> Đơn hàng
+                </a>
+                <a href="stock-management.html" class="active">
+                    <i class="fas fa-box"></i> Tạm dừng món
+                </a>
+            </div>
+            <div class="user-menu">
+                <div class="user-info">
+                    <img id="staffAvatar" class="avatar" src="https://ui-avatars.com/api/?background=3498db&color=fff&rounded=true" alt="Avatar">
+                    <span id="staffName">Nhân viên</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                </div>
+            </div>
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div style="margin-bottom: 2rem;">
+            <h2><i class="fas fa-pause-circle"></i> Quản lý tạm dừng món</h2>
+            <p style="color: #666;">Bật/tắt trạng thái món ăn khi hết nguyên liệu. Món bị tạm dừng sẽ hiển thị "Hết hàng" bên menu khách.</p>
+        </div>
+
+        <div class="item-list-card">
+            <div style="margin-bottom: 1.5rem; position: relative;">
+                <i class="fas fa-search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #8892b0;"></i>
+                <input type="text" id="searchInput" placeholder="Tìm tên món..." style="width: 100%; padding: 0.8rem 1rem 0.8rem 2.5rem; border-radius: 12px; border: 1px solid #eee; font-size: 0.9rem;">
+            </div>
+            <div id="itemList">
+                <div style="text-align: center; padding: 3rem; color: #666;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: #3498db;"></i>
+                    <p style="margin-top: 1rem;">Đang tải danh sách món...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let allItems = [];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('token');
+            const role = localStorage.getItem('role');
+            if (!token || role !== 'staff') {
+                window.location.href = '../../../auth/html/staff-login.html';
+                return;
+            }
+
+            // Load staff info for header
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const staffNameEl = document.getElementById('staffName');
+            const staffAvatar = document.getElementById('staffAvatar');
+            if (staffNameEl) staffNameEl.textContent = user.full_name || 'Nhân viên';
+            if (staffAvatar) staffAvatar.src = `https://ui-avatars.com/api/?background=3498db&color=fff&rounded=true&name=${encodeURIComponent(user.full_name || 'Staff')}`;
+
+            // Dropdown toggle
+            const userInfo = document.querySelector('.user-info');
+            const userMenu = document.querySelector('.user-menu');
+            if (userInfo) {
+                userInfo.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    userMenu.classList.toggle('active');
+                });
+            }
+            document.addEventListener('click', () => {
+                if (userMenu) userMenu.classList.remove('active');
+            });
+
+            // Logout
+            document.getElementById('logoutBtn').addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.clear();
+                sessionStorage.clear();
+                window.location.href = '../../../auth/html/staff-login.html';
+            });
+
+            // Mobile menu
+            const menuToggle = document.getElementById('menuToggle');
+            const navLinks = document.getElementById('navLinks');
+            if (menuToggle && navLinks) {
+                menuToggle.addEventListener('click', () => navLinks.classList.toggle('active'));
+            }
+
+            await loadItems();
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                const keyword = e.target.value.toLowerCase();
+                renderItems(allItems.filter(i => i.item_name.toLowerCase().includes(keyword)));
+            });
+        });
+
+        async function loadItems() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('http://localhost:5000/api/menu/staff/items', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!response.ok) throw new Error('Không thể tải dữ liệu');
+                allItems = await response.json();
+                renderItems(allItems);
+            } catch (error) {
+                console.error('Lỗi tải món:', error);
+                document.getElementById('itemList').innerHTML = '<p style="text-align: center; padding: 2rem; color: #e74c3c;">Lỗi tải dữ liệu. Vui lòng thử lại.</p>';
+            }
+        }
+
+        function renderItems(items) {
+            const container = document.getElementById('itemList');
+            if (items.length === 0) {
+                container.innerHTML = '<p style="text-align: center; padding: 2rem; color: #666;">Không tìm thấy món nào</p>';
+                return;
+            }
+            container.innerHTML = items.map(item => `
+                <div class="item-row">
+                    <div class="item-info">
+                        <img src="${item.image_url || 'https://via.placeholder.com/50'}" class="item-thumb" onerror="this.src='https://via.placeholder.com/50'">
+                        <div>
+                            <div class="item-name">${item.item_name}</div>
+                            <div class="item-cat">${item.category_name}</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <span class="status-text ${item.is_paused ? 'status-paused' : 'status-available'}">
+                            ${item.is_paused ? 'ĐÃ TẠM DỪNG' : 'ĐANG BÁN'}
+                        </span>
+                        <label class="switch">
+                            <input type="checkbox" ${!item.is_paused ? 'checked' : ''} onchange="togglePause(${item.item_id}, this.checked)">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function togglePause(itemId, isAvailable) {
+            const token = localStorage.getItem('token');
+            try {
+                const response = await fetch(`http://localhost:5000/api/menu/staff/items/${itemId}/pause`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ is_paused: !isAvailable })
+                });
+                const result = await response.json();
+                if (result.success) {
+                    const item = allItems.find(i => i.item_id === itemId);
+                    if (item) item.is_paused = !isAvailable;
+                    const row = document.querySelector(`input[onchange*="${itemId}"]`).closest('.item-row');
+                    const statusText = row.querySelector('.status-text');
+                    statusText.textContent = isAvailable ? 'ĐANG BÁN' : 'ĐÃ TẠM DỪNG';
+                    statusText.className = `status-text ${isAvailable ? 'status-available' : 'status-paused'}`;
+                } else {
+                    alert('Lỗi: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Lỗi toggle:', error);
+                alert('Lỗi kết nối server');
+            }
+        }
+    </script>
+</body>
+</html>

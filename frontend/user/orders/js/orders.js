@@ -26,6 +26,11 @@ document.addEventListener('DOMContentLoaded', () => {
 function loadCart() {
     const savedCart = localStorage.getItem('cart');
     cart = savedCart ? JSON.parse(savedCart) : [];
+    
+    // Auto-select all items by default
+    selectedItems.clear();
+    cart.forEach((_, index) => selectedItems.add(index));
+    
     renderCart();
 }
 

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Báo cáo doanh thu - Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../dashboard/css/admin-dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .report-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; }
+        .chart-container { height: 300px; position: relative; }
+        .stat-mini-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+        .stat-mini-card { background: rgba(13, 13, 26, 0.7); border-radius: 15px; padding: 1.2rem; border: 1px solid rgba(0, 243, 255, 0.2); }
+        .stat-mini-card h4 { font-size: 0.75rem; color: #8892b0; margin-bottom: 0.5rem; text-transform: uppercase; font-family: 'Orbitron', sans-serif; }
+        .stat-mini-card p { font-size: 1.2rem; font-weight: 700; font-family: 'Orbitron', sans-serif; color: #fff; }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar Placeholder -->
+        <div id="sidebar-placeholder"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="top-bar">
+                <div>
+                    <h2 style="font-family: 'Orbitron', sans-serif; letter-spacing: 1px;">BÁO CÁO & PHÂN TÍCH</h2>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <select id="timeRange" onchange="loadReportData()" style="padding: 0.8rem; border-radius: 12px; background: rgba(0, 243, 255, 0.05); border: 1px solid rgba(0, 243, 255, 0.2); color: #fff;">
+                        <option value="day">Hôm nay</option>
+                        <option value="week" selected>7 ngày qua</option>
+                        <option value="month">Tháng này</option>
+                        <option value="year">Năm nay</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Stats Overview -->
+            <div class="stat-mini-grid">
+                <div class="stat-mini-card">
+                    <h4>Doanh thu</h4>
+                    <p id="totalRevenue">0₫</p>
+                    <span id="revenueTrend" class="trend-up">--%</span>
+                </div>
+                <div class="stat-mini-card">
+                    <h4>Đơn hàng</h4>
+                    <p id="totalOrders">0</p>
+                    <span id="ordersTrend" class="trend-up">--%</span>
+                </div>
+                <div class="stat-mini-card">
+                    <h4>Khách hàng</h4>
+                    <p id="totalCustomers">0</p>
+                    <span id="customersTrend" class="trend-up">--%</span>
+                </div>
+                <div class="stat-mini-card">
+                    <h4>TB đơn</h4>
+                    <p id="avgOrderValue">0₫</p>
+                </div>
+            </div>
+
+            <div class="report-grid">
+                <div class="report-card">
+                    <h3 style="margin-bottom: 1.2rem; font-size: 0.9rem; text-transform: uppercase; color: #00f3ff; font-family: 'Orbitron', sans-serif;">Doanh thu</h3>
+                    <div class="chart-container">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+                <div class="report-card">
+                    <h3 style="margin-bottom: 1.2rem; font-size: 0.9rem; text-transform: uppercase; color: #ff0055; font-family: 'Orbitron', sans-serif;">Theo danh mục</h3>
+                    <div class="chart-container">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="report-card">
+                <h3 style="margin-bottom: 1.2rem; font-size: 0.9rem; text-transform: uppercase; color: #00ff88; font-family: 'Orbitron', sans-serif;">Top sản phẩm</h3>
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Sản phẩm</th>
+                                <th>Danh mục</th>
+                                <th>Số lượng</th>
+                                <th>Doanh thu</th>
+                                <th>Tỉ lệ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="topItemsBody">
+                            <tr><td colspan="6" style="text-align: center; color: #8892b0;">Đang tải...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../../dashboard/js/sidebar.js"></script>
+    <script src="../js/reports.js"></script>
+</body>
+</html>

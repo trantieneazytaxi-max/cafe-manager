@@ -13,7 +13,9 @@ const adminRoutes = require('./routes/adminRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const staffOrderRoutes = require('./routes/staffOrderRoutes');
 const forgotPasswordRoutes = require('./routes/forgotPasswordRoutes');
-const paymentRoutes = require('./routes/paymentRoutes'); // ✅ Đưa lên đây
+const paymentRoutes = require('./routes/paymentRoutes');
+const customerRoutes = require('./routes/customerRoutes');
+const discountRoutes = require('./routes/discountRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -47,7 +49,7 @@ app.get('/admin/login', (req, res) => {
 
 // === Routes cho Staff ===
 app.get('/staff', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/staff/dashboard/html/index.html'));
+    res.sendFile(path.join(__dirname, '../frontend/staff/dashboard/html/staff-dashboard.html'));
 });
 
 app.get('/staff/login', (req, res) => {
@@ -63,7 +65,9 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/staff-orders', staffOrderRoutes);
 app.use('/api/forgot-password', forgotPasswordRoutes);
-app.use('/api/payment', paymentRoutes); // ✅ Đặt ở đây, sau khi middleware đã được khai báo
+app.use('/api/payment', paymentRoutes);
+app.use('/api/customer', customerRoutes);
+app.use('/api/discounts', discountRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
