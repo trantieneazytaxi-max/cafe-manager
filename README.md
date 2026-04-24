@@ -123,9 +123,10 @@ cafe-manager/
 - Node.js v18+
 - SQL Server 2019+ (Đã bật TCP/IP)
 
-### 2. Cài đặt Database
-1. Mở **SSMS**, chạy file `CafeManagement.sql` để tạo cấu trúc.
-2. Chạy tiếp các file còn lại trong thư mục `database/` để nạp dữ liệu mẫu.
+### 2. Cài đặt Database (1-Click Run)
+1. Mở **SQL Server Management Studio (SSMS)**.
+2. Mở file `database/CafeManagement_Full_Demo.sql`.
+3. Nhấn **Execute (F5)** để tự động tạo database mới hoàn toàn từ A đến Z (bao gồm cả dữ liệu mẫu và các tài khoản `admin@cafe.com`, `staff1@cafe.com`, `khach@cafe.com` với mật khẩu chung là `123456`).
 
 ### 3. Cấu hình Backend
 ```bash
