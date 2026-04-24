@@ -202,7 +202,7 @@ Truy cập: `http://localhost:5000`
 
 ### 🔮 Dự kiến tiếp theo
 - [ ] Responsive hoàn chỉnh cho mobile
-- [ ] In hóa đơn PDF
+- [x] In hóa đơn PDF
 - [ ] Thông báo realtime (WebSocket)
 - [ ] Tài liệu hướng dẫn sử dụng (User Manual)
 
