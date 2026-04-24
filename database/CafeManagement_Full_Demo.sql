@@ -153,12 +153,14 @@ CREATE TABLE UserDiscounts (
 GO
 
 -- Bảng OTP
-CREATE TABLE OTP_Verification (
+CREATE TABLE Otps (
     id INT IDENTITY(1,1) PRIMARY KEY,
     email NVARCHAR(100) NOT NULL,
     otp_code NVARCHAR(6) NOT NULL,
+    purpose NVARCHAR(50),
     expires_at DATETIME NOT NULL,
     is_used BIT DEFAULT 0,
+    is_verified BIT DEFAULT 0,
     created_at DATETIME DEFAULT GETDATE()
 );
 GO
