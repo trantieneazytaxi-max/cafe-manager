@@ -263,6 +263,17 @@ INSERT INTO Settings (setting_key, setting_value, description) VALUES
 (N'STORE_PHONE', N'0965147941', N'Số điện thoại liên hệ');
 GO
 
+-- ============================================
+-- 3. BẢO MẬT & PHÂN QUYỀN
+-- ============================================
+-- Gắn quyền truy cập cho backend user
+IF NOT EXISTS (SELECT * FROM sys.database_principals WHERE name = N'cafe_user')
+BEGIN
+    CREATE USER cafe_user FOR LOGIN cafe_user;
+END
+ALTER ROLE db_owner ADD MEMBER cafe_user;
+GO
+
 PRINT '========================================';
 PRINT '✅ DATABASE INITIALIZATION COMPLETED!';
 PRINT '========================================';
