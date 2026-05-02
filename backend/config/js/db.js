@@ -1,11 +1,14 @@
 const sql = require('mssql');
 
+const dbServer = process.env.DB_SERVER || 'localhost';
+const dbInstance = process.env.DB_INSTANCE;
+const [host, instanceFromServer] = dbServer.split('\\', 2);
+
 const dbConfig = {
-    server: process.env.DB_HOST || 'localhost\\SQLEXPRESS',
+    server: host,
     database: process.env.DB_NAME || 'CafeManagement',
     user: process.env.DB_USER || 'cafe_user',
     password: process.env.DB_PASSWORD || 'Cafe@2026',
-    port: parseInt(process.env.DB_PORT) || 53321,
     options: {
         encrypt: false,
         trustServerCertificate: true,
@@ -17,6 +20,15 @@ const dbConfig = {
         idleTimeoutMillis: 30000
     }
 };
+
+const instanceName = dbInstance || instanceFromServer;
+if (!process.env.DB_PORT && instanceName) {
+    dbConfig.options.instanceName = instanceName;
+}
+
+if (process.env.DB_PORT) {
+    dbConfig.port = parseInt(process.env.DB_PORT, 10);
+}
 
 let pool = null;
 
@@ -40,9 +52,9 @@ async function executeQuery(query, params = {}) {
         const connection = await getConnection();
         const request = connection.request();
         
-        // Thêm parameters đúng cách
+        // Thêm parameters (null hợp lệ cho SET cột NULL)
         for (const [key, value] of Object.entries(params)) {
-            if (value !== undefined && value !== null) {
+            if (value !== undefined) {
                 request.input(key, value);
             }
         }
