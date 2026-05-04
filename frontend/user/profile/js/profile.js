@@ -126,17 +126,17 @@ function loadUserData() {
     // Update avatar
     const savedAvatar = localStorage.getItem('userAvatar');
     if (savedAvatar) {
-        profileAvatar.src = savedAvatar;
-        avatarImg.src = savedAvatar;
+        if (profileAvatar) profileAvatar.src = savedAvatar;
+        if (avatarImg) avatarImg.src = savedAvatar;
     } else {
         const avatarUrl = `https://ui-avatars.com/api/?background=E67E22&color=fff&rounded=true&size=128&name=${encodeURIComponent(user.full_name || 'User')}`;
-        profileAvatar.src = avatarUrl;
-        avatarImg.src = avatarUrl;
+        if (profileAvatar) profileAvatar.src = avatarUrl;
+        if (avatarImg) avatarImg.src = avatarUrl;
     }
     
     // Update short name on navbar
     const shortName = user.full_name ? user.full_name.split(' ').pop() : 'User';
-    userNameShort.textContent = shortName;
+    if (userNameShort) userNameShort.textContent = shortName;
 
     // Load extra info from API
     fetchProfileDetails();
@@ -286,13 +286,13 @@ async function saveProfile() {
         const savedAvatar = localStorage.getItem('userAvatar');
         if (!savedAvatar || savedAvatar.includes('ui-avatars.com')) {
             const newAvatarUrl = `https://ui-avatars.com/api/?background=E67E22&color=fff&rounded=true&size=128&name=${encodeURIComponent(newFullName)}`;
-            profileAvatar.src = newAvatarUrl;
-            avatarImg.src = newAvatarUrl;
+            if (profileAvatar) profileAvatar.src = newAvatarUrl;
+            if (avatarImg) avatarImg.src = newAvatarUrl;
         }
         
         // Cập nhật tên hiển thị trên navbar
         const shortName = newFullName.split(' ').pop();
-        userNameShort.textContent = shortName;
+        if (userNameShort) userNameShort.textContent = shortName;
         
         showToast('Cập nhật thông tin thành công', 'success');
         closeEditModalFunc();
@@ -362,10 +362,26 @@ function initEventListeners() {
     if (changeAvatarBtn) changeAvatarBtn.addEventListener('click', changeAvatar);
     if (closeEditModal) closeEditModal.addEventListener('click', closeEditModalFunc);
     if (cancelEditBtn) cancelEditBtn.addEventListener('click', closeEditModalFunc);
-    if (saveEditBtn) saveEditBtn.addEventListener('click', saveProfile);
+    
+    const editProfileForm = document.getElementById('editProfileForm');
+    const changePasswordForm = document.getElementById('changePasswordForm');
+
+    if (editProfileForm) {
+        editProfileForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            saveProfile();
+        });
+    }
+
+    if (changePasswordForm) {
+        changePasswordForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            changePassword();
+        });
+    }
+
     if (closePasswordModal) closePasswordModal.addEventListener('click', closePasswordModalFunc);
     if (cancelPasswordBtn) cancelPasswordBtn.addEventListener('click', closePasswordModalFunc);
-    if (savePasswordBtn) savePasswordBtn.addEventListener('click', changePassword);
     
     // Close modals when clicking outside
     if (editModal) {
