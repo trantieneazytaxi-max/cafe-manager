@@ -117,6 +117,28 @@ function initEventListeners() {
             window.location.href = '../../../auth/html/index.html';
         });
     }
+
+    // User Menu Toggle (Match Dashboard)
+    const userInfo = document.querySelector('.user-info');
+    const userMenu = document.querySelector('.user-menu');
+    if (userInfo) {
+        userInfo.addEventListener('click', (e) => {
+            e.stopPropagation();
+            userMenu.classList.toggle('active');
+        });
+    }
+    document.addEventListener('click', () => {
+        if (userMenu) userMenu.classList.remove('active');
+    });
+
+    // Mobile Menu Toggle
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
+    if (menuToggle && navLinks) {
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+    }
 }
 
 async function handleAvatarChange(e) {

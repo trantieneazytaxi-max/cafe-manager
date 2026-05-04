@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="../../../shared/css/global-admin.css">
+    <link rel="stylesheet" href="../../css/admin-dashboard.css">
     <link rel="stylesheet" href="../css/profile.css">
 </head>
 <body>
@@ -17,7 +17,19 @@
 
         <!-- Main Content -->
         <main class="main-content">
-            <div class="profile-header-neon">
+            <!-- Top Bar (To match dashboard) -->
+            <div class="top-bar">
+                <div class="date-range">
+                    <span class="page-title" style="font-family: 'Orbitron', sans-serif; color: #00f3ff; font-weight: 700; letter-spacing: 1px;">HỒ SƠ CÁ NHÂN</span>
+                </div>
+                <div class="admin-actions">
+                    <button class="refresh-btn" onclick="location.reload()">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="profile-header-neon" style="margin-top: 2rem;">
                 <h1>HỒ SƠ <span class="highlight">CÁ NHÂN</span></h1>
                 <p>Quản lý thông tin quản trị viên và thiết lập bảo mật</p>
             </div>
