@@ -83,65 +83,83 @@ function renderNavbar() {
 }
 
 function initNavbarLogic() {
-    const profileBtn = document.getElementById('profileBtn');
-    const profileDropdown = document.getElementById('profileDropdown');
-    const logoutBtn = document.getElementById('logoutDropdownBtn');
-    const menuToggle = document.getElementById('menuToggle');
-    const navLinks = document.getElementById('navLinks');
+    console.log('Navbar Logic Initializing...');
+    
+    // Use event delegation on the document or the navbar placeholder
+    const placeholder = document.getElementById('navbar-placeholder');
+    if (!placeholder) {
+        console.error('navbar-placeholder not found during initNavbarLogic');
+        return;
+    }
 
-    if (profileBtn && profileDropdown) {
-        profileBtn.addEventListener('click', (e) => {
+    // Single click listener for all navbar actions
+    placeholder.addEventListener('click', (e) => {
+        const target = e.target;
+        
+        // 1. Profile Dropdown Toggle
+        const profileBtn = target.closest('#profileBtn');
+        if (profileBtn) {
+            console.log('Profile button clicked');
             e.preventDefault();
             e.stopPropagation();
-            profileDropdown.classList.toggle('active');
-        });
-    }
-
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            console.log('Logging out...');
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            
-            // Redirect to home page
-            const isUserFolder = window.location.pathname.includes('/user/');
-            if (isUserFolder) {
-                // If in /user/some-page/html/file.html
-                // We need to go to /user/index/html/index.html
-                // Find path to 'user' folder and then to index
-                const pathParts = window.location.pathname.split('/');
-                const userIndex = pathParts.indexOf('user');
-                if (userIndex !== -1) {
-                    const depth = pathParts.length - userIndex - 2; // count levels after 'user'
-                    let prefix = '';
-                    for(let i=0; i<depth; i++) prefix += '../';
-                    window.location.href = prefix + 'index/html/index.html';
-                } else {
-                    window.location.href = '/user/index/html/index.html';
-                }
-            } else {
-                window.location.href = '/';
-            }
-        });
-    }
-
-    if (menuToggle && navLinks) {
-        menuToggle.addEventListener('click', (e) => {
-            e.stopPropagation();
-            navLinks.classList.toggle('active');
-        });
-    }
-
-    // Close dropdowns when clicking outside
-    document.addEventListener('click', (e) => {
-        if (profileDropdown && !profileDropdown.contains(e.target)) {
-            profileDropdown.classList.remove('active');
+            const dropdown = document.getElementById('profileDropdown');
+            if (dropdown) dropdown.classList.toggle('active');
+            return;
         }
-        if (navLinks && !navLinks.contains(e.target) && !menuToggle.contains(e.target)) {
+
+        // 2. Logout Button
+        const logoutBtn = target.closest('#logoutDropdownBtn');
+        if (logoutBtn) {
+            console.log('Logout button clicked');
+            e.preventDefault();
+            e.stopPropagation();
+            handleLogout();
+            return;
+        }
+
+        // 3. Mobile Menu Toggle
+        const menuToggle = target.closest('#menuToggle');
+        if (menuToggle) {
+            console.log('Menu toggle clicked');
+            e.stopPropagation();
+            const navLinks = document.getElementById('navLinks');
+            if (navLinks) navLinks.classList.toggle('active');
+            return;
+        }
+    });
+
+    // Close dropdowns when clicking anywhere else on the document
+    document.addEventListener('click', (e) => {
+        const dropdown = document.getElementById('profileDropdown');
+        if (dropdown && !dropdown.contains(e.target)) {
+            dropdown.classList.remove('active');
+        }
+        
+        const navLinks = document.getElementById('navLinks');
+        const menuToggle = document.getElementById('menuToggle');
+        if (navLinks && !navLinks.contains(e.target) && (!menuToggle || !menuToggle.contains(e.target))) {
             navLinks.classList.remove('active');
         }
     });
+}
+
+function handleLogout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    
+    const isUserFolder = window.location.pathname.includes('/user/');
+    if (isUserFolder) {
+        const pathParts = window.location.pathname.split('/');
+        const userIndex = pathParts.indexOf('user');
+        if (userIndex !== -1) {
+            const depth = pathParts.length - userIndex - 2;
+            let prefix = '';
+            for(let i=0; i<depth; i++) prefix += '../';
+            window.location.href = prefix + 'index/html/index.html';
+        } else {
+            window.location.href = '/user/index/html/index.html';
+        }
+    } else {
+        window.location.href = '/';
+    }
 }
