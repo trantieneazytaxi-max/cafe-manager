@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     
     if (!token || (user.role !== 'admin' && user.role !== 'staff')) {
-        window.location.href = '../../auth/html/admin-login.html';
+        window.location.href = '../../../../auth/html/admin-login.html';
         return;
     }
 

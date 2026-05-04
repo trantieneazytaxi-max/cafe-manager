@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     
     if (!token || user.role !== 'staff') {
-        window.location.href = '../../../auth/html/index.html';
+        window.location.href = '../../../../auth/html/staff-login.html';
         return;
     }
 
@@ -114,7 +114,7 @@ function initEventListeners() {
     if (logoutBtn) {
         logoutBtn.addEventListener('click', () => {
             localStorage.clear();
-            window.location.href = '../../../auth/html/index.html';
+            window.location.href = '../../../../auth/html/staff-login.html';
         });
     }
 
