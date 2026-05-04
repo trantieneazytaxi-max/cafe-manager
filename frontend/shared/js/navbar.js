@@ -62,7 +62,7 @@ function renderNavbar() {
                                 <span>Tổng cộng:</span>
                                 <span id="miniCartTotal">0đ</span>
                             </div>
-                            <a href="${pathPrefix}orders/html/orders.html" class="btn-view-cart">Xem chi tiết</a>
+                            <button id="miniCartCheckout" class="btn-checkout-now">Thanh toán ngay</button>
                         </div>
                     </div>
                 </div>
@@ -140,7 +140,17 @@ function initNavbarLogic() {
             return;
         }
 
-        // 3. Mobile Menu Toggle
+        // 3. Mini Cart Checkout
+        const miniCheckoutBtn = target.closest('#miniCartCheckout');
+        if (miniCheckoutBtn) {
+            console.log('Mini Cart Checkout clicked');
+            e.preventDefault();
+            e.stopPropagation();
+            handleMiniCartCheckout();
+            return;
+        }
+
+        // 4. Mobile Menu Toggle
         const menuToggle = target.closest('#menuToggle');
         if (menuToggle) {
             console.log('Menu toggle clicked');
@@ -252,6 +262,33 @@ function updateMiniCart() {
     }).join('');
 
     if (totalDisplay) totalDisplay.textContent = `${total.toLocaleString('vi-VN')}đ`;
+}
+
+function handleMiniCartCheckout() {
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    if (cart.length === 0) {
+        alert('Giỏ hàng của bạn đang trống!');
+        return;
+    }
+
+    // Save entire cart to tempOrder for payment page
+    sessionStorage.setItem('tempOrder', JSON.stringify(cart));
+    sessionStorage.setItem('tempOrderNote', ''); // Default empty note
+
+    // Determine path to payment.html
+    let pathPrefix = '../../';
+    const pathParts = window.location.pathname.split('/');
+    if (pathParts.includes('html')) {
+        pathPrefix = '../../';
+    }
+    
+    // Check if we are in /user/ folder
+    const isUserFolder = window.location.pathname.includes('/user/');
+    if (isUserFolder) {
+        window.location.href = `${pathPrefix}payment/html/payment.html`;
+    } else {
+        window.location.href = '/user/payment/html/payment.html';
+    }
 }
 
 function handleLogout() {

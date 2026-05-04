@@ -493,7 +493,7 @@ body {
     color: #E67E22;
 }
 
-.btn-view-cart {
+.btn-checkout-now {
     display: block;
     width: 100%;
     padding: 0.75rem;
@@ -504,9 +504,12 @@ body {
     text-decoration: none;
     font-weight: 600;
     transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
 }
 
-.btn-view-cart:hover {
+.btn-checkout-now:hover {
     background: #D35400;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(230, 126, 34, 0.3);
