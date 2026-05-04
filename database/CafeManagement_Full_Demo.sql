@@ -72,9 +72,21 @@ CREATE TABLE Menu_Items (
     customizations NVARCHAR(MAX) NULL,
     is_paused BIT DEFAULT 0,
     is_recommended BIT DEFAULT 0,
+    is_combo BIT DEFAULT 0,
     created_at DATETIME DEFAULT GETDATE(),
     updated_at DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (category_id) REFERENCES Categories(category_id)
+);
+GO
+
+-- Bảng COMBO_ITEMS
+CREATE TABLE Combo_Items (
+    combo_id INT NOT NULL,
+    item_id INT NOT NULL,
+    quantity INT DEFAULT 1,
+    PRIMARY KEY (combo_id, item_id),
+    FOREIGN KEY (combo_id) REFERENCES Menu_Items(item_id),
+    FOREIGN KEY (item_id) REFERENCES Menu_Items(item_id)
 );
 GO
 
@@ -204,6 +216,18 @@ CREATE TABLE Settings (
     setting_value NVARCHAR(MAX),
     description NVARCHAR(255),
     updated_at DATETIME DEFAULT GETDATE()
+);
+GO
+
+-- Bảng ATTENDANCE
+CREATE TABLE Attendance (
+    attendance_id INT IDENTITY(1,1) PRIMARY KEY,
+    user_id INT NOT NULL,
+    check_in DATETIME NOT NULL,
+    check_out DATETIME,
+    ip_address NVARCHAR(50),
+    status NVARCHAR(20) DEFAULT 'active', -- active, completed
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );
 GO
 
