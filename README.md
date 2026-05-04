@@ -42,6 +42,7 @@ cafe-manager/
 │   │   ├── reports/              # Báo cáo doanh thu
 │   │   ├── discounts/            # Quản lý mã giảm giá
 │   │   ├── password-requests/    # Phê duyệt đặt lại mật khẩu
+│   │   ├── attendance/           # Quản lý chấm công
 │   │   └── settings/             # Cài đặt hệ thống
 │   ├── staff/                    # Nhân viên
 │   │   ├── auth/                 # Đăng nhập Staff
@@ -72,11 +73,14 @@ cafe-manager/
 │   │   ├── orderRoutes.js        # Đơn hàng (Customer)
 │   │   ├── staffOrderRoutes.js   # Đơn hàng (Staff)
 │   │   ├── tableRoutes.js        # Quản lý bàn
+│   │   ├── attendanceRoutes.js   # Quản lý chấm công
 │   │   ├── discountRoutes.js     # Mã giảm giá
 │   │   ├── customerRoutes.js     # Thông tin khách hàng
 │   │   ├── paymentRoutes.js      # Thanh toán VietQR
 │   │   ├── forgotPasswordRoutes.js   # Quên mật khẩu
 │   │   └── verificationRoutes.js     # Xác thực OTP Email
+│   ├── services/                 # Các dịch vụ bên thứ 3 (Email,...)
+│   ├── scratch/                  # Các script test và migrate dữ liệu
 │   └── server.js                 # Tệp chạy chính
 └── database/                     # Script khởi tạo SQL Server
 ```
