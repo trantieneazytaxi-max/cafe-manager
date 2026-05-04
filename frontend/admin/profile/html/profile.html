@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Hồ sơ Admin - Cà Phê Thông Minh</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../shared/css/global-admin.css">
+    <link rel="stylesheet" href="../css/profile.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar Placeholder -->
+        <div id="sidebar-placeholder"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="profile-header-neon">
+                <h1>HỒ SƠ <span class="highlight">CÁ NHÂN</span></h1>
+                <p>Quản lý thông tin quản trị viên và thiết lập bảo mật</p>
+            </div>
+
+            <div class="profile-grid">
+                <!-- Cột trái: Avatar & Hành động -->
+                <div class="profile-left-col">
+                    <div class="profile-card-cyber">
+                        <div class="avatar-container">
+                            <img id="profileAvatar" src="https://ui-avatars.com/api/?background=00f3ff&color=000&rounded=true&size=150" alt="Admin Avatar">
+                            <button class="edit-avatar-btn" id="changeAvatarBtn">
+                                <i class="fas fa-camera"></i>
+                            </button>
+                            <input type="file" id="avatarUpload" accept="image/*" style="display: none;">
+                        </div>
+                        <h2 id="displayFullName">Admin Name</h2>
+                        <p id="displayRole" class="role-badge">Quản trị viên</p>
+                        
+                        <div class="profile-quick-actions">
+                            <button class="cyber-btn primary" id="editProfileBtn">
+                                <i class="fas fa-user-edit"></i> Chỉnh sửa
+                            </button>
+                            <button class="cyber-btn secondary" id="changePasswordBtn">
+                                <i class="fas fa-key"></i> Đổi mật khẩu
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cột phải: Thông tin chi tiết -->
+                <div class="profile-right-col">
+                    <!-- Thông tin cơ bản -->
+                    <div class="profile-card-cyber">
+                        <h3><i class="fas fa-id-card"></i> THÔNG TIN CƠ BẢN</h3>
+                        <div class="info-list">
+                            <div class="info-item">
+                                <span class="label">Email</span>
+                                <span class="value" id="email">--</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">Số điện thoại</span>
+                                <span class="value" id="phone">--</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">Ngày tham gia</span>
+                                <span class="value" id="joinedDate">--</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Thông tin công việc -->
+                    <div class="profile-card-cyber">
+                        <h3><i class="fas fa-briefcase"></i> THÔNG TIN CÔNG VIỆC</h3>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="label">Vị trí</span>
+                                <span class="value" id="staffPosition">--</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">Lương cơ bản</span>
+                                <span class="value" id="staffSalary">--</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">Ngày vào làm</span>
+                                <span class="value" id="staffHireDate">--</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">Số CMND/CCCD</span>
+                                <span class="value" id="staffIdentity">--</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">Số tài khoản</span>
+                                <span class="value" id="staffBankAcc">--</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">Ngân hàng</span>
+                                <span class="value" id="staffBankName">--</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="editModal" class="modal hidden">
+        <div class="modal-content cyber-modal">
+            <div class="modal-header">
+                <h3>CHỈNH SỬA HỒ SƠ</h3>
+                <button class="close-btn" id="closeEditModal">&times;</button>
+            </div>
+            <form id="editProfileForm">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Họ và tên</label>
+                        <input type="text" id="editFullName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Số điện thoại</label>
+                        <input type="tel" id="editPhone" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="cyber-btn" id="cancelEditBtn">Hủy</button>
+                    <button type="submit" class="cyber-btn primary">Lưu thay đổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="passwordModal" class="modal hidden">
+        <div class="modal-content cyber-modal">
+            <div class="modal-header">
+                <h3>ĐỔI MẬT KHẨU</h3>
+                <button class="close-btn" id="closePasswordModal">&times;</button>
+            </div>
+            <form id="changePasswordForm">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Mật khẩu hiện tại</label>
+                        <input type="password" id="currentPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Mật khẩu mới</label>
+                        <input type="password" id="newPassword" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label>Xác nhận mật khẩu mới</label>
+                        <input type="password" id="confirmPassword" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="cyber-btn" id="cancelPasswordBtn">Hủy</button>
+                    <button type="submit" class="cyber-btn primary">Cập nhật</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../../../shared/js/api.js"></script>
+    <script src="../../../shared/js/global.js"></script>
+    <script src="../../dashboard/js/sidebar.js"></script>
+    <script src="../js/profile.js"></script>
+</body>
+</html>

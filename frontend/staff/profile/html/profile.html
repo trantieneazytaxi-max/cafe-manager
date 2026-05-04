@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Hồ sơ Nhân viên - Cà Phê Thông Minh</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../dashboard/css/staff-dashboard.css">
+    <link rel="stylesheet" href="../css/profile.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-mug-hot"></i>
+                <span>Cà Phê <span class="highlight">Thông Minh</span></span>
+                <span class="staff-badge">STAFF</span>
+            </div>
+            <div class="nav-links" id="navLinks">
+                <a href="../../dashboard/html/staff-dashboard.html">
+                    <i class="fas fa-chart-line"></i> Dashboard
+                </a>
+                <a href="../../tables/html/tables.html">
+                    <i class="fas fa-chair"></i> Quản lý bàn
+                </a>
+                <a href="../../orders/html/orders.html">
+                    <i class="fas fa-receipt"></i> Đơn hàng
+                </a>
+            </div>
+            <div class="user-menu">
+                <div class="user-info">
+                    <img id="navAvatar" class="avatar" src="https://ui-avatars.com/api/?background=00f3ff&color=fff&rounded=true" alt="Avatar">
+                    <span id="navName">Nhân viên</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <a href="#" class="active"><i class="fas fa-user-circle"></i> Trang cá nhân</a>
+                    <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="profile-container">
+            <div class="profile-header">
+                <h1>HỒ SƠ <span class="highlight">NHÂN VIÊN</span></h1>
+            </div>
+
+            <div class="profile-layout">
+                <!-- Sidebar Info -->
+                <div class="profile-sidebar">
+                    <div class="card shadow-cyber">
+                        <div class="avatar-section">
+                            <img id="profileAvatar" src="https://ui-avatars.com/api/?background=00f3ff&color=000&rounded=true&size=150" alt="Avatar">
+                            <button class="btn-icon" id="changeAvatarBtn"><i class="fas fa-camera"></i></button>
+                            <input type="file" id="avatarUpload" accept="image/*" style="display: none;">
+                        </div>
+                        <h2 id="fullName">Nhân viên</h2>
+                        <p class="badge-staff">Nhân viên phục vụ</p>
+                        
+                        <div class="action-buttons">
+                            <button class="btn-cyber primary" id="editProfileBtn"><i class="fas fa-edit"></i> Sửa hồ sơ</button>
+                            <button class="btn-cyber secondary" id="changePasswordBtn"><i class="fas fa-lock"></i> Đổi mật khẩu</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Details -->
+                <div class="profile-main">
+                    <!-- Personal Info -->
+                    <div class="card shadow-cyber">
+                        <h3><i class="fas fa-user"></i> THÔNG TIN CÁ NHÂN</h3>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <label>Email</label>
+                                <p id="email">--</p>
+                            </div>
+                            <div class="detail-item">
+                                <label>Số điện thoại</label>
+                                <p id="phone">--</p>
+                            </div>
+                            <div class="detail-item">
+                                <label>Ngày tham gia</label>
+                                <p id="joinedDate">--</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Work Info -->
+                    <div class="card shadow-cyber">
+                        <h3><i class="fas fa-briefcase"></i> THÔNG TIN CÔNG VIỆC</h3>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <label>Vị trí</label>
+                                <p id="staffPosition">--</p>
+                            </div>
+                            <div class="detail-item">
+                                <label>Lương cơ bản</label>
+                                <p id="staffSalary">--</p>
+                            </div>
+                            <div class="detail-item">
+                                <label>Ngày vào làm</label>
+                                <p id="staffHireDate">--</p>
+                            </div>
+                            <div class="detail-item">
+                                <label>CMND/CCCD</label>
+                                <p id="staffIdentity">--</p>
+                            </div>
+                            <div class="detail-item">
+                                <label>Số tài khoản</label>
+                                <p id="staffBankAcc">--</p>
+                            </div>
+                            <div class="detail-item">
+                                <label>Ngân hàng</label>
+                                <p id="staffBankName">--</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modals (Simplified versions of Admin ones) -->
+    <div id="editModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Chỉnh sửa thông tin</h3>
+                <span class="close" id="closeEditModal">&times;</span>
+            </div>
+            <form id="editProfileForm">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Họ và tên</label>
+                        <input type="text" id="editFullName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Số điện thoại</label>
+                        <input type="tel" id="editPhone" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" id="cancelEditBtn">Hủy</button>
+                    <button type="submit" class="btn-save">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../../../shared/js/api.js"></script>
+    <script src="../../../shared/js/global.js"></script>
+    <script src="../js/profile.js"></script>
+</body>
+</html>
