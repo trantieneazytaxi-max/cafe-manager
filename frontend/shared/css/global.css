@@ -82,6 +82,25 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    transition: padding 0.3s ease;
+}
+
+.navbar.scrolled {
+    padding: 0.5rem 0;
+    box-shadow: 0 4px 20px rgba(92, 58, 33, 0.15);
+}
+
+.navbar.scrolled .nav-container {
+    padding: 0.5rem 2rem;
+}
+
+.navbar.scrolled .logo {
+    font-size: 1.2rem;
+}
+
+.navbar.scrolled .avatar-small {
+    width: 28px;
+    height: 28px;
 }
 
 .logo {
