@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <style>
                     .user-info:hover { background: rgba(0, 243, 255, 0.1); }
                 </style>
-                <a href="../../user/profile/html/profile.html" class="user-info" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 12px; transition: background 0.3s; width: 100%;">
+                <a href="../../../user/profile/html/profile.html" class="user-info" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 12px; transition: background 0.3s; width: 100%;">
                     <img class="avatar" src="${adminAvatar}" alt="Avatar">
                     <div class="user-details">
                         <p class="user-name">${adminName}</p>

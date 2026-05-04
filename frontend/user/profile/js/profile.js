@@ -251,12 +251,13 @@ async function saveProfile() {
     }
     
     try {
-        // TODO: Gọi API cập nhật thông tin
-        // const response = await fetch('http://localhost:5000/api/user/profile', {
-        //     method: 'PUT',
-        //     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
-        //     body: JSON.stringify({ full_name: newFullName, phone: newPhone })
-        // });
+        saveEditBtn.disabled = true;
+        saveEditBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+        await put('/customer/profile', {
+            full_name: newFullName,
+            phone: newPhone
+        });
         
         // Cập nhật local
         currentUser.full_name = newFullName;
@@ -267,8 +268,9 @@ async function saveProfile() {
         phoneEl.textContent = newPhone;
         
         // Cập nhật avatar với tên mới
-        const newAvatarUrl = `https://ui-avatars.com/api/?background=E67E22&color=fff&rounded=true&size=128&name=${encodeURIComponent(newFullName)}`;
-        if (!localStorage.getItem('userAvatar')) {
+        const savedAvatar = localStorage.getItem('userAvatar');
+        if (!savedAvatar || savedAvatar.includes('ui-avatars.com')) {
+            const newAvatarUrl = `https://ui-avatars.com/api/?background=E67E22&color=fff&rounded=true&size=128&name=${encodeURIComponent(newFullName)}`;
             profileAvatar.src = newAvatarUrl;
             avatarImg.src = newAvatarUrl;
         }
@@ -281,7 +283,10 @@ async function saveProfile() {
         closeEditModalFunc();
     } catch (error) {
         console.error('Update profile error:', error);
-        showToast('Cập nhật thất bại', 'error');
+        showToast(error.message || 'Cập nhật thất bại', 'error');
+    } finally {
+        saveEditBtn.disabled = false;
+        saveEditBtn.textContent = 'Lưu thay đổi';
     }
 }
 
