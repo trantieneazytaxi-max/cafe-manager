@@ -342,7 +342,12 @@ router.get('/track/:query', async (req, res) => {
                 o.guest_name,
                 o.note,
                 o.created_at,
-                o.updated_at
+                o.updated_at,
+                -- Tính tổng số lượng món đang đợi chế biến trên toàn hệ thống
+                (SELECT ISNULL(SUM(oi.quantity), 0) 
+                 FROM Order_Items oi 
+                 JOIN Orders oo ON oi.order_id = oo.order_id 
+                 WHERE oo.status IN ('paid', 'confirmed', 'preparing')) as total_items_in_queue
             FROM Orders o
             LEFT JOIN Tables t ON o.table_id = t.table_id
             WHERE CAST(o.order_id AS NVARCHAR) = @query OR o.order_code = @query

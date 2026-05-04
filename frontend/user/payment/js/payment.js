@@ -298,6 +298,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     loadAvailableCoupons();
     checkPayOSCallback();
     
+    // Check if user is Admin/Staff to show Fast Confirm option
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+        const user = JSON.parse(userStr);
+        if (user.role === 'admin' || user.role === 'staff') {
+            window.isAdminOrStaff = true;
+        }
+    }
+
+    const fastConfirmBtn = document.getElementById('fastConfirmBtn');
+    if (fastConfirmBtn) {
+        fastConfirmBtn.addEventListener('click', () => processOrder('payos'));
+    }
+
     const closeReceiptBtn = document.getElementById('closeReceiptBtn');
     if (closeReceiptBtn) {
         closeReceiptBtn.addEventListener('click', () => {
@@ -632,10 +646,15 @@ function initPaymentMethodSwitch() {
             if (e.target.value === 'cash') {
                 cashSection.classList.remove('hidden');
                 updateCashPaymentMessage(); // Update message based on order type
+                document.getElementById('adminFastConfirm')?.classList.add('hidden');
             } else if (e.target.value === 'payos') {
                 payosSection.classList.remove('hidden');
                 // Hide counter notice when switching to PayOS
                 document.getElementById('counterPaymentNotice').classList.add('hidden');
+                
+                if (window.isAdminOrStaff) {
+                    document.getElementById('adminFastConfirm')?.classList.remove('hidden');
+                }
             }
         });
     });

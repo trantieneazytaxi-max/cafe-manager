@@ -58,6 +58,17 @@ function updateUI(order) {
         document.getElementById('orderNote').textContent = order.note;
     }
 
+    // Tính toán thời gian chờ dự kiến
+    // Mỗi món trong hàng đợi mất khoảng 3 phút. 
+    // Nếu đơn đã Ready hoặc Completed thì thời gian chờ là 0.
+    const estTimeEl = document.getElementById('estimatedTime');
+    if (['ready', 'completed'].includes(order.status)) {
+        estTimeEl.textContent = 'Sẵn sàng!';
+    } else {
+        const waitTime = Math.max(5, order.total_items_in_queue * 3); // Tối thiểu 5 phút
+        estTimeEl.textContent = `~${waitTime} phút`;
+    }
+
     // Cập nhật Timeline
     updateTimeline(order.status);
 }
