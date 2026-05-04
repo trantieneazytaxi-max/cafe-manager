@@ -102,7 +102,7 @@ async function redeemOffer(codeId, pointsRequired) {
     const token = localStorage.getItem('token');
     if (!token) {
         alert('Vui lòng đăng nhập để đổi điểm!');
-        window.location.href = '../../auth/html/login.html';
+        window.location.href = '../../auth/html/user-login.html';
         return;
     }
 

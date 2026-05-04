@@ -85,7 +85,7 @@ function renderNavbar() {
                     </div>
                 </div>
                 ` : `
-                <a href="${pathPrefix}../auth/login.html" class="btn-login">Đăng nhập</a>
+                <a href="${pathPrefix}../auth/html/user-login.html" class="btn-login">Đăng nhập</a>
                 `}
             </div>
             <div class="menu-toggle" id="menuToggle">

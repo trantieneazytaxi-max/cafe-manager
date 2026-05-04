@@ -23,10 +23,10 @@ const userInfo = document.querySelector('.user-info');
 // Check authentication
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('token');
-    const role = localStorage.getItem('role');
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
     
-    if (!token || role !== 'staff') {
-        window.location.href = '../../../auth/html/staff-login.html';
+    if (!token || (user.role !== 'staff' && user.role !== 'admin')) {
+        window.location.href = '../../auth/html/staff-login.html';
         return;
     }
     
@@ -437,6 +437,6 @@ function logoutAndRedirect() {
     sessionStorage.clear();
     showToast('Tài khoản của bạn đã bị vô hiệu hóa!', 'error');
     setTimeout(() => {
-        window.location.href = '../../../auth/html/staff-login.html';
+        window.location.href = '../../auth/html/staff-login.html';
     }, 2000);
 }

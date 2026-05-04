@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('token');
     const role = localStorage.getItem('role');
     
-    if (!token || role !== 'staff') {
+    if (!token || (role !== 'staff' && role !== 'admin')) {
         window.location.href = '../../../auth/html/staff-login.html';
         return;
     }

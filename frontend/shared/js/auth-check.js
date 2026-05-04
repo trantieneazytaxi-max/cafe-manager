@@ -18,7 +18,7 @@
     const role = localStorage.getItem('role');
 
     if (!token || role !== 'staff') {
-        window.location.href = '../../../auth/html/auth.html';
+        window.location.href = '../../../auth/html/user-login.html';
         return;
     }
 })();

@@ -51,7 +51,7 @@ let currentUser = null;
 document.addEventListener('DOMContentLoaded', async () => {
     const token = localStorage.getItem('token');
     if (!token) {
-        window.location.href = '../../../auth/html/auth.html';
+        window.location.href = '../../../auth/html/user-login.html';
         return;
     }
     
@@ -112,27 +112,22 @@ function loadUserData() {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     currentUser = user;
     
-    fullNameEl.textContent = user.full_name || 'Chưa cập nhật';
-    emailEl.textContent = user.email || 'Chưa cập nhật';
-    phoneEl.textContent = user.phone || 'Chưa cập nhật';
-    joinedDateEl.textContent = user.created_at ? new Date(user.created_at).toLocaleDateString('vi-VN') : 'Chưa có dữ liệu';
+    if (fullNameEl) fullNameEl.textContent = user.full_name || 'Chưa cập nhật';
+    if (emailEl) emailEl.textContent = user.email || 'Chưa cập nhật';
+    if (phoneEl) phoneEl.textContent = user.phone || 'Chưa cập nhật';
+    if (joinedDateEl) joinedDateEl.textContent = user.created_at ? new Date(user.created_at).toLocaleDateString('vi-VN') : 'Chưa có dữ liệu';
+    
     const roleNames = {
         'admin': 'Quản trị viên',
         'staff': 'Nhân viên',
         'customer': 'Khách hàng'
     };
-    roleEl.textContent = roleNames[user.role] || 'Người dùng';
+    if (roleEl) roleEl.textContent = roleNames[user.role] || 'Người dùng';
     
-    // Update avatar
-    const savedAvatar = localStorage.getItem('userAvatar');
-    if (savedAvatar) {
-        if (profileAvatar) profileAvatar.src = savedAvatar;
-        if (avatarImg) avatarImg.src = savedAvatar;
-    } else {
-        const avatarUrl = `https://ui-avatars.com/api/?background=E67E22&color=fff&rounded=true&size=128&name=${encodeURIComponent(user.full_name || 'User')}`;
-        if (profileAvatar) profileAvatar.src = avatarUrl;
-        if (avatarImg) avatarImg.src = avatarUrl;
-    }
+    // Update avatar (Không dùng userAvatar riêng biệt nữa để tránh đầy bộ nhớ)
+    const avatarUrl = user.avatar_url || `https://ui-avatars.com/api/?background=E67E22&color=fff&rounded=true&size=128&name=${encodeURIComponent(user.full_name || 'User')}`;
+    if (profileAvatar) profileAvatar.src = avatarUrl;
+    if (avatarImg) avatarImg.src = avatarUrl;
     
     // Update short name on navbar
     const shortName = user.full_name ? user.full_name.split(' ').pop() : 'User';
@@ -148,39 +143,59 @@ async function fetchProfileDetails() {
         if (data) {
             currentUser = { ...currentUser, ...data };
             
-            const deliverySection = document.getElementById('deliveryAddressSection');
-            const staffSection = document.getElementById('staffInfoSection');
-
-            // Hiển thị section theo Role
-            if (data.role === 'customer') {
-                if (deliverySection) deliverySection.classList.remove('hidden');
-                if (staffSection) staffSection.classList.add('hidden');
-                
-                deliveryAddressInput.value = data.delivery_address || '';
-                autoFillAddressCheckbox.checked = data.auto_fill_address !== 0;
-                currentLat = data.delivery_lat;
-                currentLng = data.delivery_lng;
-                
-                if (deliveryMap && currentLat && currentLng) {
-                    const pos = [currentLat, currentLng];
-                    deliveryMap.setView(pos, 16);
-                    deliveryMarker.setLatLng(pos);
-                }
-            } else {
-                // Admin hoặc Staff
-                if (deliverySection) deliverySection.classList.add('hidden');
-                if (staffSection) staffSection.classList.remove('hidden');
-
-                document.getElementById('staffPosition').textContent = data.position || 'Chưa cập nhật';
-                document.getElementById('staffSalary').textContent = data.salary ? formatCurrency(data.salary) : 'Chưa cập nhật';
-                document.getElementById('staffHireDate').textContent = data.hire_date ? new Date(data.hire_date).toLocaleDateString('vi-VN') : 'Chưa cập nhật';
-                document.getElementById('staffIdentity').textContent = data.identity_number || 'Chưa cập nhật';
-                document.getElementById('staffBankAcc').textContent = data.bank_account || 'Chưa cập nhật';
-                document.getElementById('staffBankName').textContent = data.bank_name || 'Chưa cập nhật';
-            }
+            // Cập nhật UI với dữ liệu mới từ API
+            updateUIWithFetchedData(currentUser);
         }
     } catch (e) {
         console.error('Error fetching profile details:', e);
+    }
+}
+
+function updateUIWithFetchedData(user) {
+    if (fullNameEl) fullNameEl.textContent = user.full_name || 'Chưa cập nhật';
+    if (emailEl) emailEl.textContent = user.email || '--';
+    if (phoneEl) phoneEl.textContent = user.phone || '--';
+    
+    const avatarUrl = user.avatar_url || `https://ui-avatars.com/api/?background=E67E22&color=fff&rounded=true&size=128&name=${encodeURIComponent(user.full_name || 'User')}`;
+    if (profileAvatar) profileAvatar.src = avatarUrl;
+    if (avatarImg) avatarImg.src = avatarUrl;
+
+    const deliverySection = document.getElementById('deliveryAddressSection');
+    const staffSection = document.getElementById('staffInfoSection');
+
+    // Hiển thị section theo Role
+    if (user.role === 'customer') {
+        if (deliverySection) deliverySection.classList.remove('hidden');
+        if (staffSection) staffSection.classList.add('hidden');
+        
+        if (deliveryAddressInput) deliveryAddressInput.value = user.delivery_address || '';
+        if (autoFillAddressCheckbox) autoFillAddressCheckbox.checked = user.auto_fill_address !== 0;
+        currentLat = user.delivery_lat;
+        currentLng = user.delivery_lng;
+        
+        if (deliveryMap && currentLat && currentLng) {
+            const pos = [currentLat, currentLng];
+            deliveryMap.setView(pos, 16);
+            deliveryMarker.setLatLng(pos);
+        }
+    } else {
+        // Admin hoặc Staff
+        if (deliverySection) deliverySection.classList.add('hidden');
+        if (staffSection) staffSection.classList.remove('hidden');
+
+        const posEl = document.getElementById('staffPosition');
+        const salEl = document.getElementById('staffSalary');
+        const hireEl = document.getElementById('staffHireDate');
+        const idEl = document.getElementById('staffIdentity');
+        const accEl = document.getElementById('staffBankAcc');
+        const bankEl = document.getElementById('staffBankName');
+
+        if (posEl) posEl.textContent = user.position || 'Chưa cập nhật';
+        if (salEl) salEl.textContent = user.salary ? formatCurrency(user.salary) : 'Chưa cập nhật';
+        if (hireEl) hireEl.textContent = user.hire_date ? new Date(user.hire_date).toLocaleDateString('vi-VN') : 'Chưa cập nhật';
+        if (idEl) idEl.textContent = user.identity_number || 'Chưa cập nhật';
+        if (accEl) accEl.textContent = user.bank_account || 'Chưa cập nhật';
+        if (bankEl) bankEl.textContent = user.bank_name || 'Chưa cập nhật';
     }
 }
 
@@ -224,9 +239,8 @@ avatarUpload.addEventListener('change', (e) => {
             const avatarUrl = event.target.result;
             
             // Cập nhật giao diện ngay lập tức
-            profileAvatar.src = avatarUrl;
+            if (profileAvatar) profileAvatar.src = avatarUrl;
             if (avatarImg) avatarImg.src = avatarUrl;
-            localStorage.setItem('userAvatar', avatarUrl);
             
             // Lưu lên server
             updateAvatarOnServer(avatarUrl);
@@ -239,10 +253,11 @@ async function updateAvatarOnServer(avatarUrl) {
     try {
         await put('/customer/profile', { avatar_url: avatarUrl });
         
-        // Cập nhật object user trong localStorage
-        const user = JSON.parse(localStorage.getItem('user') || '{}');
-        user.avatar_url = avatarUrl;
-        localStorage.setItem('user', JSON.stringify(user));
+        // Cập nhật object user trong localStorage (Bỏ avatar_url Base64 để tránh đầy bộ nhớ)
+        currentUser.avatar_url = avatarUrl;
+        const storageUser = { ...currentUser };
+        delete storageUser.avatar_url;
+        localStorage.setItem('user', JSON.stringify(storageUser));
         
         showToast('Đã lưu ảnh đại diện thành công', 'success');
     } catch (e) {
@@ -272,44 +287,23 @@ async function saveProfile() {
     }
     
     try {
-        console.log('Saving profile...', { newFullName, newPhone });
         saveEditBtn.disabled = true;
         saveEditBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
-        // Sử dụng URL tuyệt đối để tránh nhầm lẫn
-        const token = localStorage.getItem('token');
-        const res = await fetch('http://localhost:5000/api/customer/profile', {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({
-                full_name: newFullName,
-                phone: newPhone
-            })
+        await put('/customer/profile', {
+            full_name: newFullName,
+            phone: newPhone
         });
-
-        const result = await res.json();
-        console.log('Save response:', result);
-        
-        if (!res.ok) throw new Error(result.message || 'Lỗi từ máy chủ');
         
         // Cập nhật local
         currentUser.full_name = newFullName;
         currentUser.phone = newPhone;
-        localStorage.setItem('user', JSON.stringify(currentUser));
         
-        fullNameEl.textContent = newFullName;
-        phoneEl.textContent = newPhone;
+        const storageUser = { ...currentUser };
+        delete storageUser.avatar_url;
+        localStorage.setItem('user', JSON.stringify(storageUser));
         
-        // Cập nhật avatar với tên mới
-        const savedAvatar = localStorage.getItem('userAvatar');
-        if (!savedAvatar || savedAvatar.includes('ui-avatars.com')) {
-            const newAvatarUrl = `https://ui-avatars.com/api/?background=E67E22&color=fff&rounded=true&size=128&name=${encodeURIComponent(newFullName)}`;
-            if (profileAvatar) profileAvatar.src = newAvatarUrl;
-            if (avatarImg) avatarImg.src = newAvatarUrl;
-        }
+        updateUIWithFetchedData(currentUser);
         
         // Cập nhật tên hiển thị trên navbar
         const shortName = newFullName.split(' ').pop();
@@ -328,6 +322,8 @@ async function saveProfile() {
 
 // Change password
 function openPasswordModal() {
+    const usernameHidden = document.getElementById('username_hidden');
+    if (usernameHidden) usernameHidden.value = currentUser.email || '';
     passwordModal.classList.remove('hidden');
 }
 
@@ -360,13 +356,7 @@ async function changePassword() {
     
     try {
         // TODO: Gọi API đổi mật khẩu
-        // const response = await fetch('http://localhost:5000/api/user/change-password', {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
-        //     body: JSON.stringify({ current_password: current, new_password: newPass })
-        // });
-        
-        showToast('Đổi mật khẩu thành công', 'success');
+        showToast('Đã gửi yêu cầu đổi mật khẩu', 'success');
         closePasswordModalFunc();
     } catch (error) {
         console.error('Change password error:', error);

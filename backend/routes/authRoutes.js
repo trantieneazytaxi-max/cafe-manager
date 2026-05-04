@@ -124,33 +124,25 @@ router.get('/check-status', verifyToken, async (req, res) => {
     try {
         const userId = req.user.userId;
         
-        console.log('🔍 Check status for user ID:', userId);
-        
         const result = await executeQuery(
             'SELECT is_active FROM Users WHERE user_id = @userId',
             { userId: userId }
         );
         
-        console.log('📊 Query result:', result.recordset);
-        
         if (result.recordset.length === 0) {
-            console.log('❌ User not found');
             return res.status(403).json({ message: 'Tài khoản không tồn tại' });
         }
         
         const isActive = result.recordset[0].is_active;
-        console.log('✅ is_active =', isActive, 'type:', typeof isActive);
         
         // 🆕 SỬA: So sánh đúng với false hoặc 0
         if (isActive === false || isActive === 0) {
-            console.log('🚫 Account is deactivated!');
             return res.status(403).json({ message: 'Tài khoản đã bị vô hiệu hóa' });
         }
         
         res.json({ success: true, is_active: true });
         
     } catch (error) {
-        console.error('Check status error:', error);
         res.status(500).json({ message: 'Lỗi server' });
     }
 });

@@ -8,8 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('token');
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     
-    if (!token || user.role !== 'staff') {
-        window.location.href = '../../../../auth/html/auth.html';
+    if (!token || (user.role !== 'staff' && user.role !== 'admin')) {
+        window.location.href = '../../../../auth/html/staff-login.html';
         return;
     }
 
@@ -91,7 +91,11 @@ function initEventListeners() {
 
     // Password Modals
     const passwordModal = document.getElementById('passwordModal');
-    document.getElementById('changePasswordBtn').addEventListener('click', () => passwordModal.classList.remove('hidden'));
+    document.getElementById('changePasswordBtn').addEventListener('click', () => {
+        const usernameHidden = document.getElementById('username_hidden');
+        if (usernameHidden) usernameHidden.value = currentUser.email || '';
+        passwordModal.classList.remove('hidden');
+    });
     document.getElementById('closePasswordModal').addEventListener('click', () => passwordModal.classList.add('hidden'));
     document.getElementById('cancelPasswordBtn').addEventListener('click', () => passwordModal.classList.add('hidden'));
 
@@ -142,7 +146,7 @@ function initEventListeners() {
     if (logoutBtn) {
         logoutBtn.addEventListener('click', () => {
             localStorage.clear();
-            window.location.href = '../../../../auth/html/auth.html';
+            window.location.href = '../../../../auth/html/staff-login.html';
         });
     }
 

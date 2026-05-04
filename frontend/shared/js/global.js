@@ -92,7 +92,7 @@ function updateUserInfo() {
         } else {
             // Guest
             dropdownMenu.innerHTML = `
-                <a href="../../../auth/html/auth.html"><i class="fas fa-sign-in-alt"></i> Đăng nhập</a>
+                <a href="../../../auth/html/user-login.html"><i class="fas fa-sign-in-alt"></i> Đăng nhập</a>
             `;
         }
     }
@@ -110,7 +110,7 @@ function initLogout() {
             e.preventDefault();
             localStorage.clear();
             sessionStorage.clear();
-            window.location.href = '../../../auth/html/auth.html';
+            window.location.href = '../../../auth/html/user-login.html';
         });
     }
 }

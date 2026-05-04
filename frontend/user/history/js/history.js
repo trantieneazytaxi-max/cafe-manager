@@ -10,7 +10,7 @@ let currentUserPoints = 0;
 function checkLogin() {
     const token = localStorage.getItem('token');
     if (!token) {
-        window.location.href = '../../auth/html/auth.html';
+        window.location.href = '../../auth/html/user-login.html';
     }
 }
 

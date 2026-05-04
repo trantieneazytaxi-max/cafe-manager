@@ -87,7 +87,10 @@ function initEventListeners() {
     document.getElementById('closeEditModal').addEventListener('click', () => editModal.classList.add('hidden'));
     document.getElementById('cancelEditBtn').addEventListener('click', () => editModal.classList.add('hidden'));
     
-    document.getElementById('changePasswordBtn').addEventListener('click', () => passwordModal.classList.remove('hidden'));
+    document.getElementById('changePasswordBtn').addEventListener('click', () => {
+        document.getElementById('username_hidden').value = currentUser.email || '';
+        passwordModal.classList.remove('hidden');
+    });
     document.getElementById('closePasswordModal').addEventListener('click', () => passwordModal.classList.add('hidden'));
     document.getElementById('cancelPasswordBtn').addEventListener('click', () => passwordModal.classList.add('hidden'));
 
@@ -137,7 +140,11 @@ async function handleProfileUpdate(e) {
         await put('/customer/profile', { full_name: newName, phone: newPhone });
         currentUser.full_name = newName;
         currentUser.phone = newPhone;
-        localStorage.setItem('user', JSON.stringify(currentUser));
+        
+        // Tránh lưu avatar_url Base64 vào localStorage
+        const storageUser = { ...currentUser };
+        delete storageUser.avatar_url;
+        localStorage.setItem('user', JSON.stringify(storageUser));
         
         updateUI(currentUser);
         editModal.classList.add('hidden');

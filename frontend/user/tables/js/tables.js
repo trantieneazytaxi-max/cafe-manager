@@ -21,7 +21,7 @@ const modalCancelBtn = document.getElementById('modalCancelBtn');
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('token');
     if (!token) {
-        window.location.href = '../../../auth/html/auth.html';
+        window.location.href = '../../../auth/html/user-login.html';
         return;
     }
     

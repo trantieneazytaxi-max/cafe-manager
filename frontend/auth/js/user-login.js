@@ -302,13 +302,7 @@ async function mockLogin(email, password, rememberMe) {
         showToast(`Chào mừng ${data.user.full_name}! Đăng nhập thành công`, 'success');
         
         setTimeout(() => {
-            if (data.user.role === 'admin') {
-                window.location.href = '../../admin/dashboard/html/admin-dashboard.html';
-            } else if (data.user.role === 'staff') {
-                window.location.href = '../../staff/dashboard/html/staff-dashboard.html';
-            } else {
-                window.location.href = '../../user/index/html/index.html';
-            }
+            window.location.href = '../../user/index/html/index.html';
         }, 1000);
         
     } catch (error) {

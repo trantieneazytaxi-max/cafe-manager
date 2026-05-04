@@ -148,6 +148,8 @@
                 <button class="close-btn" id="closePasswordModal">&times;</button>
             </div>
             <form id="changePasswordForm">
+                <!-- Hidden username field for accessibility/password managers -->
+                <input type="text" id="username_hidden" style="display:none" autocomplete="username">
                 <div class="modal-body">
                     <div class="form-group">
                         <label>Mật khẩu hiện tại</label>
