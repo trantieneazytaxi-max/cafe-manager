@@ -816,6 +816,16 @@ body {
     transform: translateY(-2px);
 }
 
+.confirm-btn.secondary-confirm {
+    background: #8c6a51;
+    margin-top: 0.75rem;
+}
+
+.confirm-btn.secondary-confirm:hover {
+    background: #5c3a21;
+    box-shadow: 0 8px 25px rgba(140, 106, 81, 0.3);
+}
+
 .back-btn {
     background: #F5E6D3;
     border: none;

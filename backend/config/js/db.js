@@ -9,13 +9,15 @@ const dbConfig = {
     database: process.env.DB_NAME || 'CafeManagement',
     user: process.env.DB_USER || 'cafe_user',
     password: process.env.DB_PASSWORD || 'Cafe@2026',
+    requestTimeout: 30000, // Tăng lên 30s
+    connectionTimeout: 30000,
     options: {
         encrypt: false,
         trustServerCertificate: true,
         enableArithAbort: true
     },
     pool: {
-        max: 10,
+        max: 20, // Tăng số lượng connection
         min: 0,
         idleTimeoutMillis: 30000
     }

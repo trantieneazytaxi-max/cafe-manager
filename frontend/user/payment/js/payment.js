@@ -859,6 +859,19 @@ function initEventListeners() {
     
     if (confirmBtn) confirmBtn.addEventListener('click', confirmPayment);
     
+    const confirmNoDiscountBtn = document.getElementById('confirmNoDiscountBtn');
+    if (confirmNoDiscountBtn) {
+        confirmNoDiscountBtn.addEventListener('click', () => {
+            appliedDiscount = null;
+            const couponInput = document.getElementById('couponCode');
+            if (couponInput) couponInput.value = '';
+            document.getElementById('clearCouponBtn')?.classList.add('hidden');
+            document.getElementById('couponMessage').textContent = '';
+            updateOrderSummary();
+            confirmPayment();
+        });
+    }
+
     if (closeModalBtn) {
         closeModalBtn.addEventListener('click', () => {
             successModal.classList.add('hidden');
