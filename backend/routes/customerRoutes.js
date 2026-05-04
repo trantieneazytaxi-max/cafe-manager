@@ -11,8 +11,7 @@ router.get('/profile', async (req, res) => {
         const userId = req.user.userId;
         const result = await executeQuery(`
             SELECT user_id, full_name, email, phone, role, is_active, created_at, loyalty_points,
-                   delivery_address, delivery_lat, delivery_lng, auto_fill_address
-
+                   delivery_address, delivery_lat, delivery_lng, auto_fill_address, avatar_url
             FROM Users 
             WHERE user_id = @userId
         `, { userId: userId });
@@ -28,6 +27,33 @@ router.get('/profile', async (req, res) => {
         });
     } catch (error) {
         console.error('Lỗi lấy profile:', error);
+        res.status(500).json({ message: 'Lỗi server' });
+    }
+});
+
+// Cập nhật thông tin cá nhân (Họ tên, SĐT, Avatar)
+router.put('/profile', async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const { full_name, phone, avatar_url } = req.body;
+        
+        await executeQuery(`
+            UPDATE Users SET
+                full_name = ISNULL(@full_name, full_name),
+                phone = ISNULL(@phone, phone),
+                avatar_url = ISNULL(@avatar_url, avatar_url),
+                updated_at = GETDATE()
+            WHERE user_id = @userId
+        `, {
+            userId,
+            full_name: full_name || null,
+            phone: phone || null,
+            avatar_url: avatar_url || null
+        });
+
+        res.json({ success: true, message: 'Đã cập nhật thông tin cá nhân' });
+    } catch (error) {
+        console.error('Lỗi cập nhật profile:', error);
         res.status(500).json({ message: 'Lỗi server' });
     }
 });

@@ -75,7 +75,8 @@ function updateUserInfo() {
     }
     
     if (avatarImg) {
-        avatarImg.src = savedAvatar || `https://ui-avatars.com/api/?background=E67E22&color=fff&rounded=true&size=32&name=${encodeURIComponent(displayName)}`;
+        // Ưu tiên avatar_url từ user object, sau đó tới localStorage cũ, cuối cùng là UI-Avatars
+        avatarImg.src = user.avatar_url || savedAvatar || `https://ui-avatars.com/api/?background=E67E22&color=fff&rounded=true&size=32&name=${encodeURIComponent(displayName)}`;
     }
     
     if (dropdownMenu) {

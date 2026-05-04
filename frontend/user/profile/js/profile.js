@@ -116,7 +116,12 @@ function loadUserData() {
     emailEl.textContent = user.email || 'Chưa cập nhật';
     phoneEl.textContent = user.phone || 'Chưa cập nhật';
     joinedDateEl.textContent = user.created_at ? new Date(user.created_at).toLocaleDateString('vi-VN') : 'Chưa có dữ liệu';
-    roleEl.textContent = user.role === 'staff' ? 'Nhân viên' : 'Quản trị viên';
+    const roleNames = {
+        'admin': 'Quản trị viên',
+        'staff': 'Nhân viên',
+        'customer': 'Khách hàng'
+    };
+    roleEl.textContent = roleNames[user.role] || 'Người dùng';
     
     // Update avatar
     const savedAvatar = localStorage.getItem('userAvatar');
@@ -196,14 +201,34 @@ avatarUpload.addEventListener('change', (e) => {
         const reader = new FileReader();
         reader.onload = function(event) {
             const avatarUrl = event.target.result;
+            
+            // Cập nhật giao diện ngay lập tức
             profileAvatar.src = avatarUrl;
-            avatarImg.src = avatarUrl;
+            if (avatarImg) avatarImg.src = avatarUrl;
             localStorage.setItem('userAvatar', avatarUrl);
-            showToast('Đã cập nhật ảnh đại diện', 'success');
+            
+            // Lưu lên server
+            updateAvatarOnServer(avatarUrl);
         };
         reader.readAsDataURL(file);
     }
 });
+
+async function updateAvatarOnServer(avatarUrl) {
+    try {
+        await put('/customer/profile', { avatar_url: avatarUrl });
+        
+        // Cập nhật object user trong localStorage
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        user.avatar_url = avatarUrl;
+        localStorage.setItem('user', JSON.stringify(user));
+        
+        showToast('Đã lưu ảnh đại diện thành công', 'success');
+    } catch (e) {
+        console.error('Lỗi lưu avatar:', e);
+        showToast('Không thể lưu ảnh lên máy chủ', 'error');
+    }
+}
 
 // Edit profile
 function openEditModal() {

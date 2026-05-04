@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Get current user info
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const adminName = user.full_name || 'Admin';
-    const adminAvatar = `https://ui-avatars.com/api/?background=ff0055&color=fff&rounded=true&name=${encodeURIComponent(adminName)}`;
+    const adminAvatar = user.avatar_url || `https://ui-avatars.com/api/?background=ff0055&color=fff&rounded=true&name=${encodeURIComponent(adminName)}`;
 
     // Get base path based on current location
     // We need to know how many levels deep we are to point to the right files
@@ -75,13 +75,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 </a>
             </nav>
             <div class="sidebar-footer">
-                <div class="user-info">
+                <style>
+                    .user-info:hover { background: rgba(0, 243, 255, 0.1); }
+                </style>
+                <a href="../../user/profile/html/profile.html" class="user-info" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 12px; transition: background 0.3s; width: 100%;">
                     <img class="avatar" src="${adminAvatar}" alt="Avatar">
                     <div class="user-details">
                         <p class="user-name">${adminName}</p>
                         <small>Quản trị viên</small>
                     </div>
-                </div>
+                </a>
                 <button class="logout-btn" id="sidebarLogoutBtn">
                     <i class="fas fa-sign-out-alt"></i> <span class="nav-text">Đăng xuất</span>
                 </button>

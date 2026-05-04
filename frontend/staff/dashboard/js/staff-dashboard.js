@@ -51,7 +51,7 @@ function loadStaffInfo() {
         staffNameEl.textContent = user.full_name || 'Nhân viên';
     }
     if (staffAvatar) {
-        staffAvatar.src = `https://ui-avatars.com/api/?background=3498db&color=fff&rounded=true&name=${encodeURIComponent(user.full_name || 'Staff')}`;
+        staffAvatar.src = user.avatar_url || `https://ui-avatars.com/api/?background=3498db&color=fff&rounded=true&name=${encodeURIComponent(user.full_name || 'Staff')}`;
     }
 }
 
