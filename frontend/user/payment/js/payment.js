@@ -159,7 +159,15 @@ function initCouponEvents() {
     if (applyBtn) {
         applyBtn.addEventListener('click', async () => {
             const code = couponInput.value.trim();
-            if (!code) return;
+            if (!code) {
+                showToast('Vui lòng nhập mã giảm giá', 'warning');
+                return;
+            }
+            
+            if (!subtotal || subtotal <= 0) {
+                showToast('Không có đơn hàng để áp dụng mã', 'warning');
+                return;
+            }
             
             applyBtn.disabled = true;
             applyBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
@@ -309,7 +317,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const fastConfirmBtn = document.getElementById('fastConfirmBtn');
     if (fastConfirmBtn) {
-        fastConfirmBtn.addEventListener('click', () => processOrder('payos'));
+        // Map to 'vietqr' for internal fast confirm to satisfy DB constraint
+        fastConfirmBtn.addEventListener('click', () => processOrder('vietqr'));
     }
 
     const closeReceiptBtn = document.getElementById('closeReceiptBtn');

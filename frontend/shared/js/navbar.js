@@ -106,9 +106,7 @@ function renderNavbar() {
 }
 
 function initNavbarLogic() {
-    console.log('Navbar Logic Initializing...');
-    
-    // Use event delegation on the document or the navbar placeholder
+    // Single click listener for all navbar actions
     const placeholder = document.getElementById('navbar-placeholder');
     if (!placeholder) {
         console.error('navbar-placeholder not found during initNavbarLogic');

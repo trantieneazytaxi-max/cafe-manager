@@ -14,7 +14,9 @@ const dbConfig = {
     options: {
         encrypt: false,
         trustServerCertificate: true,
-        enableArithAbort: true
+        enableArithAbort: true,
+        requestTimeout: 30000,
+        connectionTimeout: 30000
     },
     pool: {
         max: 20, // Tăng số lượng connection

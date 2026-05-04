@@ -141,9 +141,12 @@ router.post('/create', optionalToken, async (req, res) => {
             }
             
             // 3. Tạo thanh toán
+            let actualPaymentMethod = payment_method;
+            if (actualPaymentMethod === 'payos') actualPaymentMethod = 'vietqr';
+
             await transaction.request()
                 .input('order_id', sql.Int, orderId)
-                .input('payment_method', sql.NVarChar(20), payment_method)
+                .input('payment_method', sql.NVarChar(20), actualPaymentMethod)
                 .input('amount', sql.Decimal(10,2), total_amount)
                 .query(`
                     INSERT INTO Payments (order_id, payment_method, amount, paid_at)
