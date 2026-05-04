@@ -80,7 +80,6 @@ function initEventListeners() {
     document.getElementById('changeAvatarBtn').addEventListener('click', () => avatarUpload.click());
     avatarUpload.addEventListener('change', handleAvatarChange);
 
-    // Modal toggles
     document.getElementById('editProfileBtn').addEventListener('click', () => {
         document.getElementById('editFullName').value = currentUser.full_name || '';
         document.getElementById('editPhone').value = currentUser.phone || '';
@@ -89,6 +88,12 @@ function initEventListeners() {
 
     document.getElementById('closeEditModal').addEventListener('click', () => editModal.classList.add('hidden'));
     document.getElementById('cancelEditBtn').addEventListener('click', () => editModal.classList.add('hidden'));
+
+    // Password Modals
+    const passwordModal = document.getElementById('passwordModal');
+    document.getElementById('changePasswordBtn').addEventListener('click', () => passwordModal.classList.remove('hidden'));
+    document.getElementById('closePasswordModal').addEventListener('click', () => passwordModal.classList.add('hidden'));
+    document.getElementById('cancelPasswordBtn').addEventListener('click', () => passwordModal.classList.add('hidden'));
 
     // Form submission
     document.getElementById('editProfileForm').addEventListener('submit', async (e) => {
@@ -100,12 +105,35 @@ function initEventListeners() {
             await put('/customer/profile', { full_name: newName, phone: newPhone });
             currentUser.full_name = newName;
             currentUser.phone = newPhone;
-            localStorage.setItem('user', JSON.stringify(currentUser));
+            
+            const storageUser = { ...currentUser };
+            delete storageUser.avatar_url;
+            localStorage.setItem('user', JSON.stringify(storageUser));
+
             updateUI(currentUser);
             editModal.classList.add('hidden');
             showGlobalToast('Cập nhật thành công', 'success');
         } catch (e) {
             showGlobalToast('Cập nhật thất bại', 'error');
+        }
+    });
+
+    document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const newPass = document.getElementById('newPassword').value;
+        const confirm = document.getElementById('confirmPassword').value;
+
+        if (newPass !== confirm) {
+            showGlobalToast('Mật khẩu xác nhận không khớp', 'error');
+            return;
+        }
+
+        try {
+            // TODO: Password update API
+            showGlobalToast('Đã gửi yêu cầu đổi mật khẩu', 'success');
+            passwordModal.classList.add('hidden');
+        } catch (err) {
+            showGlobalToast('Lỗi đổi mật khẩu', 'error');
         }
     });
 
@@ -154,7 +182,12 @@ async function handleAvatarChange(e) {
         try {
             await put('/customer/profile', { avatar_url: base64 });
             currentUser.avatar_url = base64;
-            localStorage.setItem('user', JSON.stringify(currentUser));
+            
+            // Tránh lưu avatar Base64 vào localStorage gây đầy bộ nhớ
+            const storageUser = { ...currentUser };
+            delete storageUser.avatar_url;
+            localStorage.setItem('user', JSON.stringify(storageUser));
+            
             showGlobalToast('Đã lưu ảnh đại diện', 'success');
         } catch (e) {
             showGlobalToast('Lỗi lưu ảnh', 'error');

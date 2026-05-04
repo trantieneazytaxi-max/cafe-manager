@@ -155,6 +155,35 @@
         </div>
     </div>
 
+    <div id="passwordModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Đổi mật khẩu</h3>
+                <span class="close" id="closePasswordModal">&times;</span>
+            </div>
+            <form id="changePasswordForm">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Mật khẩu hiện tại</label>
+                        <input type="password" id="currentPassword" required autocomplete="current-password">
+                    </div>
+                    <div class="form-group">
+                        <label>Mật khẩu mới</label>
+                        <input type="password" id="newPassword" required minlength="6" autocomplete="new-password">
+                    </div>
+                    <div class="form-group">
+                        <label>Xác nhận mật khẩu mới</label>
+                        <input type="password" id="confirmPassword" required autocomplete="new-password">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" id="cancelPasswordBtn">Hủy</button>
+                    <button type="submit" class="btn-save">Cập nhật</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="../../../../shared/js/api.js"></script>
     <script src="../../../../shared/js/global.js"></script>
     <script src="../js/profile.js"></script>

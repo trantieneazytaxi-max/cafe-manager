@@ -112,23 +112,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const toggleBtn = document.getElementById('sidebarToggleInner');
     const body = document.body;
 
-    // Load saved state
-    const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
-    if (isCollapsed) {
-        sidebar.classList.add('collapsed');
-        body.classList.add('sidebar-collapsed');
+    if (sidebar && toggleBtn) {
+        // Load saved state
+        const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+        if (isCollapsed) {
+            sidebar.classList.add('collapsed');
+            body.classList.add('sidebar-collapsed');
+        }
+
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+            body.classList.toggle('sidebar-collapsed');
+            localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+        });
     }
 
-    toggleBtn.addEventListener('click', () => {
-        sidebar.classList.toggle('collapsed');
-        body.classList.toggle('sidebar-collapsed');
-        localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
-    });
-
     // Logout logic
-    document.getElementById('sidebarLogoutBtn').addEventListener('click', () => {
-        localStorage.clear();
-        sessionStorage.clear();
-        window.location.href = '../../auth/html/admin-login.html';
-    });
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.href = `${prefix}auth/html/admin-login.html`;
+        });
+    }
 });

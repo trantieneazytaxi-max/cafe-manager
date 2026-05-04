@@ -108,7 +108,12 @@ async function handleAvatarChange(e) {
         try {
             await put('/customer/profile', { avatar_url: base64 });
             currentUser.avatar_url = base64;
-            localStorage.setItem('user', JSON.stringify(currentUser));
+            
+            // Lưu vào localStorage nhưng bỏ bớt avatar_url để tránh đầy bộ nhớ (quota exceeded)
+            const storageUser = { ...currentUser };
+            delete storageUser.avatar_url; 
+            localStorage.setItem('user', JSON.stringify(storageUser));
+            
             showGlobalToast('Cập nhật ảnh đại diện thành công', 'success');
         } catch (e) {
             showGlobalToast('Lỗi cập nhật ảnh đại diện', 'error');
