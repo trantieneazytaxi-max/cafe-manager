@@ -251,13 +251,28 @@ async function saveProfile() {
     }
     
     try {
+        console.log('Saving profile...', { newFullName, newPhone });
         saveEditBtn.disabled = true;
         saveEditBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
-        await put('/customer/profile', {
-            full_name: newFullName,
-            phone: newPhone
+        // Sử dụng URL tuyệt đối để tránh nhầm lẫn
+        const token = localStorage.getItem('token');
+        const res = await fetch('http://localhost:5000/api/customer/profile', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                full_name: newFullName,
+                phone: newPhone
+            })
         });
+
+        const result = await res.json();
+        console.log('Save response:', result);
+        
+        if (!res.ok) throw new Error(result.message || 'Lỗi từ máy chủ');
         
         // Cập nhật local
         currentUser.full_name = newFullName;

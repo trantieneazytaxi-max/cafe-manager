@@ -338,11 +338,12 @@ function initFloatingButtons() {
 
 /**
  * 8. Format Currency (VND)
+ * Chỉ định nghĩa nếu chưa có (tránh ghi đè api.js)
  */
-function formatCurrency(amount) {
-    if (amount === undefined || amount === null) return '0₫';
-    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+if (typeof formatCurrency !== 'function') {
+    function formatCurrency(amount) {
+        if (amount === undefined || amount === null) return '0₫';
+        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+    }
+    window.formatCurrency = formatCurrency;
 }
-
-// Global Export
-window.formatCurrency = formatCurrency;

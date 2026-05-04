@@ -45,7 +45,7 @@ router.put('/profile', async (req, res) => {
                 updated_at = GETDATE()
             WHERE user_id = @userId
         `, {
-            userId,
+            userId: userId,
             full_name: full_name || null,
             phone: phone || null,
             avatar_url: avatar_url || null

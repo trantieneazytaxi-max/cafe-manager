@@ -117,6 +117,9 @@ async function loadDashboardData() {
             customersChangeEl.className = `stat-change ${stats.customersChange >= 0 ? 'positive' : 'negative'}`;
         }
         
+        // Cập nhật biểu đồ phân tích (Line + Bar)
+        updateRevenueChart(stats);
+        
         await loadChartData();
         await loadTopItems();
         await loadRatingData();
@@ -135,7 +138,6 @@ async function loadChartData() {
         });
         const data = await response.json();
         
-        updateRevenueChart(data);
         updateChartStats(data);
         await loadCategoryData();
         
@@ -151,6 +153,11 @@ function updateRevenueChart(data) {
     // Xóa chart cũ nếu tồn tại
     if (revenueChart) {
         revenueChart.destroy();
+    }
+
+    if (!data || !data.labels || data.labels.length === 0) {
+        console.warn('Không có dữ liệu biểu đồ');
+        return;
     }
 
     revenueChart = new Chart(ctx, {
