@@ -48,7 +48,7 @@ function loadUserInfo() {
     
     if (adminName) adminName.textContent = user.full_name || 'Admin';
     if (adminAvatar) {
-        adminAvatar.src = `https://ui-avatars.com/api/?background=ff0055&color=fff&rounded=true&name=${encodeURIComponent(user.full_name || 'Admin')}`;
+        adminAvatar.src = user.avatar_url || `https://ui-avatars.com/api/?background=ff0055&color=fff&rounded=true&name=${encodeURIComponent(user.full_name || 'Admin')}`;
     }
 }
 

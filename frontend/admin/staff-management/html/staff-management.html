@@ -66,6 +66,17 @@
             <h3 id="modalTitle" style="margin-bottom: 1.5rem; font-family: 'Orbitron', sans-serif; color: #00f3ff;">THÔNG TIN NHÂN VIÊN</h3>
             <form id="staffForm">
                 <input type="hidden" id="staffId">
+                <div class="form-group" style="text-align: center; margin-bottom: 2rem;">
+                    <div style="position: relative; display: inline-block;">
+                        <img id="avatarPreview" src="https://ui-avatars.com/api/?background=00f3ff&color=fff&rounded=true&size=128" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid #00f3ff; object-fit: cover; cursor: pointer;">
+                        <div id="changeAvatarBtn" style="position: absolute; bottom: 5px; right: 5px; background: #ff0055; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #121212;">
+                            <i class="fas fa-camera" style="color: #fff; font-size: 0.8rem;"></i>
+                        </div>
+                    </div>
+                    <input type="file" id="staffAvatarInput" accept="image/*" style="display: none;">
+                    <input type="hidden" id="staffAvatarUrl">
+                    <p style="font-size: 0.75rem; color: #8892b0; margin-top: 0.5rem;">Click để tải lên ảnh đại diện</p>
+                </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label>Họ và tên</label>

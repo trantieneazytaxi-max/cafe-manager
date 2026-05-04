@@ -495,6 +495,7 @@ router.get('/staff', async (req, res) => {
                 u.phone, 
                 u.is_active, 
                 u.created_at,
+                u.avatar_url,
                 sp.position,
                 sp.salary
             FROM Users u
@@ -545,15 +546,16 @@ router.post('/staff', async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
         
         const userResult = await executeQuery(`
-            INSERT INTO Users (full_name, email, phone, password_hash, role, is_active)
+            INSERT INTO Users (full_name, email, phone, password_hash, role, is_active, avatar_url)
             OUTPUT INSERTED.user_id
-            VALUES (@full_name, @email, @phone, @password_hash, 'staff', @is_active)
+            VALUES (@full_name, @email, @phone, @password_hash, 'staff', @is_active, @avatar_url)
         `, {
             full_name: full_name,
             email: email,
             phone: phone,
             password_hash: hashedPassword,
-            is_active: is_active ? 1 : 0
+            is_active: is_active ? 1 : 0,
+            avatar_url: req.body.avatar_url || null
         });
         
         const userId = userResult.recordset[0].user_id;
@@ -600,13 +602,14 @@ router.post('/staff', async (req, res) => {
 router.put('/staff/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const { full_name, email, phone, password, is_active, profile } = req.body;
+        const { full_name, email, phone, password, is_active, profile, avatar_url } = req.body;
         
         let query = `
             UPDATE Users 
-            SET full_name = @full_name, email = @email, phone = @phone, is_active = @is_active
+            SET full_name = @full_name, email = @email, phone = @phone, is_active = @is_active,
+                avatar_url = ISNULL(@avatar_url, avatar_url)
         `;
-        let params = { full_name, email, phone, is_active: is_active ? 1 : 0, id: id };
+        let params = { full_name, email, phone, is_active: is_active ? 1 : 0, id: id, avatar_url: avatar_url || null };
         
         if (password) {
             const hashedPassword = await bcrypt.hash(password, 10);

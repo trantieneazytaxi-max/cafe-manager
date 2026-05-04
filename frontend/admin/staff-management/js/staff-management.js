@@ -49,7 +49,7 @@ function renderStaffTable() {
     
     tbody.innerHTML = filtered.map(staff => `
         <tr>
-            <td><img class="staff-avatar-img" src="https://ui-avatars.com/api/?background=00f3ff&color=0a0a1a&name=${encodeURIComponent(staff.full_name)}" alt="Avatar"></td>
+            <td><img class="staff-avatar-img" src="${staff.avatar_url || `https://ui-avatars.com/api/?background=00f3ff&color=0a0a1a&name=${encodeURIComponent(staff.full_name)}`}" alt="Avatar"></td>
             <td><strong>${staff.full_name}</strong></td>
             <td>${staff.position || 'Nhân viên'}</td>
             <td>
@@ -106,6 +106,14 @@ async function editStaff(id) {
     document.getElementById('isActive').value = staff.is_active ? '1' : '0';
     document.getElementById('password').value = '';
     
+    // Load avatar preview
+    const avatarPreview = document.getElementById('avatarPreview');
+    const staffAvatarUrl = document.getElementById('staffAvatarUrl');
+    const defaultAvatar = `https://ui-avatars.com/api/?background=00f3ff&color=fff&rounded=true&size=128&name=${encodeURIComponent(staff.full_name)}`;
+    
+    avatarPreview.src = staff.avatar_url || defaultAvatar;
+    staffAvatarUrl.value = staff.avatar_url || '';
+    
     document.getElementById('staffModal').classList.add('active');
 }
 
@@ -120,6 +128,7 @@ async function saveStaff(e) {
         phone: document.getElementById('phone').value,
         position: document.getElementById('position').value,
         is_active: document.getElementById('isActive').value === '1',
+        avatar_url: document.getElementById('staffAvatarUrl').value,
         role: 'staff'
     };
     
@@ -159,10 +168,38 @@ function initEventListeners() {
         document.getElementById('modalTitle').textContent = 'THÊM NHÂN VIÊN MỚI';
         document.getElementById('staffForm').reset();
         document.getElementById('staffId').value = '';
+        document.getElementById('avatarPreview').src = 'https://ui-avatars.com/api/?background=00f3ff&color=fff&rounded=true&size=128';
+        document.getElementById('staffAvatarUrl').value = '';
         document.getElementById('staffModal').classList.add('active');
     });
+    
     document.getElementById('cancelModalBtn').addEventListener('click', () => {
         document.getElementById('staffModal').classList.remove('active');
     });
+    
     document.getElementById('staffForm').addEventListener('submit', saveStaff);
+    
+    // Avatar Upload Logic
+    const avatarPreview = document.getElementById('avatarPreview');
+    const staffAvatarInput = document.getElementById('staffAvatarInput');
+    const changeAvatarBtn = document.getElementById('changeAvatarBtn');
+    const staffAvatarUrl = document.getElementById('staffAvatarUrl');
+
+    if (avatarPreview && staffAvatarInput) {
+        const triggerUpload = () => staffAvatarInput.click();
+        avatarPreview.addEventListener('click', triggerUpload);
+        if (changeAvatarBtn) changeAvatarBtn.addEventListener('click', triggerUpload);
+
+        staffAvatarInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    avatarPreview.src = event.target.result;
+                    staffAvatarUrl.value = event.target.result; // Base64
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
 }
