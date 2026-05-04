@@ -43,7 +43,30 @@ function renderNavbar() {
                 <a href="${pathPrefix}menu/html/menu.html"><i class="fas fa-coffee"></i> Thực đơn</a>
                 <a href="${pathPrefix}offers/html/offers.html"><i class="fas fa-gift"></i> Ưu đãi</a>
                 <a href="${pathPrefix}tables/html/tables.html"><i class="fas fa-chair"></i> Đặt bàn</a>
-                <a href="${pathPrefix}orders/html/orders.html"><i class="fas fa-shopping-cart"></i> Giỏ hàng <span id="cartCount" class="cart-badge" style="display: none;">0</span></a>
+                
+                <div class="cart-nav-item" id="cartNavItem">
+                    <a href="${pathPrefix}orders/html/orders.html">
+                        <i class="fas fa-shopping-cart"></i> Giỏ hàng 
+                        <span id="cartCount" class="cart-badge" style="display: none;">0</span>
+                    </a>
+                    <div class="mini-cart" id="miniCart">
+                        <div class="mini-cart-header">
+                            <span>Giỏ hàng của bạn</span>
+                            <span id="miniCartItemCount">0 món</span>
+                        </div>
+                        <div class="mini-cart-items" id="miniCartItems">
+                            <!-- Items injected here -->
+                        </div>
+                        <div class="mini-cart-footer">
+                            <div class="mini-cart-total">
+                                <span>Tổng cộng:</span>
+                                <span id="miniCartTotal">0đ</span>
+                            </div>
+                            <a href="${pathPrefix}orders/html/orders.html" class="btn-view-cart">Xem chi tiết</a>
+                        </div>
+                    </div>
+                </div>
+
                 <a href="${pathPrefix}history/html/history.html"><i class="fas fa-history"></i> Lịch sử</a>
                 
                 ${isLoggedIn ? `
@@ -153,6 +176,82 @@ function initNavbarLogic() {
             }
         }
     });
+
+    // Hover logic for Mini Cart
+    const cartNavItem = document.getElementById('cartNavItem');
+    const miniCart = document.getElementById('miniCart');
+    if (cartNavItem && miniCart) {
+        cartNavItem.addEventListener('mouseenter', () => {
+            updateMiniCart();
+            miniCart.classList.add('show');
+        });
+        cartNavItem.addEventListener('mouseleave', () => {
+            miniCart.classList.remove('show');
+        });
+    }
+}
+
+function updateNavbarCartCount() {
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+    const badge = document.getElementById('cartCount');
+    
+    if (badge) {
+        if (totalCount > 0) {
+            badge.textContent = totalCount;
+            badge.style.display = 'inline-block';
+        } else {
+            badge.style.display = 'none';
+        }
+    }
+    
+    // Also update mini cart count if visible
+    const miniCount = document.getElementById('miniCartItemCount');
+    if (miniCount) miniCount.textContent = `${totalCount} món`;
+}
+
+function updateMiniCart() {
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const itemsContainer = document.getElementById('miniCartItems');
+    const totalDisplay = document.getElementById('miniCartTotal');
+    
+    if (!itemsContainer) return;
+
+    if (cart.length === 0) {
+        itemsContainer.innerHTML = '<div class="empty-mini-cart">Giỏ hàng trống</div>';
+        if (totalDisplay) totalDisplay.textContent = '0đ';
+        return;
+    }
+
+    let total = 0;
+    itemsContainer.innerHTML = cart.map(item => {
+        const itemTotal = item.price * item.quantity;
+        total += itemTotal;
+        
+        // Handle image path
+        let imgUrl = item.image_url;
+        if (!imgUrl) imgUrl = 'https://via.placeholder.com/50?text=Food';
+        else if (!imgUrl.startsWith('http')) imgUrl = `http://localhost:5000${imgUrl.startsWith('/') ? '' : '/'}${imgUrl}`;
+
+        return `
+            <div class="mini-cart-item">
+                <img src="${imgUrl}" alt="${item.item_name}">
+                <div class="mini-cart-item-info">
+                    <div class="item-name">${item.item_name}</div>
+                    <div class="item-meta">
+                        ${item.size ? `<span>Size: ${item.size}</span>` : ''}
+                        ${item.temperature ? `<span>${item.temperature}</span>` : ''}
+                    </div>
+                    <div class="item-price-qty">
+                        <span class="qty">${item.quantity} x</span>
+                        <span class="price">${(item.price).toLocaleString('vi-VN')}đ</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    if (totalDisplay) totalDisplay.textContent = `${total.toLocaleString('vi-VN')}đ`;
 }
 
 function handleLogout() {
