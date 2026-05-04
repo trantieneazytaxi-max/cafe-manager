@@ -91,6 +91,7 @@ function initNavbarLogic() {
 
     if (profileBtn && profileDropdown) {
         profileBtn.addEventListener('click', (e) => {
+            e.preventDefault();
             e.stopPropagation();
             profileDropdown.classList.toggle('active');
         });
@@ -99,19 +100,48 @@ function initNavbarLogic() {
     if (logoutBtn) {
         logoutBtn.addEventListener('click', (e) => {
             e.preventDefault();
+            e.stopPropagation();
+            
+            console.log('Logging out...');
             localStorage.removeItem('token');
             localStorage.removeItem('user');
-            window.location.href = window.location.pathname.includes('/user/') ? '../../index/html/index.html' : '/user/index/html/index.html';
+            
+            // Redirect to home page
+            const isUserFolder = window.location.pathname.includes('/user/');
+            if (isUserFolder) {
+                // If in /user/some-page/html/file.html
+                // We need to go to /user/index/html/index.html
+                // Find path to 'user' folder and then to index
+                const pathParts = window.location.pathname.split('/');
+                const userIndex = pathParts.indexOf('user');
+                if (userIndex !== -1) {
+                    const depth = pathParts.length - userIndex - 2; // count levels after 'user'
+                    let prefix = '';
+                    for(let i=0; i<depth; i++) prefix += '../';
+                    window.location.href = prefix + 'index/html/index.html';
+                } else {
+                    window.location.href = '/user/index/html/index.html';
+                }
+            } else {
+                window.location.href = '/';
+            }
         });
     }
 
     if (menuToggle && navLinks) {
-        menuToggle.addEventListener('click', () => {
+        menuToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
             navLinks.classList.toggle('active');
         });
     }
 
-    document.addEventListener('click', () => {
-        if (profileDropdown) profileDropdown.classList.remove('active');
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', (e) => {
+        if (profileDropdown && !profileDropdown.contains(e.target)) {
+            profileDropdown.classList.remove('active');
+        }
+        if (navLinks && !navLinks.contains(e.target) && !menuToggle.contains(e.target)) {
+            navLinks.classList.remove('active');
+        }
     });
 }
