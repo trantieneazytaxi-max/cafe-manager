@@ -147,15 +147,36 @@ async function fetchProfileDetails() {
         const data = await get('/customer/profile');
         if (data) {
             currentUser = { ...currentUser, ...data };
-            deliveryAddressInput.value = data.delivery_address || '';
-            autoFillAddressCheckbox.checked = data.auto_fill_address !== 0;
-            currentLat = data.delivery_lat;
-            currentLng = data.delivery_lng;
             
-            if (deliveryMap && currentLat && currentLng) {
-                const pos = [currentLat, currentLng];
-                deliveryMap.setView(pos, 16);
-                deliveryMarker.setLatLng(pos);
+            const deliverySection = document.getElementById('deliveryAddressSection');
+            const staffSection = document.getElementById('staffInfoSection');
+
+            // Hiển thị section theo Role
+            if (data.role === 'customer') {
+                if (deliverySection) deliverySection.classList.remove('hidden');
+                if (staffSection) staffSection.classList.add('hidden');
+                
+                deliveryAddressInput.value = data.delivery_address || '';
+                autoFillAddressCheckbox.checked = data.auto_fill_address !== 0;
+                currentLat = data.delivery_lat;
+                currentLng = data.delivery_lng;
+                
+                if (deliveryMap && currentLat && currentLng) {
+                    const pos = [currentLat, currentLng];
+                    deliveryMap.setView(pos, 16);
+                    deliveryMarker.setLatLng(pos);
+                }
+            } else {
+                // Admin hoặc Staff
+                if (deliverySection) deliverySection.classList.add('hidden');
+                if (staffSection) staffSection.classList.remove('hidden');
+
+                document.getElementById('staffPosition').textContent = data.position || 'Chưa cập nhật';
+                document.getElementById('staffSalary').textContent = data.salary ? formatCurrency(data.salary) : 'Chưa cập nhật';
+                document.getElementById('staffHireDate').textContent = data.hire_date ? new Date(data.hire_date).toLocaleDateString('vi-VN') : 'Chưa cập nhật';
+                document.getElementById('staffIdentity').textContent = data.identity_number || 'Chưa cập nhật';
+                document.getElementById('staffBankAcc').textContent = data.bank_account || 'Chưa cập nhật';
+                document.getElementById('staffBankName').textContent = data.bank_name || 'Chưa cập nhật';
             }
         }
     } catch (e) {

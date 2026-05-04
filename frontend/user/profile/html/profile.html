@@ -66,8 +66,8 @@
                 </div>
             </div>
 
-            <!-- Delivery Address Section -->
-            <div class="profile-card" style="margin-top: 2rem;">
+            <!-- Delivery Address Section (Khách hàng) -->
+            <div id="deliveryAddressSection" class="profile-card" style="margin-top: 2rem;">
                 <div class="profile-info" style="width: 100%;">
                     <h3 style="color: #5C3A21; margin-bottom: 1.5rem;"><i class="fas fa-map-marker-alt" style="color: #E67E22;"></i> Địa chỉ giao hàng mặc định</h3>
                     
@@ -87,6 +87,40 @@
 
                     <div id="deliveryMap" style="height: 300px; border-radius: 20px; border: 2px solid #F5E6D3; margin-top: 1rem;"></div>
                     <p style="font-size: 0.8rem; color: #666; margin-top: 1rem;"><i class="fas fa-info-circle"></i> Di chuyển ghim hoặc click trên bản đồ để chọn vị trí chính xác của bạn.</p>
+                </div>
+            </div>
+
+            <!-- Staff Professional Info Section (Nhân viên/Admin) -->
+            <div id="staffInfoSection" class="profile-card hidden" style="margin-top: 2rem;">
+                <div class="profile-info" style="width: 100%;">
+                    <h3 style="color: #5C3A21; margin-bottom: 1.5rem;"><i class="fas fa-briefcase" style="color: #E67E22;"></i> Thông tin công việc</h3>
+                    
+                    <div class="staff-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+                        <div class="info-group">
+                            <label>Vị trí</label>
+                            <p id="staffPosition">Đang tải...</p>
+                        </div>
+                        <div class="info-group">
+                            <label>Lương cơ bản</label>
+                            <p id="staffSalary">Đang tải...</p>
+                        </div>
+                        <div class="info-group">
+                            <label>Ngày vào làm</label>
+                            <p id="staffHireDate">Đang tải...</p>
+                        </div>
+                        <div class="info-group">
+                            <label>Số CMND/CCCD</label>
+                            <p id="staffIdentity">Đang tải...</p>
+                        </div>
+                        <div class="info-group">
+                            <label>Số tài khoản</label>
+                            <p id="staffBankAcc">Đang tải...</p>
+                        </div>
+                        <div class="info-group">
+                            <label>Ngân hàng</label>
+                            <p id="staffBankName">Đang tải...</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

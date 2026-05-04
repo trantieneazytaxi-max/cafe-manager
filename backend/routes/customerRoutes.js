@@ -9,17 +9,23 @@ router.use(verifyToken);
 router.get('/profile', async (req, res) => {
     try {
         const userId = req.user.userId;
-        const result = await executeQuery(`
-            SELECT user_id, full_name, email, phone, role, is_active, created_at, loyalty_points,
-                   delivery_address, delivery_lat, delivery_lng, auto_fill_address, avatar_url
-            FROM Users 
-            WHERE user_id = @userId
+        
+        // Lấy thông tin cơ bản
+        const userResult = await executeQuery(`
+            SELECT u.user_id, u.full_name, u.email, u.phone, u.role, u.is_active, u.created_at, u.loyalty_points,
+                   u.delivery_address, u.delivery_lat, u.delivery_lng, u.auto_fill_address, u.avatar_url,
+                   sp.position, sp.salary, sp.bank_account, sp.bank_name, sp.address as work_address,
+                   sp.date_of_birth, sp.identity_number, sp.hire_date
+            FROM Users u
+            LEFT JOIN StaffProfile sp ON u.user_id = sp.user_id
+            WHERE u.user_id = @userId
         `, { userId: userId });
         
-        if (result.recordset.length === 0) {
+        if (userResult.recordset.length === 0) {
             return res.status(404).json({ message: 'Không tìm thấy người dùng' });
         }
-        const row = result.recordset[0];
+        
+        const row = userResult.recordset[0];
         res.json({
             ...row,
             delivery_lat: row.delivery_lat != null ? Number(row.delivery_lat) : null,
