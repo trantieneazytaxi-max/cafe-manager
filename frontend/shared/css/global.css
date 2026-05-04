@@ -26,6 +26,7 @@ body {
     background-color: var(--primary-beige-light);
     color: var(--text-dark);
     line-height: 1.6;
+    padding-top: 80px; /* Offset for fixed navbar */
 }
 
 /* Utility Classes */
@@ -70,9 +71,12 @@ body {
 .navbar {
     background: #FFFFFF;
     box-shadow: 0 2px 20px rgba(92, 58, 33, 0.08);
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
+    width: 100%;
     z-index: 1000;
+    transition: all 0.3s ease;
 }
 
 .nav-container {
@@ -86,7 +90,7 @@ body {
 }
 
 .navbar.scrolled {
-    padding: 0.5rem 0;
+    padding: 0;
     box-shadow: 0 4px 20px rgba(92, 58, 33, 0.15);
 }
 
