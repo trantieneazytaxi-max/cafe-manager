@@ -646,4 +646,82 @@ body {
         margin: 0 1rem;
         max-width: none;
     }
+}
+
+/* ========== FLOATING ACTION BUTTONS (FAB) ========== */
+.fab-container {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    z-index: 2000;
+}
+
+.fab-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #5C3A21;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(92, 58, 33, 0.3);
+    border: none;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+}
+
+.fab-btn.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.fab-btn:hover {
+    background: #E67E22;
+    transform: scale(1.1) translateY(-5px);
+    box-shadow: 0 8px 25px rgba(230, 126, 34, 0.4);
+}
+
+.fab-btn i {
+    font-size: 1.2rem;
+}
+
+.fab-btn.btn-back {
+    background: #7f8c8d; /* Gray for back */
+    opacity: 0.8;
+}
+
+.fab-btn.btn-back:hover {
+    background: #34495e;
+    opacity: 1;
+}
+
+/* Tooltip for FAB */
+.fab-btn::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    right: 60px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+    pointer-events: none;
+}
+
+.fab-btn:hover::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-10px);
 }

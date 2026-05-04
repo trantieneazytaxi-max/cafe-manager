@@ -16,6 +16,7 @@ function initGlobalUI() {
     initLogout();
     updateNavbarCartCount();
     initGlobalSearch();
+    initFloatingButtons();
 }
 
 
@@ -292,4 +293,44 @@ function getImgUrl(url, placeholder = 'https://placehold.co/300x200?text=No+Imag
     if (url.startsWith('http')) return url;
     const prefix = 'http://localhost:5000';
     return url.startsWith('/') ? prefix + url : prefix + '/' + url;
+}
+/**
+ * 7. Floating Action Buttons (Back & Scroll to Top)
+ */
+function initFloatingButtons() {
+    // Create FAB container if not exists
+    let fabContainer = document.querySelector('.fab-container');
+    if (!fabContainer) {
+        fabContainer = document.createElement('div');
+        fabContainer.className = 'fab-container';
+        
+        const backBtn = document.createElement('button');
+        backBtn.className = 'fab-btn btn-back show'; // Always show back btn
+        backBtn.innerHTML = '<i class="fas fa-arrow-left"></i>';
+        backBtn.setAttribute('data-tooltip', 'Quay lại');
+        backBtn.onclick = () => window.history.back();
+        
+        const scrollTopBtn = document.createElement('button');
+        scrollTopBtn.className = 'fab-btn btn-scroll-top';
+        scrollTopBtn.id = 'scrollTopBtn';
+        scrollTopBtn.innerHTML = '<i class="fas fa-chevron-up"></i>';
+        scrollTopBtn.setAttribute('data-tooltip', 'Lên đầu trang');
+        scrollTopBtn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        fabContainer.appendChild(backBtn);
+        fabContainer.appendChild(scrollTopBtn);
+        document.body.appendChild(fabContainer);
+    }
+    
+    // Scroll detection for "Back to Top" button
+    window.addEventListener('scroll', () => {
+        const scrollTopBtn = document.getElementById('scrollTopBtn');
+        if (scrollTopBtn) {
+            if (window.scrollY > 300) {
+                scrollTopBtn.classList.add('show');
+            } else {
+                scrollTopBtn.classList.remove('show');
+            }
+        }
+    });
 }
