@@ -126,7 +126,7 @@ cafe-manager/
 ### 2. Cài đặt Database (1-Click Run)
 1. Mở **SQL Server Management Studio (SSMS)**.
 2. Mở file `database/CafeManagement_Full_Demo.sql`.
-3. Nhấn **Execute (F5)** để tự động tạo database mới hoàn toàn từ A đến Z (bao gồm cả dữ liệu mẫu và các tài khoản `admin@cafe.com`, `staff1@cafe.com`, `khach@cafe.com` với mật khẩu chung là `123456`).
+3. Nhấn **Execute (F5)** để tự động tạo database mới hoàn toàn từ A đến Z (bao gồm cả dữ liệu mẫu, các tài khoản `admin@cafe.com`, `staff1@cafe.com`, `khach@cafe.com` với mật khẩu chung là `123456`, và login backend `cafe_user` với mật khẩu `Cafe@2026`).
 
 ### 3. Cấu hình Backend
 ```bash
@@ -136,10 +136,10 @@ npm install
 Tạo file `.env` dựa trên `.env.example`:
 ```env
 DB_SERVER=localhost\\SQLEXPRESS
-DB_PORT=53321
+DB_PORT=1433
 DB_NAME=CafeManagement
-DB_USER=sa
-DB_PASSWORD=your_password
+DB_USER=cafe_user
+DB_PASSWORD=Cafe@2026
 JWT_SECRET=your_jwt_secret
 EMAIL_USER=your_email@gmail.com
 EMAIL_PASSWORD=your_app_password

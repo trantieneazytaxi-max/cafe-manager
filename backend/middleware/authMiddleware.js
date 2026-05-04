@@ -19,9 +19,9 @@ function verifyToken(req, res, next) {
     }
 }
 
-// Check if user is admin
+// Check if user is admin (Now allows staff too as requested)
 function isAdmin(req, res, next) {
-    if (req.user.role !== 'admin') {
+    if (req.user.role !== 'admin' && req.user.role !== 'staff') {
         return res.status(403).json({ message: 'Không có quyền truy cập' });
     }
     next();

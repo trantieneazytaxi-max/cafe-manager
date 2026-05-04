@@ -31,12 +31,11 @@ router.post('/request', async (req, res) => {
         expiresAt.setHours(expiresAt.getHours() + 24); // Hết hạn sau 24 giờ
         
         await executeQuery(`
-            INSERT INTO PasswordResets (email, token, expires_at, is_used)
-            VALUES (@email, @token, @expires_at, 0)
+            INSERT INTO PasswordResets (user_id, token, status, created_at)
+            VALUES (@userId, @token, 'pending', GETDATE())
         `, {
-            email: email,
-            token: resetToken,
-            expires_at: expiresAt
+            userId: user.user_id,
+            token: resetToken
         });
         
         // Gửi email thông báo cho Admin (hoặc gửi link reset)
@@ -79,8 +78,9 @@ router.post('/reset', async (req, res) => {
         
         // Kiểm tra token
         const tokenResult = await executeQuery(`
-            SELECT * FROM PasswordResets 
-            WHERE email = @email AND token = @token AND is_used = 0 AND expires_at > GETDATE()
+            SELECT pr.* FROM PasswordResets pr
+            JOIN Users u ON pr.user_id = u.user_id
+            WHERE u.email = @email AND pr.token = @token AND pr.status = 'pending'
         `, { email: email, token: token });
         
         if (tokenResult.recordset.length === 0) {
@@ -98,7 +98,10 @@ router.post('/reset', async (req, res) => {
         
         // Đánh dấu token đã sử dụng
         await executeQuery(`
-            UPDATE PasswordResets SET is_used = 1 WHERE email = @email AND token = @token
+            UPDATE pr SET status = 'used', updated_at = GETDATE()
+            FROM PasswordResets pr
+            JOIN Users u ON pr.user_id = u.user_id
+            WHERE u.email = @email AND pr.token = @token
         `, { email: email, token: token });
         
         // Gửi email thông báo cho user
@@ -121,10 +124,10 @@ router.post('/reset', async (req, res) => {
 router.get('/requests', async (req, res) => {
     try {
         const result = await executeQuery(`
-            SELECT pr.*, u.full_name, u.role
+            SELECT pr.*, u.full_name, u.role, u.email
             FROM PasswordResets pr
-            JOIN Users u ON pr.email = u.email
-            WHERE pr.is_used = 0 AND pr.expires_at > GETDATE()
+            JOIN Users u ON pr.user_id = u.user_id
+            WHERE pr.status = 'pending'
             ORDER BY pr.created_at DESC
         `);
         

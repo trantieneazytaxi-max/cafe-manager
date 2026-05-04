@@ -1,12 +1,15 @@
 const sql = require('mssql');
 require('dotenv').config();
 
+const dbServer = process.env.DB_SERVER || 'localhost';
+const dbInstance = process.env.DB_INSTANCE;
+const [host, instanceFromServer] = dbServer.split('\\', 2);
+
 const config = {
-    server: process.env.DB_HOST || 'localhost\\SQLEXPRESS',
+    server: host,
     database: process.env.DB_NAME || 'CafeManagement',
     user: process.env.DB_USER || 'cafe_user',
     password: process.env.DB_PASSWORD || 'Cafe@2026',
-    port: parseInt(process.env.DB_PORT) || 53321,
     options: {
         encrypt: false,
         trustServerCertificate: true,
@@ -14,10 +17,19 @@ const config = {
     }
 };
 
+const instanceName = dbInstance || instanceFromServer;
+if (!process.env.DB_PORT && instanceName) {
+    config.options.instanceName = instanceName;
+}
+
+if (process.env.DB_PORT) {
+    config.port = parseInt(process.env.DB_PORT, 10);
+}
+
 async function testConnection() {
     console.log('🔌 Đang kết nối đến SQL Server...');
-    console.log(`   Server: ${config.server}`);
-    console.log(`   Port: ${config.port}`);
+    console.log(`   Server: ${config.server}${config.options.instanceName ? '\\' + config.options.instanceName : ''}`);
+    console.log(`   Port: ${config.port || '(default)'}`);
     console.log(`   Database: ${config.database}`);
     console.log(`   User: ${config.user}`);
     console.log('');

@@ -1,10 +1,12 @@
 /**
  * STAFF ORDERS MANAGEMENT - CAFE MANAGEMENT
+ * Includes: Order type badges, delivery info, order type filtering
  */
 
 // State
 let orders = [];
 let currentStatus = 'all';
+let currentOrderType = 'all';
 let currentOrderId = null;
 
 // DOM Elements
@@ -105,14 +107,22 @@ function renderOrders() {
     if (currentStatus !== 'all') {
         filtered = filtered.filter(o => o.status === currentStatus);
     }
+
+    // Filter by order type
+    if (currentOrderType !== 'all') {
+        filtered = filtered.filter(o => (o.order_type || 'dine-in') === currentOrderType);
+    }
     
     // Filter by search
     const searchTerm = searchInput?.value.toLowerCase() || '';
     if (searchTerm) {
         filtered = filtered.filter(o => 
             o.order_id.toString().includes(searchTerm) ||
+            (o.order_code && o.order_code.toLowerCase().includes(searchTerm)) ||
             (o.table_number && o.table_number.toString().includes(searchTerm)) ||
-            (o.customer_name && o.customer_name.toLowerCase().includes(searchTerm))
+            (o.customer_name && o.customer_name.toLowerCase().includes(searchTerm)) ||
+            (o.guest_name && o.guest_name.toLowerCase().includes(searchTerm)) ||
+            (o.guest_phone && o.guest_phone.includes(searchTerm))
         );
     }
     
@@ -124,10 +134,9 @@ function renderOrders() {
     ordersTableBody.innerHTML = filtered.map(order => `
         <tr>
             <td>${order.order_code || '#' + order.order_id}</td>
-            <td>Bàn ${order.table_number || '---'}</td>
+            <td>${renderOrderTypeBadge(order.order_type)}</td>
             <td>
-                <div>${order.customer_name || 'Khách lẻ'}</div>
-                ${order.note ? `<div class="order-note-small"><i class="fas fa-comment-dots"></i> ${order.note}</div>` : ''}
+                ${renderCustomerInfo(order)}
             </td>
             <td>${formatCurrency(order.total_amount)}</td>
             <td>${formatDate(order.created_at)}</td>
@@ -142,6 +151,43 @@ function renderOrders() {
             </td>
         </tr>
     `).join('');
+}
+
+// Render order type badge
+function renderOrderTypeBadge(orderType) {
+    switch(orderType) {
+        case 'takeaway':
+            return '<span class="order-type-badge type-takeaway"><i class="fas fa-shopping-bag"></i> Tự đến lấy</span>';
+        case 'delivery':
+            return '<span class="order-type-badge type-delivery"><i class="fas fa-truck"></i> Giao hàng</span>';
+        default:
+            return '<span class="order-type-badge type-dinein"><i class="fas fa-chair"></i> Tại chỗ</span>';
+    }
+}
+
+// Render customer info based on order type
+function renderCustomerInfo(order) {
+    const type = order.order_type || 'dine-in';
+    
+    if (type === 'dine-in') {
+        return `
+            <div><strong>Bàn ${order.table_number || '---'}</strong></div>
+            <div class="order-note-small">${order.customer_name || 'Khách lẻ'}</div>
+            ${order.note ? `<div class="order-note-small"><i class="fas fa-comment-dots"></i> ${escapeHtml(order.note)}</div>` : ''}
+        `;
+    } else if (type === 'takeaway') {
+        return `
+            <div><strong>${escapeHtml(order.guest_name || order.customer_name || 'Khách')}</strong></div>
+            ${order.guest_phone ? `<div class="order-note-small"><i class="fas fa-phone"></i> ${order.guest_phone}</div>` : ''}
+            ${order.note ? `<div class="order-note-small"><i class="fas fa-comment-dots"></i> ${escapeHtml(order.note)}</div>` : ''}
+        `;
+    } else {
+        return `
+            <div><strong>${escapeHtml(order.guest_name || order.customer_name || 'Khách')}</strong></div>
+            ${order.guest_phone ? `<div class="order-note-small"><i class="fas fa-phone"></i> ${order.guest_phone}</div>` : ''}
+            ${order.delivery_address ? `<div class="order-note-small delivery-addr"><i class="fas fa-map-marker-alt"></i> ${escapeHtml(order.delivery_address)}</div>` : ''}
+        `;
+    }
 }
 
 function renderStatusFlowButtons(order) {
@@ -209,9 +255,11 @@ window.viewOrderDetail = async function(orderId) {
     }
 };
 
-// Render order detail
+// Render order detail with delivery info
 function renderOrderDetail(order) {
     if (!orderDetailBody) return;
+    
+    const orderType = order.order_type || 'dine-in';
     
     const itemsHtml = order.items?.map(item => `
         <tr>
@@ -222,6 +270,41 @@ function renderOrderDetail(order) {
         </tr>
     `).join('');
     
+    // Build delivery info section
+    let deliveryInfoHtml = '';
+    if (orderType === 'takeaway' || orderType === 'delivery') {
+        deliveryInfoHtml = `
+        <div class="delivery-info-section">
+            <h4><i class="fas fa-${orderType === 'delivery' ? 'truck' : 'shopping-bag'}"></i> Thông tin ${orderType === 'delivery' ? 'giao hàng' : 'mang đi'}</h4>
+            <div class="delivery-info-grid">
+                <div class="delivery-info-item">
+                    <i class="fas fa-user"></i>
+                    <div>
+                        <span class="info-label">Người nhận</span>
+                        <span class="info-value">${escapeHtml(order.guest_name || order.customer_name || 'Không rõ')}</span>
+                    </div>
+                </div>
+                <div class="delivery-info-item">
+                    <i class="fas fa-phone"></i>
+                    <div>
+                        <span class="info-label">Số điện thoại</span>
+                        <span class="info-value">${order.guest_phone || 'Không có'}</span>
+                    </div>
+                </div>
+                ${orderType === 'delivery' ? `
+                <div class="delivery-info-item full-width">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div>
+                        <span class="info-label">Địa chỉ giao hàng</span>
+                        <span class="info-value">${escapeHtml(order.delivery_address || 'Không có')}</span>
+                    </div>
+                </div>
+                ` : ''}
+            </div>
+        </div>
+        `;
+    }
+
     orderDetailBody.innerHTML = `
         <div class="order-info">
             <div class="info-row">
@@ -229,12 +312,18 @@ function renderOrderDetail(order) {
                 <span class="highlight-code">#${order.order_code || order.order_id}</span>
             </div>
             <div class="info-row">
+                <span>Loại đơn:</span>
+                ${renderOrderTypeBadge(orderType)}
+            </div>
+            ${orderType === 'dine-in' ? `
+            <div class="info-row">
                 <span>Bàn:</span>
                 <span>Bàn ${order.table_number || '---'}</span>
             </div>
+            ` : ''}
             <div class="info-row">
                 <span>Khách hàng:</span>
-                <span>${order.customer_name || 'Khách lẻ'}</span>
+                <span>${escapeHtml(order.customer_name || order.guest_name || 'Khách lẻ')}</span>
             </div>
             <div class="info-row">
                 <span>Thời gian:</span>
@@ -252,6 +341,8 @@ function renderOrderDetail(order) {
                 </div>
             </div>` : ''}
         </div>
+
+        ${deliveryInfoHtml}
         
         <h4 style="margin: 1rem 0 0.5rem;">Chi tiết món</h4>
         <table class="items-table">
@@ -262,6 +353,7 @@ function renderOrderDetail(order) {
                 ${itemsHtml}
             </tbody>
             <tfoot>
+                ${order.discount_amount > 0 ? `<tr><td colspan="3" style="text-align: right;">Giảm giá:</td><td style="color: #e74c3c;">-${formatCurrency(order.discount_amount)}</td></tr>` : ''}
                 <tr><td colspan="3" style="text-align: right;"><strong>Tổng cộng:</strong></td><td class="total-row">${formatCurrency(order.total_amount)}</td></tr>
             </tfoot>
         </table>
@@ -390,6 +482,14 @@ function getStatusText(status) {
     }
 }
 
+function getOrderTypeText(type) {
+    switch(type) {
+        case 'takeaway': return 'Tự đến lấy';
+        case 'delivery': return 'Giao hàng';
+        default: return 'Tại chỗ';
+    }
+}
+
 function escapeHtml(str) {
     if (!str) return '';
     return str
@@ -445,12 +545,22 @@ function showToast(message, type = 'success') {
 
 // Event listeners
 function initEventListeners() {
-    // Tab buttons
+    // Status tab buttons
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             currentStatus = btn.getAttribute('data-status');
+            renderOrders();
+        });
+    });
+
+    // Order type filter buttons
+    document.querySelectorAll('.type-filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.type-filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentOrderType = btn.getAttribute('data-type');
             renderOrders();
         });
     });

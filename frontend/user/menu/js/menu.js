@@ -11,14 +11,37 @@ let currentSelectedItem = null;
 let selectedSize = null;
 let selectedToppings = [];
 let currentBasePrice = 0;
+let currentQuantity = 1;
 
-document.addEventListener('DOMContentLoaded', () => {
+
+document.addEventListener('DOMContentLoaded', async () => {
     initModalEvents();
     loadCategories();
-    loadMenuItems();
+    await loadMenuItems();
     initSearch();
     updateNavbarCartCount();
+    initSort();
+    handleSearchQueryParam();
 });
+
+function initSort() {
+    const sortSelect = document.getElementById('sortSelect');
+    if (sortSelect) {
+        sortSelect.addEventListener('change', () => {
+            const activeTab = document.querySelector('.category-tab.active');
+            renderMenu(activeTab ? activeTab.dataset.category : 'all');
+        });
+    }
+}
+
+function handleSearchQueryParam() {
+    const params = new URLSearchParams(window.location.search);
+    const search = params.get('search');
+    if (search) {
+        searchMenuItems(search);
+    }
+}
+
 
 function initModalEvents() {
     const closeBtn = document.getElementById('closeModalBtn');
@@ -29,6 +52,29 @@ function initModalEvents() {
     if (closeBtn) closeBtn.onclick = closeModal;
     if (cancelBtn) cancelBtn.onclick = closeModal;
     if (confirmBtn) confirmBtn.onclick = addToCartWithOptions;
+
+    const incBtn = document.getElementById('modalIncreaseBtn');
+    const decBtn = document.getElementById('modalDecreaseBtn');
+    const qtyDisplay = document.getElementById('modalQuantity');
+
+    if (incBtn) {
+        incBtn.addEventListener('click', () => {
+            currentQuantity++;
+            if (qtyDisplay) qtyDisplay.textContent = currentQuantity;
+            updateModalPrice();
+        });
+    }
+
+    if (decBtn) {
+        decBtn.addEventListener('click', () => {
+            if (currentQuantity > 1) {
+                currentQuantity--;
+                if (qtyDisplay) qtyDisplay.textContent = currentQuantity;
+                updateModalPrice();
+            }
+        });
+    }
+
     if (modal) {
         modal.onclick = (e) => { if (e.target === modal) closeModal(); };
     }
@@ -45,13 +91,15 @@ async function loadCategories() {
 async function loadMenuItems() {
     try {
         const response = await fetch('http://localhost:5000/api/menu/items');
-        allItems = await response.json();
+        const data = await response.json();
+        allItems = Array.isArray(data) ? data : [];
         renderMenu();
     } catch (error) {
         console.error('Lỗi tải thực đơn:', error);
         document.getElementById('menuGrid').innerHTML = '<p style="text-align: center; grid-column: 1/-1;">Lỗi tải dữ liệu. Vui lòng thử lại.</p>';
     }
 }
+
 
 function renderCategoryTabs() {
     const container = document.getElementById('categoryTabs');
@@ -96,9 +144,55 @@ function renderMenu(categoryId = 'all') {
     if (categoryId !== 'all') {
         filteredItems = allItems.filter(item => item.category_id == categoryId);
     }
-    
-    menuGrid.innerHTML = filteredItems.map(item => renderItemCard(item)).join('');
+
+    // Apply Sorting
+    const sortType = document.getElementById('sortSelect')?.value || 'default';
+    if (sortType !== 'default') {
+        filteredItems = [...filteredItems].sort((a, b) => {
+            if (sortType === 'name-asc') return a.item_name.localeCompare(b.item_name);
+            if (sortType === 'name-desc') return b.item_name.localeCompare(a.item_name);
+            if (sortType === 'price-asc') return a.price - b.price;
+            if (sortType === 'price-desc') return b.price - a.price;
+            if (sortType === 'newest') return new Date(b.created_at || 0) - new Date(a.created_at || 0);
+            return 0;
+        });
+    }
+
+    const itemsToShow = filteredItems.filter(i => !i.is_paused);
+    if (itemsToShow.length === 0) {
+        menuGrid.innerHTML = '<p style="text-align: center; grid-column: 1/-1;">Không có món nào trong danh mục này.</p>';
+        return;
+    }
+    menuGrid.innerHTML = itemsToShow.map(item => renderItemCard(item)).join('');
 }
+
+// Export function for global search
+window.searchMenuItems = function(query) {
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) searchInput.value = query;
+    
+    const menuGrid = document.getElementById('menuGrid');
+    const recommendedSection = document.getElementById('recommendedSection');
+    
+    if (!query) {
+        renderMenu();
+        return;
+    }
+
+    recommendedSection.style.display = 'none';
+    const results = allItems.filter(item => 
+        (item.item_name.toLowerCase().includes(query.toLowerCase()) || 
+        (item.description && item.description.toLowerCase().includes(query.toLowerCase())))
+        && !item.is_paused
+    );
+
+    if (results.length === 0) {
+        menuGrid.innerHTML = `<p style="text-align: center; grid-column: 1/-1;">Không tìm thấy món nào khớp với "${query}"</p>`;
+    } else {
+        menuGrid.innerHTML = results.map(item => renderItemCard(item)).join('');
+    }
+};
+
 
 function renderItemCard(item) {
     const isPaused = item.is_paused;
@@ -107,7 +201,7 @@ function renderItemCard(item) {
             ${item.is_recommended ? '<span class="hot-badge"><i class="fas fa-fire"></i> HOT</span>' : ''}
             ${isPaused ? '<span class="paused-badge">HẾT HÀNG</span>' : ''}
             <div class="menu-card-img">
-                <img src="${item.image_url || 'https://via.placeholder.com/300x200?text=Coffee'}" alt="${item.item_name}" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="${getImgUrl(item.image_url)}" alt="${item.item_name}">
                 <span class="category-badge">${item.category_name}</span>
             </div>
             <div class="menu-card-content">
@@ -130,6 +224,10 @@ function openOptionModal(id) {
 
     currentSelectedItem = item;
     currentBasePrice = item.price;
+    currentQuantity = 1;
+    const qtyDisplay = document.getElementById('modalQuantity');
+    if (qtyDisplay) qtyDisplay.textContent = currentQuantity;
+    
     selectedSize = null;
     selectedToppings = [];
 
@@ -203,21 +301,29 @@ function calculatePrice() {
     let total = currentBasePrice;
     if (selectedSize) total += selectedSize.extra;
     selectedToppings.forEach(t => total += t.price);
-    document.getElementById('displayPrice').textContent = formatCurrency(total);
+    
+    const finalTotal = total * currentQuantity;
+    document.getElementById('displayPrice').textContent = formatCurrency(finalTotal);
 }
+
+function updateModalPrice() {
+    calculatePrice();
+}
+
 
 function addToCartWithOptions() {
     if (!currentSelectedItem) return;
 
-    let finalPrice = currentBasePrice;
-    if (selectedSize) finalPrice += selectedSize.extra;
-    selectedToppings.forEach(t => finalPrice += t.price);
+    let totalPerItem = currentBasePrice;
+    if (selectedSize) totalPerItem += selectedSize.extra;
+    selectedToppings.forEach(t => totalPerItem += t.price);
 
     const cartItem = {
         item_id: currentSelectedItem.item_id,
         item_name: currentSelectedItem.item_name,
-        price: finalPrice,
-        quantity: 1,
+        price: totalPerItem * currentQuantity,
+        quantity: currentQuantity,
+
         customizations: {
             size: selectedSize ? selectedSize.name : 'Mặc định',
             toppings: selectedToppings.map(t => t.name),
@@ -233,9 +339,8 @@ function addToCartWithOptions() {
     alert(`Đã thêm ${currentSelectedItem.item_name} vào giỏ hàng!`);
 }
 
-function formatCurrency(amount) {
-    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
-}
+// Dùng formatCurrency từ api.js
+
 
 function updateNavbarCartCount() {
     const total = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
@@ -250,13 +355,8 @@ function initSearch() {
     const input = document.getElementById('searchInput');
     if (input) {
         input.addEventListener('input', (e) => {
-            const keyword = e.target.value.toLowerCase();
-            const filtered = allItems.filter(i => 
-                i.item_name.toLowerCase().includes(keyword) || 
-                (i.description && i.description.toLowerCase().includes(keyword))
-            );
-            document.getElementById('recommendedSection').style.display = keyword ? 'none' : 'block';
-            document.getElementById('menuGrid').innerHTML = filtered.map(item => renderItemCard(item)).join('');
+            searchMenuItems(e.target.value);
         });
     }
 }
+

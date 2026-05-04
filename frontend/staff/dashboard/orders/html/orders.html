@@ -85,6 +85,15 @@
             <button class="tab-btn" data-status="cancelled">Đã hủy</button>
         </div>
 
+        <!-- Order Type Filter -->
+        <div class="order-type-filters">
+            <span class="filter-label"><i class="fas fa-filter"></i> Loại đơn:</span>
+            <button class="type-filter-btn active" data-type="all">Tất cả</button>
+            <button class="type-filter-btn" data-type="dine-in"><i class="fas fa-chair"></i> Tại chỗ</button>
+            <button class="type-filter-btn" data-type="takeaway"><i class="fas fa-shopping-bag"></i> Tự đến lấy</button>
+            <button class="type-filter-btn" data-type="delivery"><i class="fas fa-truck"></i> Giao hàng</button>
+        </div>
+
         <!-- Search -->
         <div class="search-bar">
             <i class="fas fa-search"></i>
@@ -97,8 +106,8 @@
                 <thead>
                     <tr>
                         <th>Mã đơn</th>
-                        <th>Bàn</th>
-                        <th>Khách hàng</th>
+                        <th>Loại đơn</th>
+                        <th>Bàn / Khách</th>
                         <th>Tổng tiền</th>
                         <th>Thời gian</th>
                         <th>Trạng thái</th>

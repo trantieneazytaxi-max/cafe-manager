@@ -10,11 +10,19 @@ document.addEventListener('DOMContentLoaded', () => {
     loadItems();
     
     document.getElementById('itemForm').addEventListener('submit', handleFormSubmit);
+    document.getElementById('categoryForm').addEventListener('submit', handleCategoryFormSubmit);
     
     // Close modal on outside click
     document.getElementById('itemModal').addEventListener('click', function(e) {
         if (e.target === this) {
             closeModal();
+        }
+    });
+    
+    // Close category modal on outside click
+    document.getElementById('categoryModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeCategoryModal();
         }
     });
 });
@@ -39,7 +47,8 @@ async function loadItems() {
         const response = await fetch('http://localhost:5000/api/menu/admin/items', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        allItems = await response.json();
+        const data = await response.json();
+        allItems = Array.isArray(data) ? data : [];
         updateMiniStats();
         renderItems(allItems);
     } catch (error) {
@@ -64,7 +73,7 @@ function renderItems(items) {
     tbody.innerHTML = items.map(item => `
         <tr style="${item.is_paused ? 'opacity: 0.6;' : ''}">
             <td>
-                <img src="${item.image_url || 'https://via.placeholder.com/50'}" class="item-img" onerror="this.src='https://via.placeholder.com/50'">
+                <img src="${item.image_url || 'https://ui-avatars.com/api/?name=Item&background=0d0d1a&color=00f3ff&size=50'}" class="item-img" onerror="this.src='https://ui-avatars.com/api/?name=Item&background=0d0d1a&color=00f3ff&size=50'">
             </td>
             <td>
                 <strong>${item.item_name}</strong>
@@ -93,9 +102,8 @@ function renderItems(items) {
 }
 
 // Helpers
-function formatCurrency(amount) {
-    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
-}
+// Dùng formatCurrency từ api.js
+
 function getStatusBadgeClass(status) {
     return status === 'available' ? 'badge-success' : 'badge-danger';
 }
@@ -124,7 +132,11 @@ function openAddModal() {
     document.getElementById('itemId').value = '';
     document.getElementById('sizesContainer').innerHTML = '';
     document.getElementById('toppingsContainer').innerHTML = '';
+    document.getElementById('comboItemsSection').style.display = 'none';
+    document.getElementById('isCombo').checked = false;
+    document.getElementById('comboItemsContainer').innerHTML = '';
     document.getElementById('itemModal').classList.add('active');
+
 }
 
 function openEditModal(id) {
@@ -141,6 +153,17 @@ function openEditModal(id) {
     document.getElementById('itemStatus').value = item.status;
     document.getElementById('isRecommended').checked = item.is_recommended;
     document.getElementById('isPaused').checked = item.is_paused;
+    document.getElementById('isCombo').checked = item.is_combo;
+    
+    toggleComboSection();
+    
+    // Handle Combo Items
+    const comboContainer = document.getElementById('comboItemsContainer');
+    comboContainer.innerHTML = '';
+    if (item.is_combo && item.combo_items) {
+        item.combo_items.forEach(ci => addComboItemField(ci.child_item_id, ci.quantity));
+    }
+
     
     // Handle Customizations
     const sizesContainer = document.getElementById('sizesContainer');
@@ -180,6 +203,34 @@ function addSizeField(name = '', extraPrice = 0) {
     container.appendChild(div);
 }
 
+function toggleComboSection() {
+    const isCombo = document.getElementById('isCombo').checked;
+    document.getElementById('comboItemsSection').style.display = isCombo ? 'block' : 'none';
+}
+
+function addComboItemField(itemId = '', quantity = 1) {
+    const container = document.getElementById('comboItemsContainer');
+    const div = document.createElement('div');
+    div.style.display = 'grid';
+    div.style.gridTemplateColumns = '2fr 1fr auto';
+    div.style.gap = '10px';
+    
+    const options = allItems
+        .filter(i => !i.is_combo)
+        .map(i => `<option value="${i.item_id}" ${i.item_id == itemId ? 'selected' : ''}>${i.item_name}</option>`)
+        .join('');
+
+    div.innerHTML = `
+        <select class="combo-item-id" style="padding: 5px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #fff;">
+            ${options}
+        </select>
+        <input type="number" placeholder="SL" value="${quantity}" class="combo-item-qty" style="padding: 5px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #fff;">
+        <button type="button" onclick="this.parentElement.remove()" style="background: transparent; border: none; color: #ff0055; cursor: pointer;"><i class="fas fa-times"></i></button>
+    `;
+    container.appendChild(div);
+}
+
+
 function addToppingField(name = '', price = 0) {
     const container = document.getElementById('toppingsContainer');
     const div = document.createElement('div');
@@ -211,6 +262,13 @@ async function handleFormSubmit(e) {
         price: parseInt(div.querySelector('.topping-price').value) || 0
     })).filter(t => t.name);
 
+    // Collect combo items
+    const combo_items = Array.from(document.querySelectorAll('#comboItemsContainer > div')).map(div => ({
+        child_item_id: div.querySelector('.combo-item-id').value,
+        quantity: parseInt(div.querySelector('.combo-item-qty').value) || 1
+    }));
+
+
     const itemData = {
         item_name: document.getElementById('itemName').value,
         category_id: document.getElementById('itemCategory').value,
@@ -220,8 +278,11 @@ async function handleFormSubmit(e) {
         image_url: document.getElementById('itemImage').value,
         is_recommended: document.getElementById('isRecommended').checked,
         is_paused: document.getElementById('isPaused').checked,
+        is_combo: document.getElementById('isCombo').checked,
+        combo_items: document.getElementById('isCombo').checked ? combo_items : [],
         customizations: { sizes, toppings }
     };
+
     
     const url = id ? `http://localhost:5000/api/menu/items/${id}` : 'http://localhost:5000/api/menu/items';
     const method = id ? 'PUT' : 'POST';
@@ -260,5 +321,47 @@ async function deleteItem(id) {
         }
     } catch (error) {
         console.error('Lỗi xóa món:', error);
+    }
+}
+
+// Category Modal Functions
+function openAddCategoryModal() {
+    const modal = document.getElementById('categoryModal');
+    modal.style.display = 'flex';
+    modal.classList.add('active');
+    document.getElementById('categoryForm').reset();
+    document.getElementById('categoryName').focus();
+}
+
+function closeCategoryModal() {
+    const modal = document.getElementById('categoryModal');
+    modal.classList.remove('active');
+    modal.style.display = 'none';
+}
+
+async function handleCategoryFormSubmit(e) {
+    e.preventDefault();
+    const token = localStorage.getItem('token');
+    
+    const categoryData = {
+        category_name: document.getElementById('categoryName').value,
+        description: document.getElementById('categoryDesc').value
+    };
+    
+    try {
+        const response = await fetch('http://localhost:5000/api/menu/categories', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify(categoryData)
+        });
+        const result = await response.json();
+        if (result.success) {
+            closeCategoryModal();
+            loadCategories(); // Reload categories in filter and form
+        } else {
+            alert('Lỗi: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Lỗi thêm danh mục:', error);
     }
 }

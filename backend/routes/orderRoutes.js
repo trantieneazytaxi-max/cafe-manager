@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const { executeQuery, sql, getConnection } = require('../config/js/db');
 const { verifyToken, isStaff, optionalToken } = require('../middleware/authMiddleware');
+const { sendInvoiceEmail } = require('../services/emailService');
+
 
 // Middleware xác thực (tất cả API order đều cần đăng nhập, TRỪ create)
 // router.use(verifyToken); // Đã bị comment vì create dùng optionalToken
@@ -27,11 +29,17 @@ router.post('/create', optionalToken, async (req, res) => {
             discount_id,     
             discount_amount, 
             order_type,      // 🆕 'dine-in', 'takeaway', 'delivery'
-            guest_name,      // 🆕 Cho khách mang đi/giao hàng
-            guest_phone,     // 🆕 Cho khách mang đi/giao hàng
-            delivery_address,// 🆕 Cho khách giao hàng
+            guest_name,      
+            guest_phone,     
+            guest_email,     // 🆕 Thêm email để gửi hóa đơn
+            delivery_address,
+            lat,             // 🆕 Tọa độ vĩ độ
+            lng,             // 🆕 Tọa độ kinh độ
+            distance_km,     // 🆕 Khoảng cách
+            shipping_fee,    // 🆕 Phí giao hàng
             note 
         } = req.body;
+
         
         const user_id = req.user ? req.user.userId : null;
         
@@ -74,19 +82,29 @@ router.post('/create', optionalToken, async (req, res) => {
                 .input('order_type', sql.NVarChar(20), order_type || 'dine-in')
                 .input('guest_name', sql.NVarChar(100), guest_name || null)
                 .input('guest_phone', sql.NVarChar(20), guest_phone || null)
+                .input('guest_email', sql.NVarChar(100), guest_email || null)
                 .input('delivery_address', sql.NVarChar(255), delivery_address || null)
+                .input('lat', sql.Decimal(10, 8), lat || null)
+                .input('lng', sql.Decimal(11, 8), lng || null)
+                .input('distance_km', sql.Decimal(10, 2), distance_km || 0)
+                .input('shipping_fee', sql.Decimal(10, 2), shipping_fee || 0)
+
                 .query(`
                     INSERT INTO Orders (
                         table_id, user_id, total_amount, status, note, created_at, 
                         order_code, discount_id, discount_amount, order_type, 
-                        guest_name, guest_phone, delivery_address
+                        guest_name, guest_phone, guest_email, delivery_address,
+                        lat, lng, distance_km, shipping_fee
                     )
+
                     OUTPUT INSERTED.order_id, INSERTED.order_code
                     VALUES (
                         @table_id, @user_id, @total_amount, @status, @note, GETDATE(), 
                         @order_code, @discount_id, @discount_amount, @order_type, 
-                        @guest_name, @guest_phone, @delivery_address
+                        @guest_name, @guest_phone, @guest_email, @delivery_address,
+                        @lat, @lng, @distance_km, @shipping_fee
                     )
+
                 `);
             
             const orderId = orderResult.recordset[0].order_id;
@@ -158,7 +176,41 @@ router.post('/create', optionalToken, async (req, res) => {
             // Commit transaction
             await transaction.commit();
             
-            res.json({ 
+            // 🆕 6. Gửi hóa đơn qua email (nếu có email) - Bọc trong try-catch riêng để không làm hỏng flow chính
+            try {
+                if (guest_email || (req.user && req.user.email)) {
+                    const emailData = {
+                        order_id: orderId,
+                        order_code: finalOrderCode,
+                        total_amount: total_amount,
+                        discount_amount: discount_amount,
+                        shipping_fee: shipping_fee,
+                        guest_name: guest_name,
+                        guest_email: guest_email || req.user.email,
+                        created_at: new Date()
+                    };
+                    
+                    // Lấy thông tin user (nếu đã đăng nhập) để có full_name
+                    if (req.user) {
+                        const userResult = await executeQuery('SELECT full_name, email FROM Users WHERE user_id = @uid', { uid: user_id });
+                        if (userResult.recordset.length > 0) {
+                            emailData.full_name = userResult.recordset[0].full_name;
+                            emailData.email = userResult.recordset[0].email;
+                        }
+                    }
+
+                    sendInvoiceEmail(emailData, items.map(i => ({
+                        item_name: i.item_name || 'Món ăn',
+                        quantity: i.quantity,
+                        unit_price: i.price
+                    })));
+                }
+            } catch (emailError) {
+                console.error('Lỗi gửi email hóa đơn:', emailError);
+                // Không throw error ở đây vì đơn hàng đã thành công
+            }
+
+            return res.json({ 
                 success: true, 
                 message: 'Đặt hàng thành công', 
                 order_id: orderId,
@@ -167,13 +219,17 @@ router.post('/create', optionalToken, async (req, res) => {
             });
             
         } catch (error) {
-            await transaction.rollback();
+            if (transaction && transaction.active) {
+                await transaction.rollback();
+            }
             throw error;
         }
         
     } catch (error) {
         console.error('Lỗi tạo đơn hàng:', error);
-        res.status(500).json({ message: 'Lỗi server: ' + error.message });
+        if (!res.headersSent) {
+            res.status(500).json({ message: 'Lỗi server: ' + error.message });
+        }
     }
 });
 
@@ -190,10 +246,12 @@ router.get('/history', verifyToken, async (req, res) => {
                 o.total_amount,
                 o.status,
                 o.created_at,
+                o.order_code,
+                o.order_type,
                 p.payment_method,
                 p.paid_at
             FROM Orders o
-            JOIN Tables t ON o.table_id = t.table_id
+            LEFT JOIN Tables t ON o.table_id = t.table_id
             LEFT JOIN Payments p ON o.order_id = p.order_id
             WHERE o.user_id = @user_id
             ORDER BY o.created_at DESC
@@ -223,11 +281,14 @@ router.get('/:orderId', verifyToken, async (req, res) => {
                 o.status,
                 o.note,
                 o.created_at,
+                o.order_code,
+                o.order_type,
+                o.delivery_address,
                 p.payment_method,
                 p.amount as paid_amount,
                 p.paid_at
             FROM Orders o
-            JOIN Tables t ON o.table_id = t.table_id
+            LEFT JOIN Tables t ON o.table_id = t.table_id
             LEFT JOIN Payments p ON o.order_id = p.order_id
             WHERE o.order_id = @orderId AND o.user_id = @user_id
         `, { orderId: orderId, user_id: user_id });

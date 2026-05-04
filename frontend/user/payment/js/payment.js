@@ -9,12 +9,152 @@ let subtotal = 0;
 let tax = 0;
 let total = 0;
 let appliedDiscount = null;
+let storeConfig = { lat: null, lng: null, address: '', storeName: '' };
+let storeApiKeyPresent = false;
+let mapsInitPromise = null;
+
+function getDeliveryKm() {
+    const hidden = document.getElementById('deliveryDistanceKm');
+    if (hidden && hidden.value !== '') {
+        const v = parseFloat(hidden.value);
+        if (Number.isFinite(v)) return v;
+    }
+    const slider = document.getElementById('deliveryDistance');
+    return slider ? parseFloat(slider.value) : 3;
+}
+
+function refreshSurchargeUI(km) {
+    const surchargeWarning = document.getElementById('surchargeWarning');
+    const surchargeCheckbox = document.getElementById('surchargeAccepted');
+    const deliveryFeeEl = document.getElementById('deliveryFeeDisplay');
+    if (deliveryFeeEl) deliveryFeeEl.textContent = formatCurrency(calculateDeliveryFee(km, subtotal));
+    if (km > 5) {
+        surchargeWarning?.classList.remove('hidden');
+    } else {
+        surchargeWarning?.classList.add('hidden');
+        if (surchargeCheckbox) surchargeCheckbox.checked = false;
+    }
+}
+
+async function loadStoreConfig() {
+    try {
+        const response = await fetch('http://localhost:5000/api/store');
+        const data = await response.json();
+        storeApiKeyPresent = Boolean(data.mapboxAccessToken);
+        storeConfig = {
+            lat: data.lat,
+            lng: data.lng,
+            address: data.address || '',
+            storeName: data.storeName || ''
+        };
+        const label = document.getElementById('storeOriginLabel');
+        if (label) {
+            label.textContent = storeConfig.address
+                ? storeConfig.address
+                : '(Chưa cấu hình — vào Admin → Cài đặt hệ thống và chọn địa chỉ trên Mapbox)';
+        }
+        const hint = document.getElementById('mapsKeyHint');
+        if (hint && !storeApiKeyPresent) {
+            hint.classList.remove('hidden');
+        }
+    } catch (e) {
+        console.error('loadStoreConfig', e);
+        const label = document.getElementById('storeOriginLabel');
+        if (label) label.textContent = 'Không tải được địa chỉ quán';
+    }
+}
+
+function applySavedDeliveryCoords() {
+    const latEl = document.getElementById('deliveryLat');
+    const lngEl = document.getElementById('deliveryLng');
+    if (!latEl || !lngEl) return;
+    const lat = parseFloat(latEl.value);
+    const lng = parseFloat(lngEl.value);
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+    if (storeConfig.lat == null || storeConfig.lng == null) return;
+    let km = haversineKm(storeConfig.lat, storeConfig.lng, lat, lng);
+    km = Math.round(km * 10) / 10;
+    km = Math.max(0.5, Math.min(25, km));
+    const hidden = document.getElementById('deliveryDistanceKm');
+    if (hidden) hidden.value = String(km);
+    const computedSpan = document.getElementById('distanceValueComputed');
+    if (computedSpan) computedSpan.textContent = km;
+    document.getElementById('distanceComputedBlock')?.classList.remove('hidden');
+    document.getElementById('distanceManualBlock')?.classList.add('hidden');
+    refreshSurchargeUI(km);
+    updateOrderSummary();
+}
+
+function ensureMapsInit() {
+    if (!mapsInitPromise) {
+        mapsInitPromise = initMapsForPayment();
+    }
+    return mapsInitPromise;
+}
+
+async function initMapsForPayment() {
+    await loadStoreConfig();
+    const mapSection = document.getElementById('mapPickerSection');
+    if (mapSection) mapSection.classList.remove('hidden');
+
+    try {
+        const storePos = [storeConfig.lat || 21.0278, storeConfig.lng || 105.8342];
+        const picker = await initLeafletPicker('mapPicker', {
+            center: storePos,
+            storePos: storePos,
+            onSelect: (p) => {
+                document.getElementById('deliveryLat').value = p.lat;
+                document.getElementById('deliveryLng').value = p.lng;
+                
+                const hidden = document.getElementById('deliveryDistanceKm');
+                if (hidden) hidden.value = String(p.distance);
+                
+                const computedSpan = document.getElementById('distanceValueComputed');
+                if (computedSpan) computedSpan.textContent = p.distance;
+                
+                document.getElementById('distanceComputedBlock')?.classList.remove('hidden');
+                document.getElementById('distanceManualBlock')?.classList.add('hidden');
+                
+                refreshSurchargeUI(parseFloat(p.distance));
+                updateOrderSummary();
+            }
+        });
+    } catch (e) {
+        console.error('Lỗi init Leaflet:', e);
+    }
+}
+
 
 // DOM Elements
 const orderItemsContainer = document.getElementById('orderItems');
 function initCouponEvents() {
     const applyBtn = document.getElementById('applyCouponBtn');
     const couponInput = document.getElementById('couponCode');
+    const clearBtn = document.getElementById('clearCouponBtn');
+    const scanQrBtn = document.getElementById('scanQrBtn');
+    
+    if (scanQrBtn) {
+        scanQrBtn.addEventListener('click', () => {
+            // Simulate QR Scan
+            showToast('Đang mở máy quét mã QR...', 'info');
+            setTimeout(() => {
+                couponInput.value = 'QR_DISCOUNT_10';
+                applyBtn.click();
+            }, 1500);
+        });
+    }
+
+    if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+            appliedDiscount = null;
+            couponInput.value = '';
+            document.getElementById('couponMessage').textContent = '';
+            clearBtn.classList.add('hidden');
+            applyBtn.classList.remove('hidden');
+            updateOrderSummary();
+            showToast('Đã bỏ qua mã giảm giá', 'info');
+        });
+    }
     
     if (applyBtn) {
         applyBtn.addEventListener('click', async () => {
@@ -26,12 +166,16 @@ function initCouponEvents() {
             
             try {
                 const token = localStorage.getItem('token');
+                const headers = {
+                    'Content-Type': 'application/json'
+                };
+                if (token) {
+                    headers.Authorization = `Bearer ${token}`;
+                }
+
                 const response = await fetch('http://localhost:5000/api/discounts/apply', {
                     method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
+                    headers,
                     body: JSON.stringify({ code, orderAmount: subtotal })
                 });
                 
@@ -42,6 +186,10 @@ function initCouponEvents() {
                     appliedDiscount = data.discount;
                     msgEl.textContent = `Áp dụng thành công! Giảm ${formatCurrency(data.discount.discountAmount)}`;
                     msgEl.className = 'coupon-message success';
+                    
+                    applyBtn.classList.add('hidden');
+                    if (clearBtn) clearBtn.classList.remove('hidden');
+                    
                     updateOrderSummary();
                 } else {
                     appliedDiscount = null;
@@ -59,12 +207,37 @@ function initCouponEvents() {
     }
 }
 
+// Tính phí giao hàng theo khoảng cách (km)
+// Miễn phí vận chuyển cho đơn >= 199.000đ và <= 5km
+// ≤5km: 20k cố định | >5km: 20k + phụ thu 5k/km vượt quá
+function calculateDeliveryFee(distanceKm, currentSubtotal = 0) {
+    if (currentSubtotal >= 199000 && distanceKm <= 5) {
+        return 0; // Freeship
+    }
+    const baseFee = 20000; // Phí cố định 20k cho ≤5km
+    if (distanceKm <= 5) {
+        return baseFee;
+    } else {
+        const extraKm = distanceKm - 5;
+        return baseFee + Math.round(extraKm * 5000);
+    }
+}
+
+
+// Kiểm tra có vượt quá bán kính tiêu chuẩn không
+function isOutsideStandardRadius() {
+    const orderType = document.querySelector('input[name="orderType"]:checked')?.value;
+    if (orderType !== 'delivery') return false;
+    return getDeliveryKm() > 5;
+}
+
 function updateOrderSummary() {
     const subtotalEl = document.getElementById('subtotal');
     const discountRow = document.querySelector('.discount-row');
     const discountEl = document.getElementById('discountAmount');
     const taxEl = document.getElementById('tax');
     const shippingRow = document.getElementById('shippingRow');
+    const shippingFeeEl = document.getElementById('shippingFee');
     const totalEl = document.getElementById('totalPrice');
     
     subtotalEl.textContent = formatCurrency(subtotal);
@@ -72,15 +245,23 @@ function updateOrderSummary() {
     tax = subtotal * 0.1;
     if (taxEl) taxEl.textContent = formatCurrency(tax);
     
-    // 🆕 Phí ship (20k nếu là delivery)
+    // Phí ship linh hoạt theo km (chỉ khi delivery)
     const orderType = document.querySelector('input[name="orderType"]:checked')?.value;
-    const shippingFee = orderType === 'delivery' ? 20000 : 0;
+    let shippingFee = 0;
+    
+    if (orderType === 'delivery') {
+        shippingFee = calculateDeliveryFee(getDeliveryKm(), subtotal);
+    }
+
     
     if (shippingRow) {
         shippingRow.style.display = shippingFee > 0 ? 'flex' : 'none';
     }
+    if (shippingFeeEl) {
+        shippingFeeEl.textContent = formatCurrency(shippingFee);
+    }
 
-    let currentTotal = subtotal + tax + shippingFee; // Tổng gồm thuế + ship
+    let currentTotal = subtotal + tax + shippingFee;
     
     if (appliedDiscount) {
         discountRow.style.display = 'flex';
@@ -102,17 +283,29 @@ const successModal = document.getElementById('successModal');
 const closeModalBtn = document.getElementById('closeModalBtn');
 
 // Check authentication & load data
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    await loadStoreConfig();
     loadOrderData();
+    const token = localStorage.getItem('token');
+    if (token) {
+        await fetchUserProfile(token);
+        applySavedDeliveryCoords();
+    }
     initPaymentMethodSwitch();
     initEventListeners();
-    initCouponEvents(); // 🆕 Init coupon logic
-    initOrderTypeEvents(); // 🆕 Init order type selection
-    loadAvailableCoupons(); // 🆕 Load and recommend coupons
-    
-    // Kiểm tra callback từ PayOS
+    initCouponEvents();
+    initOrderTypeEvents();
+    loadAvailableCoupons();
     checkPayOSCallback();
+    
+    const closeReceiptBtn = document.getElementById('closeReceiptBtn');
+    if (closeReceiptBtn) {
+        closeReceiptBtn.addEventListener('click', () => {
+            window.location.href = '../../index/html/index.html';
+        });
+    }
 });
+
 
 async function loadAvailableCoupons() {
     const listEl = document.getElementById('couponsList');
@@ -203,11 +396,28 @@ async function fetchUserProfile(token) {
             const guestPhoneInput = document.getElementById('guestPhone');
             if (guestNameInput) guestNameInput.value = data.full_name || '';
             if (guestPhoneInput) guestPhoneInput.value = data.phone || '';
+            
+            // Chỉ tự động điền nếu người dùng bật setting auto_fill_address
+            if (data.auto_fill_address !== 0) {
+                const addr = document.getElementById('deliveryAddress');
+                const latEl = document.getElementById('deliveryLat');
+                const lngEl = document.getElementById('deliveryLng');
+                if (addr && data.delivery_address) addr.value = data.delivery_address;
+                if (latEl && data.delivery_lat != null) latEl.value = String(data.delivery_lat);
+                if (lngEl && data.delivery_lng != null) lngEl.value = String(data.delivery_lng);
+                
+                // Nếu đang ở tab delivery, áp dụng tọa độ ngay
+                const orderType = document.querySelector('input[name="orderType"]:checked')?.value;
+                if (orderType === 'delivery') {
+                    applySavedDeliveryCoords();
+                }
+            }
         }
     } catch (error) {
         console.error('Error fetching profile for auto-fill:', error);
     }
 }
+
 
 function initOrderTypeEvents() {
     const typeRadios = document.querySelectorAll('input[name="orderType"]');
@@ -215,36 +425,62 @@ function initOrderTypeEvents() {
     const addressGroup = document.getElementById('deliveryAddressGroup');
     const token = localStorage.getItem('token');
 
-    // Nếu chưa đăng nhập, luôn hiện Guest Info
-    if (!token) {
-        guestSection.classList.remove('hidden');
-    } else {
-        // 🆕 Nếu đã đăng nhập, tự động lấy thông tin user để fill
-        fetchUserProfile(token);
+    // Hàm cập nhật UI theo loại đơn
+    function applyOrderTypeUI(type) {
+        // Địa chỉ + phí giao hàng: CHỈ hiện khi chọn "Giao hàng"
+        if (type === 'delivery') {
+            addressGroup.classList.remove('hidden');
+            ensureMapsInit();
+        } else {
+            addressGroup.classList.add('hidden');
+        }
+
+        // Thông tin khách (tên + SĐT):
+        // - "Tự đến lấy" hoặc "Giao hàng": luôn hiện
+        // - "Tại chỗ": chỉ hiện nếu chưa đăng nhập
+        if (type !== 'dine-in' || !token) {
+            guestSection.classList.remove('hidden');
+        } else {
+            guestSection.classList.add('hidden');
+        }
+
+        // Cập nhật tổng tiền (phí ship chỉ có khi delivery)
+        updateOrderSummary();
     }
 
+    // Chạy ngay khi load trang để set đúng trạng thái ban đầu
+    const initialType = document.querySelector('input[name="orderType"]:checked')?.value || 'dine-in';
+    applyOrderTypeUI(initialType);
+    updateCashPaymentMessage(); // Update message on initial load
+
+    // Lắng nghe thay đổi
     typeRadios.forEach(radio => {
         radio.addEventListener('change', (e) => {
-            const type = e.target.value;
-            
-            // Hiện address nếu chọn delivery
-            if (type === 'delivery') {
-                addressGroup.classList.remove('hidden');
-            } else {
-                addressGroup.classList.add('hidden');
-            }
-
-            // Hiện guest info nếu mang đi/giao hàng HOÀC chưa đăng nhập
-            if (type !== 'dine-in' || !token) {
-                guestSection.classList.remove('hidden');
-            } else {
-                guestSection.classList.add('hidden');
-            }
-
-            // 🆕 Cập nhật lại tổng tiền (để cộng/trừ phí ship)
-            updateOrderSummary();
+            applyOrderTypeUI(e.target.value);
+            updateCashPaymentMessage(); // Update cash message when order type changes
         });
     });
+
+    // Distance slider for delivery fee
+    const distanceSlider = document.getElementById('deliveryDistance');
+    if (distanceSlider) {
+        distanceSlider.addEventListener('input', (e) => {
+            const km = parseFloat(e.target.value);
+            const hidden = document.getElementById('deliveryDistanceKm');
+            if (hidden) hidden.value = String(km);
+            const distanceValueEl = document.getElementById('distanceValue');
+            if (distanceValueEl) distanceValueEl.textContent = km;
+            refreshSurchargeUI(km);
+            const percent = ((km - 1) / (15 - 1)) * 100;
+            const color = km > 5 ? '#e74c3c' : '#e67e22';
+            distanceSlider.style.background = `linear-gradient(to right, ${color} 0%, ${color} ${percent}%, #eee ${percent}%, #eee 100%)`;
+            updateOrderSummary();
+        });
+        const initPercent = ((3 - 1) / (15 - 1)) * 100;
+        distanceSlider.style.background = `linear-gradient(to right, #e67e22 0%, #e67e22 ${initPercent}%, #eee ${initPercent}%, #eee 100%)`;
+        const hiddenKm = document.getElementById('deliveryDistanceKm');
+        if (hiddenKm && !hiddenKm.value) hiddenKm.value = distanceSlider.value;
+    }
 }
 
 // Kiểm tra callback từ PayOS
@@ -274,7 +510,22 @@ async function finalizePayOSOrder(orderCode) {
         const orderType = document.querySelector('input[name="orderType"]:checked').value;
         const guestName = document.getElementById('guestName').value;
         const guestPhone = document.getElementById('guestPhone').value;
-        const deliveryAddress = document.getElementById('deliveryAddress').value;
+        const deliveryAddress = (document.getElementById('deliveryAddress').value || '').trim().slice(0, 255);
+
+        if (orderType === 'delivery') {
+            if (!deliveryAddress) {
+                showToast('Vui lòng nhập địa chỉ giao hàng', 'error');
+                return;
+            }
+            if (storeApiKeyPresent && storeConfig.lat != null && storeConfig.lng != null) {
+                const dLat = document.getElementById('deliveryLat').value;
+                const dLng = document.getElementById('deliveryLng').value;
+                if (!dLat || !dLng) {
+                    showToast('Vui lòng chọn địa chỉ từ gợi ý Mapbox (chọn một kết quả trong danh sách)', 'error');
+                    return;
+                }
+            }
+        }
 
         const orderData = {
             table_id: orderType === 'dine-in' ? (selectedTable ? selectedTable.table_id : 1) : null,
@@ -380,8 +631,11 @@ function initPaymentMethodSwitch() {
             
             if (e.target.value === 'cash') {
                 cashSection.classList.remove('hidden');
+                updateCashPaymentMessage(); // Update message based on order type
             } else if (e.target.value === 'payos') {
                 payosSection.classList.remove('hidden');
+                // Hide counter notice when switching to PayOS
+                document.getElementById('counterPaymentNotice').classList.add('hidden');
             }
         });
     });
@@ -395,9 +649,19 @@ async function confirmPayment() {
         showToast('Vui lòng chọn phương thức thanh toán', 'error');
         return;
     }
+
+    // Kiểm tra phụ thu giao hàng xa (>5km)
+    if (isOutsideStandardRadius()) {
+        const surchargeCheckbox = document.getElementById('surchargeAccepted');
+        if (!surchargeCheckbox || !surchargeCheckbox.checked) {
+            showToast('Vui lòng xác nhận đồng ý phụ thu giao hàng xa trước khi thanh toán', 'error');
+            // Scroll to surcharge warning
+            document.getElementById('surchargeWarning')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
+    }
     
     if (selectedMethod === 'cash') {
-        // Tiền khách đưa giờ xử lý bên Staff, User chỉ việc xác nhận
         await processOrder('cash');
     } else if (selectedMethod === 'payos') {
         await processPayOS();
@@ -466,7 +730,7 @@ async function processOrder(paymentMethod) {
         const orderType = document.querySelector('input[name="orderType"]:checked').value;
         const guestName = document.getElementById('guestName').value;
         const guestPhone = document.getElementById('guestPhone').value;
-        const deliveryAddress = document.getElementById('deliveryAddress').value;
+        const deliveryAddress = (document.getElementById('deliveryAddress').value || '').trim().slice(0, 255);
 
         // Validate guest info - Chỉ bắt buộc với Mang đi / Giao hàng
         if (orderType !== 'dine-in' && (!guestName || !guestPhone)) {
@@ -478,6 +742,15 @@ async function processOrder(paymentMethod) {
             showToast('Vui lòng nhập địa chỉ giao hàng', 'error');
             resetConfirmBtn(confirmBtn, originalText);
             return;
+        }
+        if (orderType === 'delivery' && storeApiKeyPresent && storeConfig.lat != null && storeConfig.lng != null) {
+            const dLat = document.getElementById('deliveryLat').value;
+            const dLng = document.getElementById('deliveryLng').value;
+            if (!dLat || !dLng) {
+                showToast('Vui lòng chọn địa chỉ từ gợi ý Mapbox (chọn một kết quả trong danh sách)', 'error');
+                resetConfirmBtn(confirmBtn, originalText);
+                return;
+            }
         }
 
         const orderData = {
@@ -497,7 +770,7 @@ async function processOrder(paymentMethod) {
             guest_name: guestName || (orderType === 'dine-in' ? 'Khách tại bàn' : 'Khách vãng lai'),
             guest_phone: guestPhone || null,
             delivery_address: deliveryAddress || null,
-            note: (sessionStorage.getItem('tempOrderNote') || '') + (paymentMethod === 'cash' ? ` (Thanh toán tiền mặt)` : ` (Thanh toán online)`)
+            note: buildOrderNote(orderType, paymentMethod)
         };
         
         const response = await fetch('http://localhost:5000/api/orders/create', {
@@ -515,23 +788,11 @@ async function processOrder(paymentMethod) {
             localStorage.removeItem('cart');
             sessionStorage.removeItem('tempOrder');
             
-            // Lưu order_code để hiển thị ở trang success
-            if (data.order_code) {
-                sessionStorage.setItem('lastOrderCode', data.order_code);
-            }
-            // Lưu số điểm tích lũy được
-            if (data.earned_points) {
-                sessionStorage.setItem('lastEarnedPoints', data.earned_points);
-            }
+            sessionStorage.setItem('lastOrderCode', data.order_code);
+            sessionStorage.setItem('lastOrderId', data.order_id);
+            window.location.href = '../../payment-success/html/payment-success.html?method=' + paymentMethod;
+
             
-            // Chuyển hướng
-            if (paymentMethod === 'cash') {
-                // Cho tiền mặt, có thể chuyển về trang đơn hàng/lịch sử thay vì success splash nếu muốn
-                // Nhưng ở đây ta vẫn dùng success page để show mã đơn
-                window.location.href = '../../payment-success/html/payment-success.html?method=cash';
-            } else {
-                window.location.href = '../../payment-success/html/payment-success.html';
-            }
         } else {
             throw new Error(data.message || 'Thanh toán thất bại');
         }
@@ -542,6 +803,32 @@ async function processOrder(paymentMethod) {
         confirmBtn.disabled = false;
     }
 }
+
+function showPremiumReceipt(orderData, items) {
+    const modal = document.getElementById('receiptModal');
+    if (!modal) return;
+
+    document.getElementById('receiptOrderCode').textContent = orderData.order_code || '#CM-0000';
+    document.getElementById('receiptDate').textContent = new Date().toLocaleString('vi-VN');
+    
+    const list = document.getElementById('receiptItemsList');
+    if (list) {
+        list.innerHTML = items.map(item => `
+            <tr>
+                <td>${escapeHtml(item.item_name)} x ${item.quantity || 1}</td>
+                <td style="text-align: right;">${formatCurrency(item.price * (item.quantity || 1))}</td>
+            </tr>
+        `).join('');
+    }
+    
+    document.getElementById('receiptSubtotal').textContent = formatCurrency(subtotal);
+    document.getElementById('receiptShip').textContent = formatCurrency(orderData.shipping_fee || 0);
+    document.getElementById('receiptKm').textContent = orderData.distance_km || 0;
+    document.getElementById('receiptTotal').textContent = formatCurrency(orderData.total_amount);
+    
+    modal.classList.remove('hidden');
+}
+
 
 // Event listeners
 function initEventListeners() {
@@ -560,11 +847,55 @@ function initEventListeners() {
         });
     }
 }
+// Tạo ghi chú đơn hàng
+function buildOrderNote(orderType, paymentMethod) {
+    const parts = [];
+    
+    // Đá riêng chỉ khi giao xa >5km và khách đã xác nhận phụ thu
+    if (orderType === 'delivery' && isOutsideStandardRadius()) {
+        const surchargeCheckbox = document.getElementById('surchargeAccepted');
+        if (surchargeCheckbox && surchargeCheckbox.checked) {
+            parts.push('Đá riêng');
+        }
+    }
+    
+    // Ghi chú từ khách (nếu có)
+    const userNote = sessionStorage.getItem('tempOrderNote') || '';
+    if (userNote.trim()) {
+        parts.push(userNote.trim());
+    }
+    
+    // Phương thức thanh toán
+    parts.push(paymentMethod === 'cash' ? 'Thanh toán tiền mặt' : 'Thanh toán online');
+    
+    // Thông tin giao hàng
+    if (orderType === 'delivery') {
+        const km = getDeliveryKm();
+        parts.push(`Giao ${km}km`);
+        if (km > 5) {
+            parts.push('Có phụ thu giao xa');
+        }
+    }
+    
+    return parts.join(' | ');
+}
+
+// Update cash payment message based on order type
+function updateCashPaymentMessage() {
+    const orderType = document.querySelector('input[name="orderType"]:checked')?.value;
+    const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked')?.value;
+    const counterNotice = document.getElementById('counterPaymentNotice');
+    
+    if (paymentMethod === 'cash' && (orderType === 'dine-in' || orderType === 'takeaway')) {
+        counterNotice.classList.remove('hidden');
+    } else {
+        counterNotice.classList.add('hidden');
+    }
+}
 
 // Các hàm hỗ trợ
-function formatCurrency(amount) {
-    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
-}
+// Dùng formatCurrency từ api.js
+
 
 function escapeHtml(str) {
     return str ? str.replace(/[&<>"']/g, match => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[match]) : '';

@@ -12,7 +12,7 @@ const clearDataBtn = document.getElementById('clearDataBtn');
 const saveSettingsBtn = document.getElementById('saveSettingsBtn');
 
 // Check authentication
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const token = localStorage.getItem('token');
     if (!token) {
         window.location.href = '../../../auth/html/auth.html';
@@ -22,6 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
     loadSettings();
     initEventListeners();
     updateNavbarCartCount();
+    await loadProfileAddress();
+    initAddressAutocomplete();
 });
 
 // Load settings from localStorage
@@ -44,8 +46,61 @@ function loadSettings() {
     }
 }
 
+async function loadProfileAddress() {
+    const token = localStorage.getItem('token');
+    const addrEl = document.getElementById('deliveryAddressPref');
+    if (!token || !addrEl) return;
+    try {
+        const response = await fetch('http://localhost:5000/api/customer/profile', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await response.json();
+        if (response.ok) {
+            if (data.delivery_address) addrEl.value = data.delivery_address;
+            const latEl = document.getElementById('deliveryLatPref');
+            const lngEl = document.getElementById('deliveryLngPref');
+            const autoFillEl = document.getElementById('autoFillAddressPref');
+            if (latEl && data.delivery_lat != null) latEl.value = String(data.delivery_lat);
+            if (lngEl && data.delivery_lng != null) lngEl.value = String(data.delivery_lng);
+            if (autoFillEl) autoFillEl.checked = data.auto_fill_address !== 0;
+
+        }
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+function initAddressAutocomplete() {
+    const addrInput = document.getElementById('deliveryAddressPref');
+    if (!addrInput || typeof loadMapboxPlaces !== 'function') return;
+
+    fetch('http://localhost:5000/api/store')
+        .then((r) => r.json())
+        .then((data) => {
+            if (!data.mapboxAccessToken) {
+                return;
+            }
+
+            return loadMapboxPlaces(data.mapboxAccessToken).then(() =>
+                attachPlacesAutocomplete(addrInput, {
+                    onPlace: (p) => {
+                        document.getElementById('deliveryLatPref').value = String(p.lat);
+                        document.getElementById('deliveryLngPref').value = String(p.lng);
+                        const el = document.getElementById('deliveryAddressPref');
+                        if (el && 'value' in el) el.value = p.formattedAddress;
+                    },
+                    onInputCleared: () => {
+                        document.getElementById('deliveryLatPref').value = '';
+                        document.getElementById('deliveryLngPref').value = '';
+                    }
+                })
+            );
+        })
+        .catch((e) => console.error(e));
+}
+
 // Save settings to localStorage
-function saveSettings() {
+async function saveSettings() {
     const emailNotif = emailNotification?.checked || false;
     const smsNotif = smsNotification?.checked || false;
     const language = languageSelect?.value || 'vi';
@@ -63,6 +118,42 @@ function saveSettings() {
         document.body.classList.add('dark-mode');
     } else {
         document.body.classList.remove('dark-mode');
+    }
+
+    const token = localStorage.getItem('token');
+    const addrEl = document.getElementById('deliveryAddressPref');
+    if (token && addrEl && addrEl.value.trim()) {
+        try {
+            const storeRes = await fetch('http://localhost:5000/api/store');
+            const storeData = await storeRes.json();
+            const lat = document.getElementById('deliveryLatPref')?.value;
+            const lng = document.getElementById('deliveryLngPref')?.value;
+            if (storeData.mapboxAccessToken && (!lat || !lng)) {
+                showToast('Chọn địa chỉ từ gợi ý Mapbox để lưu tọa độ', 'error');
+                return;
+            }
+            const putRes = await fetch('http://localhost:5000/api/customer/profile/address', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    delivery_address: addrEl.value.trim(),
+                    delivery_lat: lat ? parseFloat(lat) : null,
+                    delivery_lng: lng ? parseFloat(lng) : null,
+                    auto_fill_address: document.getElementById('autoFillAddressPref')?.checked
+                })
+
+            });
+            if (!putRes.ok) {
+                const err = await putRes.json().catch(() => ({}));
+                throw new Error(err.message || 'Không lưu được địa chỉ (chạy migrate_user_address.js trên server)');
+            }
+        } catch (e) {
+            showToast(e.message || 'Lỗi lưu địa chỉ', 'error');
+            return;
+        }
     }
     
     showToast('Đã lưu cài đặt thành công', 'success');

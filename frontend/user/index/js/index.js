@@ -10,6 +10,8 @@ let currentSelectedItem = null;
 let selectedSizeId = null;
 let selectedTempId = null;
 let currentPrice = 0;
+let currentQuantity = 1;
+
 
 document.addEventListener('DOMContentLoaded', async () => {
     // Không kiểm tra token - cho phép khách vãng lai truy cập tự do
@@ -25,8 +27,70 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     await loadFeaturedMenu();
+    await loadRecommendations();
+    await loadHeroBanners();
     initCounterAnimation();
 });
+
+async function loadHeroBanners() {
+    try {
+        const response = await fetch('http://localhost:5000/api/store');
+        if (!response.ok) return;
+        const data = await response.json();
+        
+        if (data.heroBanners) {
+            let banners = [];
+            try {
+                banners = JSON.parse(data.heroBanners);
+            } catch (e) {
+                if (data.heroBanners.trim() !== '') {
+                    banners = [data.heroBanners.trim()];
+                }
+            }
+            
+            if (banners.length > 0) {
+                const heroSection = document.querySelector('.hero');
+                if (!heroSection) return;
+                
+                let currentIdx = 0;
+                
+                // Set first banner
+                heroSection.style.backgroundImage = `url('${banners[0]}')`;
+                heroSection.style.backgroundSize = 'cover';
+                heroSection.style.backgroundPosition = 'center';
+                
+                // Preload images
+                const parsedBanners = banners.map(line => {
+                    const parts = line.split('|');
+                    return {
+                        image: parts[0].trim(),
+                        link: parts[1] ? parts[1].trim() : '../../menu/html/menu.html'
+                    };
+                });
+
+                const ctaBtn = document.querySelector('.hero .btn-primary');
+                
+                const updateBanner = (idx) => {
+                    heroSection.style.transition = 'background-image 1s ease-in-out';
+                    heroSection.style.backgroundImage = `url('${parsedBanners[idx].image}')`;
+                    if (ctaBtn) ctaBtn.href = parsedBanners[idx].link;
+                };
+
+                // Set first banner
+                updateBanner(0);
+                
+                if (parsedBanners.length > 1) {
+                    setInterval(() => {
+                        currentIdx = (currentIdx + 1) % parsedBanners.length;
+                        updateBanner(currentIdx);
+                    }, 5000);
+                }
+            }
+        }
+    } catch (e) {
+        console.error('Lỗi tải banner:', e);
+    }
+}
 
 function initModalElements() {
     optionModal = document.getElementById('optionModal');
@@ -42,6 +106,29 @@ function initModalElements() {
     if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
     if (confirmBtn) confirmBtn.addEventListener('click', addToCartAndGoToPayment);
 
+    const incBtn = document.getElementById('modalIncreaseBtn');
+    const decBtn = document.getElementById('modalDecreaseBtn');
+    const qtyDisplay = document.getElementById('modalQuantity');
+
+    if (incBtn) {
+        incBtn.addEventListener('click', () => {
+            currentQuantity++;
+            if (qtyDisplay) qtyDisplay.textContent = currentQuantity;
+            updatePrice();
+        });
+    }
+
+    if (decBtn) {
+        decBtn.addEventListener('click', () => {
+            if (currentQuantity > 1) {
+                currentQuantity--;
+                if (qtyDisplay) qtyDisplay.textContent = currentQuantity;
+                updatePrice();
+            }
+        });
+    }
+
+
     if (optionModal) {
         optionModal.addEventListener('click', (e) => {
             if (e.target === optionModal) closeModal();
@@ -50,7 +137,7 @@ function initModalElements() {
 }
 
 async function loadFeaturedMenu() {
-    const menuGrid = document.querySelector('.menu-grid');
+    const menuGrid = document.getElementById('featuredMenu');
     if (!menuGrid) return;
 
     try {
@@ -77,8 +164,61 @@ async function loadFeaturedMenu() {
     }
 }
 
+async function loadRecommendations() {
+    const recSection = document.getElementById('recommendationSection');
+    const recGrid = document.getElementById('smartRecommendations');
+    if (!recGrid) return;
+
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch('http://localhost:5000/api/recommendations', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await response.json();
+
+        if (data.success) {
+            let items = [];
+            if (data.personal && data.personal.length > 0) {
+                items = data.personal;
+            } else if (data.trending && data.trending.length > 0) {
+                items = data.trending.slice(0, 4);
+            }
+
+            if (items.length > 0) {
+                recSection.style.display = 'block';
+                recGrid.innerHTML = items.map(item => renderMenuCard(item)).join('');
+                allFeaturedItems = [...allFeaturedItems, ...items];
+                attachOrderButtons();
+            }
+        }
+    } catch (error) {
+        console.error('Lỗi tải gợi ý:', error);
+    }
+}
+
+function renderMenuCard(item) {
+    return `
+        <div class="menu-card" data-item-id="${item.item_id}">
+            <div class="menu-card-img">
+                <img src="${getImgUrl(item.image_url)}"
+                    alt="${escapeHtml(item.item_name)}">
+                <span class="category-badge">Đề xuất</span>
+                <span class="price-badge">${formatCurrency(item.price)}</span>
+            </div>
+            <div class="menu-card-content">
+                <h3>${escapeHtml(item.item_name)}</h3>
+                <p>${escapeHtml(item.description || '')}</p>
+                <button class="order-btn" data-item-id="${item.item_id}">
+                    <i class="fas fa-shopping-cart"></i> Đặt ngay
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+
 function renderFeaturedMenu(menuItems) {
-    const menuGrid = document.querySelector('.menu-grid');
+    const menuGrid = document.getElementById('featuredMenu');
     if (!menuGrid) return;
 
     if (!menuItems || menuItems.length === 0) {
@@ -89,9 +229,8 @@ function renderFeaturedMenu(menuItems) {
     menuGrid.innerHTML = menuItems.map(item => `
         <div class="menu-card" data-item-id="${item.item_id}">
             <div class="menu-card-img">
-                <img src="${item.image_url || 'https://via.placeholder.com/300x200?text=No+Image'}"
-                    alt="${escapeHtml(item.item_name)}"
-                    style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">
+                <img src="${getImgUrl(item.image_url)}"
+                    alt="${escapeHtml(item.item_name)}">
                 <span class="category-badge">${escapeHtml(item.category_name)}</span>
                 <span class="price-badge">${formatCurrency(item.price)}</span>
             </div>
@@ -130,8 +269,12 @@ async function openOptionModal(item) {
     currentSelectedItem = item;
     selectedSizeId = null;
     selectedTempId = null;
+    currentQuantity = 1;
+    const qtyDisplay = document.getElementById('modalQuantity');
+    if (qtyDisplay) qtyDisplay.textContent = currentQuantity;
 
     if (modalItemName) modalItemName.textContent = item.item_name;
+
 
     await loadItemOptions(item.item_id);
 }
@@ -222,12 +365,18 @@ async function calculatePrice() {
             body: JSON.stringify({ size_id: selectedSizeId, temp_id: selectedTempId })
         });
         const data = await response.json();
-        currentPrice = data.final_price;
+        // data.final_price là giá cho 1 món
+        currentPrice = data.final_price * currentQuantity;
         if (displayPrice) displayPrice.textContent = formatCurrency(currentPrice);
     } catch (error) {
         console.error('Lỗi tính giá:', error);
     }
 }
+
+function updatePrice() {
+    calculatePrice();
+}
+
 
 function addToCartAndGoToPayment() {
     if (!currentSelectedItem) return;
@@ -237,7 +386,8 @@ function addToCartAndGoToPayment() {
         item_name: currentSelectedItem.item_name,
         price: currentPrice || currentSelectedItem.price,
         original_price: currentSelectedItem.price,
-        quantity: 1,
+        quantity: currentQuantity,
+
         size_id: selectedSizeId,
         temp_id: selectedTempId
     };

@@ -288,7 +288,16 @@ GO
 -- ============================================
 -- 3. BẢO MẬT & PHÂN QUYỀN
 -- ============================================
--- Gắn quyền truy cập cho backend user
+-- Tạo login và gắn quyền truy cập cho backend user
+IF NOT EXISTS (SELECT * FROM sys.server_principals WHERE name = N'cafe_user')
+BEGIN
+    CREATE LOGIN cafe_user WITH PASSWORD = 'Cafe@2026', CHECK_POLICY = OFF, CHECK_EXPIRATION = OFF;
+END
+GO
+
+USE [CafeManagement];
+GO
+
 IF NOT EXISTS (SELECT * FROM sys.database_principals WHERE name = N'cafe_user')
 BEGIN
     CREATE USER cafe_user FOR LOGIN cafe_user;

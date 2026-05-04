@@ -151,6 +151,5 @@ function getStatusText(status) {
 }
 
 function viewOrderDetails(orderId) {
-    // Tương lai có thể mở modal chi tiết
-    console.log('Xem chi tiết đơn:', orderId);
+    window.location.href = `order-detail.html?id=${orderId}`;
 }

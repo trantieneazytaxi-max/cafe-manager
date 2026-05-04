@@ -12,8 +12,8 @@ router.get('/stats', async (req, res) => {
         const stats = await executeQuery(`
             SELECT 
                 (SELECT COUNT(*) FROM Orders WHERE status = 'pending') as pendingOrders,
-                (SELECT COUNT(*) FROM Orders WHERE status = 'paid' AND CAST(created_at AS DATE) = CAST(GETDATE() AS DATE)) as completedOrders,
-                (SELECT ISNULL(SUM(total_amount), 0) FROM Orders WHERE status = 'paid' AND CAST(created_at AS DATE) = CAST(GETDATE() AS DATE)) as todayRevenue
+                (SELECT COUNT(*) FROM Orders WHERE status IN ('paid', 'completed') AND CAST(created_at AS DATE) = CAST(GETDATE() AS DATE)) as completedOrders,
+                (SELECT ISNULL(SUM(total_amount), 0) FROM Orders WHERE status IN ('paid', 'completed') AND CAST(created_at AS DATE) = CAST(GETDATE() AS DATE)) as todayRevenue
         `);
         
         res.json(stats.recordset[0]);
@@ -58,6 +58,11 @@ router.get('/', async (req, res) => {
                 o.status,
                 o.created_at,
                 o.note,
+                o.order_type,
+                o.guest_name,
+                o.guest_phone,
+                o.delivery_address,
+                o.discount_amount,
                 u.full_name as customer_name
             FROM Orders o
             LEFT JOIN Tables t ON o.table_id = t.table_id
@@ -88,6 +93,11 @@ router.get('/:orderId(\\d+)', async (req, res) => {
                 o.status,
                 o.created_at,
                 o.note,
+                o.order_type,
+                o.guest_name,
+                o.guest_phone,
+                o.delivery_address,
+                o.discount_amount,
                 u.full_name as customer_name
             FROM Orders o
             LEFT JOIN Tables t ON o.table_id = t.table_id

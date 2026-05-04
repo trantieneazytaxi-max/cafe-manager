@@ -2,40 +2,16 @@ const bcrypt = require('bcryptjs');
 const express = require('express');
 const router = express.Router();
 const { executeQuery, sql } = require('../config/js/db');
-const { verifyToken, isAdmin } = require('../middleware/authMiddleware');
+const { verifyToken, isAdmin, isStaff } = require('../middleware/authMiddleware');
+const storeModule = require('./storeRoutes');
 
-// Middleware kiểm tra admin
+// Middleware xác thực token (Dùng cho tất cả)
 router.use(verifyToken);
-router.use(isAdmin);
 
-// ========== Lấy danh sách nhân viên ==========
-router.get('/staff', async (req, res) => {
-    try {
-        const result = await executeQuery(`
-            SELECT 
-                u.user_id, 
-                u.full_name, 
-                u.email, 
-                u.phone, 
-                u.is_active, 
-                u.created_at,
-                sp.position,
-                sp.salary
-            FROM Users u
-            LEFT JOIN StaffProfile sp ON u.user_id = sp.user_id
-            WHERE u.role = 'staff'
-            ORDER BY u.created_at DESC
-        `);
-        
-        res.json(result.recordset);
-    } catch (error) {
-        console.error('Lỗi lấy staff:', error);
-        res.status(500).json({ message: 'Lỗi server' });
-    }
-});
+// ========== CÁC ROUTE THỐNG KÊ (Cho phép cả Staff & Admin) ==========
 
-// ========== 1. Lấy thống kê tổng quan + dữ liệu biểu đồ ==========
-router.get('/stats', async (req, res) => {
+// 1. Lấy thống kê tổng quan + dữ liệu biểu đồ
+router.get('/stats', isStaff, async (req, res) => {
     try {
         const { range = 'week' } = req.query;
         
@@ -47,10 +23,10 @@ router.get('/stats', async (req, res) => {
         // Xác định khoảng thời gian
         switch(range) {
             case 'day':
-                startDate = new Date(now.setHours(0, 0, 0, 0));
-                compareStartDate = new Date(now);
+                startDate = new Date(now);
+                startDate.setHours(0, 0, 0, 0);
+                compareStartDate = new Date(startDate);
                 compareStartDate.setDate(compareStartDate.getDate() - 1);
-                compareStartDate.setHours(0, 0, 0, 0);
                 groupBy = 'HOUR';
                 // Tạo labels cho 24 giờ
                 for (let i = 0; i <= 23; i++) labels.push(`${i}h`);
@@ -58,11 +34,18 @@ router.get('/stats', async (req, res) => {
             case 'week':
                 startDate = new Date(now);
                 startDate.setDate(now.getDate() - 7);
-                compareStartDate = new Date(now);
-                compareStartDate.setDate(now.getDate() - 14);
+                startDate.setHours(0, 0, 0, 0);
+                compareStartDate = new Date(startDate);
+                compareStartDate.setDate(compareStartDate.getDate() - 7);
                 groupBy = 'DAY';
-                // Labels cho 7 ngày
-                labels = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'CN'];
+                
+                // Dynamic labels for last 7 days
+                const days = ['CN', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
+                for (let i = 6; i >= 0; i--) {
+                    const d = new Date();
+                    d.setDate(d.getDate() - i);
+                    labels.push(days[d.getDay()]);
+                }
                 break;
             case 'month':
                 startDate = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -79,9 +62,13 @@ router.get('/stats', async (req, res) => {
                 for (let i = 1; i <= 12; i++) labels.push(`Tháng ${i}`);
                 break;
             default:
-                startDate = new Date(now.setHours(0, 0, 0, 0));
-                compareStartDate = new Date(now);
+                startDate = new Date(now);
+                startDate.setHours(0, 0, 0, 0);
+                compareStartDate = new Date(startDate);
                 compareStartDate.setDate(compareStartDate.getDate() - 1);
+                groupBy = 'HOUR';
+                // Tạo labels cho 24 giờ
+                for (let i = 0; i <= 23; i++) labels.push(`${i}h`);
         }
         
         // 1. Tổng doanh thu và khách hàng kỳ hiện tại
@@ -91,16 +78,18 @@ router.get('/stats', async (req, res) => {
                 COUNT(DISTINCT user_id) as totalCustomers,
                 COUNT(*) as totalOrders
             FROM Orders 
-            WHERE status = 'paid' AND created_at >= @startDate
+            WHERE status IN ('paid', 'completed') AND 
+                (${range === 'day' ? 'CAST(created_at AS DATE) = CAST(GETDATE() AS DATE)' : 'created_at >= @startDate'})
         `, { startDate: startDate });
         
         // 2. Tổng doanh thu và khách hàng kỳ trước (để so sánh)
         const prevStats = await executeQuery(`
             SELECT 
                 ISNULL(SUM(total_amount), 0) as totalRevenue,
-                COUNT(DISTINCT user_id) as totalCustomers
+                COUNT(DISTINCT user_id) as totalCustomers,
+                COUNT(*) as totalOrders
             FROM Orders 
-            WHERE status = 'paid' AND created_at >= @compareStartDate AND created_at < @startDate
+            WHERE status IN ('paid', 'completed') AND created_at >= @compareStartDate AND created_at < @startDate
         `, { compareStartDate: compareStartDate, startDate: startDate });
         
         // 3. Dữ liệu chi tiết cho biểu đồ (theo ngày/tuần/tháng)
@@ -122,30 +111,34 @@ router.get('/stats', async (req, res) => {
                         ISNULL(SUM(total_amount), 0) as revenue,
                         COUNT(DISTINCT user_id) as customers
                     FROM Orders 
-                    WHERE status = 'paid' AND created_at BETWEEN @start AND @end
+                    WHERE status IN ('paid', 'completed') AND created_at BETWEEN @start AND @end
                 `, { start: dayStart, end: dayEnd });
                 
                 revenueData.push(dayResult.recordset[0].revenue);
                 customerData.push(dayResult.recordset[0].customers);
             }
         } else if (range === 'month') {
-            // Lấy dữ liệu 4 tuần
-            for (let week = 1; week <= 4; week++) {
-                const weekStart = (week - 1) * 7 + 1;
-                const weekEnd = week * 7;
+            // Lấy dữ liệu theo 4 giai đoạn của tháng để không bỏ sót ngày
+            const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+            const periodSize = Math.ceil(daysInMonth / 4);
+            
+            for (let i = 0; i < 4; i++) {
+                const startDay = i * periodSize + 1;
+                const endDay = Math.min((i + 1) * periodSize, daysInMonth);
                 
-                const weekResult = await executeQuery(`
+                const periodResult = await executeQuery(`
                     SELECT 
                         ISNULL(SUM(total_amount), 0) as revenue,
                         COUNT(DISTINCT user_id) as customers
                     FROM Orders 
-                    WHERE status = 'paid' 
+                    WHERE status IN ('paid', 'completed') 
                         AND DAY(created_at) BETWEEN @startDay AND @endDay
                         AND MONTH(created_at) = MONTH(GETDATE())
-                `, { startDay: weekStart, endDay: weekEnd });
+                        AND YEAR(created_at) = YEAR(GETDATE())
+                `, { startDay, endDay });
                 
-                revenueData.push(weekResult.recordset[0].revenue);
-                customerData.push(weekResult.recordset[0].customers);
+                revenueData.push(periodResult.recordset[0].revenue);
+                customerData.push(periodResult.recordset[0].customers);
             }
         } else if (range === 'year') {
             // Lấy dữ liệu 12 tháng
@@ -155,7 +148,7 @@ router.get('/stats', async (req, res) => {
                         ISNULL(SUM(total_amount), 0) as revenue,
                         COUNT(DISTINCT user_id) as customers
                     FROM Orders 
-                    WHERE status = 'paid' 
+                    WHERE status IN ('paid', 'completed') 
                         AND MONTH(created_at) = @month
                         AND YEAR(created_at) = YEAR(GETDATE())
                 `, { month: month });
@@ -164,27 +157,35 @@ router.get('/stats', async (req, res) => {
                 customerData.push(monthResult.recordset[0].customers);
             }
         } else {
-            // Mặc định: 24 giờ
-            for (let hour = 0; hour <= 23; hour++) {
-                const hourResult = await executeQuery(`
-                    SELECT 
-                        ISNULL(SUM(total_amount), 0) as revenue,
-                        COUNT(DISTINCT user_id) as customers
-                    FROM Orders 
-                    WHERE status = 'paid' 
-                        AND DATEPART(hour, created_at) = @hour
-                        AND CAST(created_at AS DATE) = CAST(GETDATE() AS DATE)
-                `, { hour: hour });
-                
-                revenueData.push(hourResult.recordset[0].revenue);
-                customerData.push(hourResult.recordset[0].customers);
-            }
+            // Mặc định: 24 giờ (Tối ưu hóa thành 1 query duy nhất)
+            const dayResults = await executeQuery(`
+                SELECT 
+                    DATEPART(hour, created_at) as hour,
+                    ISNULL(SUM(total_amount), 0) as revenue,
+                    COUNT(DISTINCT user_id) as customers
+                FROM Orders 
+                WHERE status IN ('paid', 'completed') 
+                    AND CAST(created_at AS DATE) = CAST(GETDATE() AS DATE)
+                GROUP BY DATEPART(hour, created_at)
+            `);
+            
+            revenueData = new Array(24).fill(0);
+            customerData = new Array(24).fill(0);
+            
+            dayResults.recordset.forEach(row => {
+                revenueData[row.hour] = row.revenue;
+                customerData[row.hour] = row.customers;
+            });
         }
         
         // Tính phần trăm thay đổi
         const currentRevenue = currentStats.recordset[0].totalRevenue;
         const prevRevenue = prevStats.recordset[0].totalRevenue;
         const revenueChange = prevRevenue === 0 ? 0 : ((currentRevenue - prevRevenue) / prevRevenue * 100).toFixed(1);
+
+        const currentOrders = currentStats.recordset[0].totalOrders;
+        const prevOrders = prevStats.recordset[0].totalOrders;
+        const ordersChange = prevOrders === 0 ? 0 : ((currentOrders - prevOrders) / prevOrders * 100).toFixed(1);
         
         const currentCustomers = currentStats.recordset[0].totalCustomers;
         const prevCustomers = prevStats.recordset[0].totalCustomers;
@@ -193,10 +194,10 @@ router.get('/stats', async (req, res) => {
         res.json({
             // Thống kê tổng quan
             totalRevenue: currentRevenue,
-            totalOrders: currentStats.recordset[0].totalOrders,
+            totalOrders: currentOrders,
             totalCustomers: currentCustomers,
             revenueChange: parseFloat(revenueChange),
-            ordersChange: parseFloat(revenueChange), // Tạm tính
+            ordersChange: parseFloat(ordersChange),
             customersChange: parseFloat(customersChange),
             // Dữ liệu biểu đồ
             labels: labels,
@@ -237,7 +238,7 @@ router.get('/chart-data', async (req, res) => {
                         MONTH(created_at) as month,
                         SUM(${type === 'revenue' ? 'total_amount' : 'total_amount * 0.7'}) as value
                     FROM Orders
-                    WHERE status = 'paid' 
+                    WHERE status IN ('paid', 'completed') 
                         AND YEAR(created_at) = @year
                     GROUP BY MONTH(created_at)
                     ORDER BY month
@@ -264,7 +265,7 @@ router.get('/chart-data', async (req, res) => {
                         END as week,
                         SUM(${type === 'revenue' ? 'total_amount' : 'total_amount * 0.7'}) as value
                     FROM Orders
-                    WHERE status = 'paid' 
+                    WHERE status IN ('paid', 'completed') 
                         AND MONTH(created_at) = @month
                         AND YEAR(created_at) = @year
                     GROUP BY 
@@ -296,7 +297,7 @@ router.get('/chart-data', async (req, res) => {
                         DATEPART(dw, created_at) as weekday,
                         SUM(${type === 'revenue' ? 'total_amount' : 'total_amount * 0.7'}) as value
                     FROM Orders
-                    WHERE status = 'paid' 
+                    WHERE status IN ('paid', 'completed') 
                         AND created_at >= DATEADD(day, -7, GETDATE())
                     GROUP BY DATEPART(dw, created_at)
                 `;
@@ -320,7 +321,7 @@ router.get('/chart-data', async (req, res) => {
                         DATEPART(hour, created_at) as hour,
                         SUM(${type === 'revenue' ? 'total_amount' : 'total_amount * 0.7'}) as value
                     FROM Orders
-                    WHERE status = 'paid' 
+                    WHERE status IN ('paid', 'completed') 
                         AND CAST(created_at AS DATE) = CAST(GETDATE() AS DATE)
                     GROUP BY DATEPART(hour, created_at)
                     ORDER BY hour
@@ -347,7 +348,7 @@ router.get('/chart-data', async (req, res) => {
 });
 
 // ========== 3. Lấy thống kê theo danh mục ==========
-router.get('/category-stats', async (req, res) => {
+router.get('/category-stats', isStaff, async (req, res) => {
     try {
         const { range = 'month' } = req.query;
         
@@ -375,7 +376,7 @@ router.get('/category-stats', async (req, res) => {
             JOIN Menu_Items mi ON oi.item_id = mi.item_id
             JOIN Categories c ON mi.category_id = c.category_id
             JOIN Orders o ON oi.order_id = o.order_id
-            WHERE o.status = 'paid' AND o.created_at >= @startDate
+            WHERE o.status IN ('paid', 'completed') AND o.created_at >= @startDate
             GROUP BY c.category_name
             ORDER BY total DESC
         `, { startDate: startDate });
@@ -392,7 +393,7 @@ router.get('/category-stats', async (req, res) => {
 });
 
 // ========== 4. Lấy top món bán chạy ==========
-router.get('/top-items', async (req, res) => {
+router.get('/top-items', isStaff, async (req, res) => {
     try {
         const { range = 'month', search = '', sortBy = 'quantity' } = req.query;
         
@@ -426,7 +427,7 @@ router.get('/top-items', async (req, res) => {
             JOIN Menu_Items mi ON oi.item_id = mi.item_id
             JOIN Categories c ON mi.category_id = c.category_id
             JOIN Orders o ON oi.order_id = o.order_id
-            WHERE o.status = 'paid' AND o.created_at >= @startDate
+            WHERE o.status IN ('paid', 'completed') AND o.created_at >= @startDate
                 AND (@search = '' OR mi.item_name LIKE '%' + @search + '%')
             GROUP BY mi.item_id, mi.item_name, c.category_name
             ORDER BY ${orderBy}
@@ -444,7 +445,7 @@ router.get('/top-items', async (req, res) => {
 });
 
 // ========== 5. Lấy đánh giá khách hàng ==========
-router.get('/ratings', async (req, res) => {
+router.get('/ratings', isStaff, async (req, res) => {
     try {
         const { range = 'month' } = req.query;
         
@@ -476,6 +477,35 @@ router.get('/ratings', async (req, res) => {
         
     } catch (error) {
         console.error('Lỗi lấy ratings:', error);
+        res.status(500).json({ message: 'Lỗi server' });
+    }
+});
+
+// ========== CÁC ROUTE QUẢN LÝ (Chỉ dành cho Admin) ==========
+router.use(isAdmin);
+
+// ========== Lấy danh sách nhân viên ==========
+router.get('/staff', async (req, res) => {
+    try {
+        const result = await executeQuery(`
+            SELECT 
+                u.user_id, 
+                u.full_name, 
+                u.email, 
+                u.phone, 
+                u.is_active, 
+                u.created_at,
+                sp.position,
+                sp.salary
+            FROM Users u
+            LEFT JOIN StaffProfile sp ON u.user_id = sp.user_id
+            WHERE u.role = 'staff'
+            ORDER BY u.created_at DESC
+        `);
+        
+        res.json(result.recordset);
+    } catch (error) {
+        console.error('Lỗi lấy staff:', error);
         res.status(500).json({ message: 'Lỗi server' });
     }
 });
@@ -700,6 +730,62 @@ router.put('/staff/:id/toggle-status', async (req, res) => {
     } catch (error) {
         console.error('Lỗi cập nhật trạng thái staff:', error);
         res.status(500).json({ message: 'Lỗi server: ' + error.message });
+    }
+});
+
+// ========== Cài đặt địa chỉ quán (Google Maps) ==========
+router.get('/store-settings', async (req, res) => {
+    try {
+        const map = await storeModule.loadAdminStoreMap();
+        const lat = map.store_lat != null && map.store_lat !== '' ? parseFloat(map.store_lat) : null;
+        const lng = map.store_lng != null && map.store_lng !== '' ? parseFloat(map.store_lng) : null;
+        res.json({
+            storeName: map.store_name || 'Cà Phê Thông Minh',
+            address: map.store_address || '',
+            lat: Number.isFinite(lat) ? lat : null,
+            lng: Number.isFinite(lng) ? lng : null,
+            placeId: map.store_place_id || null,
+            storePhone: map.store_phone || '',
+            storeEmail: map.store_email || '',
+            vatRate: map.vat_rate != null && map.vat_rate !== '' ? parseFloat(map.vat_rate) : 10,
+            defaultShipping: map.default_shipping != null && map.default_shipping !== '' ? parseFloat(map.default_shipping) : 20000,
+            freeShipThreshold: map.free_ship_threshold != null && map.free_ship_threshold !== '' ? parseFloat(map.free_ship_threshold) : 200000,
+            currency: map.currency || 'VND',
+            language: map.language || 'vi',
+            mapboxConfigured: Boolean(process.env.MAPBOX_ACCESS_TOKEN),
+            heroBanners: map.hero_banners || ''
+
+
+        });
+    } catch (error) {
+        console.error('Lỗi store-settings GET:', error);
+        res.status(500).json({ message: 'Lỗi server' });
+    }
+});
+
+router.put('/store-settings', async (req, res) => {
+    try {
+        const b = req.body;
+
+        if (b.storeName !== undefined) await storeModule.upsertSetting('store_name', b.storeName);
+        if (b.address !== undefined) await storeModule.upsertSetting('store_address', b.address);
+        if ('lat' in b) await storeModule.upsertSetting('store_lat', b.lat === null || b.lat === '' ? '' : String(b.lat));
+        if ('lng' in b) await storeModule.upsertSetting('store_lng', b.lng === null || b.lng === '' ? '' : String(b.lng));
+        if (b.placeId !== undefined) await storeModule.upsertSetting('store_place_id', b.placeId || '');
+        if (b.storePhone !== undefined) await storeModule.upsertSetting('store_phone', b.storePhone || '');
+        if (b.storeEmail !== undefined) await storeModule.upsertSetting('store_email', b.storeEmail || '');
+        if (b.vatRate !== undefined) await storeModule.upsertSetting('vat_rate', String(b.vatRate));
+        if (b.defaultShipping !== undefined) await storeModule.upsertSetting('default_shipping', String(b.defaultShipping));
+        if (b.freeShipThreshold !== undefined) await storeModule.upsertSetting('free_ship_threshold', String(b.freeShipThreshold));
+        if (b.currency !== undefined) await storeModule.upsertSetting('currency', b.currency);
+        if (b.language !== undefined) await storeModule.upsertSetting('language', b.language);
+        if (b.heroBanners !== undefined) await storeModule.upsertSetting('hero_banners', b.heroBanners);
+
+
+        res.json({ success: true, message: 'Đã lưu cấu hình cửa hàng' });
+    } catch (error) {
+        console.error('Lỗi store-settings PUT:', error);
+        res.status(500).json({ message: 'Lỗi server' });
     }
 });
 

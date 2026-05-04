@@ -18,6 +18,15 @@ const profileBtn = document.getElementById('profileBtn');
 const profileDropdown = document.getElementById('profileDropdown');
 const userNameShort = document.getElementById('userNameShort');
 const avatarImg = document.getElementById('avatarImg');
+const deliveryAddressInput = document.getElementById('deliveryAddress');
+const autoFillAddressCheckbox = document.getElementById('autoFillAddress');
+const saveAddressBtn = document.getElementById('saveAddressBtn');
+
+let deliveryMap = null;
+let deliveryMarker = null;
+let currentLat = null;
+let currentLng = null;
+
 
 // Modals
 const editModal = document.getElementById('editModal');
@@ -39,17 +48,64 @@ const confirmPassword = document.getElementById('confirmPassword');
 let currentUser = null;
 
 // Check authentication
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const token = localStorage.getItem('token');
     if (!token) {
         window.location.href = '../../../auth/html/auth.html';
         return;
     }
     
+    await initProfileMap(); // Init map first
     loadUserData();
     initEventListeners();
     updateNavbarCartCount();
 });
+
+
+async function initProfileMap() {
+    const container = document.getElementById('deliveryMap');
+    if (!container) return;
+
+    // Default to HCM if no user coordinates
+    const lat = currentLat || 10.7769;
+    const lng = currentLng || 106.7009;
+
+    const picker = await initLeafletPicker('deliveryMap', {
+        center: [lat, lng],
+        onSelect: (p) => {
+            currentLat = p.lat;
+            currentLng = p.lng;
+            deliveryAddressInput.value = p.formattedAddress || `${p.lat.toFixed(6)}, ${p.lng.toFixed(6)}`;
+        }
+    });
+    
+    deliveryMap = picker.map;
+    deliveryMarker = picker.marker;
+
+    // Optional: Attach autocomplete if Mapbox token exists
+    try {
+        const storeRes = await fetch('http://localhost:5000/api/store');
+        const storeData = await storeRes.json();
+        if (storeData.mapboxAccessToken) {
+            await loadMapboxPlaces(storeData.mapboxAccessToken);
+            await attachPlacesAutocomplete(deliveryAddressInput, {
+                onPlace: (p) => {
+                    currentLat = p.lat;
+                    currentLng = p.lng;
+                    deliveryAddressInput.value = p.formattedAddress;
+                    if (deliveryMap) {
+                        deliveryMap.setView([p.lat, p.lng], 16);
+                        deliveryMarker.setLatLng([p.lat, p.lng]);
+                    }
+                }
+            });
+        }
+    } catch (e) {
+        console.warn('Mapbox autocomplete not available:', e);
+    }
+}
+
+
 
 // Load user data from localStorage and API
 function loadUserData() {
@@ -76,7 +132,58 @@ function loadUserData() {
     // Update short name on navbar
     const shortName = user.full_name ? user.full_name.split(' ').pop() : 'User';
     userNameShort.textContent = shortName;
+
+    // Load extra info from API
+    fetchProfileDetails();
 }
+
+async function fetchProfileDetails() {
+    try {
+        const data = await get('/customer/profile');
+        if (data) {
+            currentUser = { ...currentUser, ...data };
+            deliveryAddressInput.value = data.delivery_address || '';
+            autoFillAddressCheckbox.checked = data.auto_fill_address !== 0;
+            currentLat = data.delivery_lat;
+            currentLng = data.delivery_lng;
+            
+            if (deliveryMap && currentLat && currentLng) {
+                const pos = [currentLat, currentLng];
+                deliveryMap.setView(pos, 16);
+                deliveryMarker.setLatLng(pos);
+            }
+        }
+    } catch (e) {
+        console.error('Error fetching profile details:', e);
+    }
+}
+
+async function saveDeliveryAddress() {
+    if (!currentLat || !currentLng) {
+        showToast('Vui lòng chọn vị trí trên bản đồ', 'error');
+        return;
+    }
+
+    try {
+        saveAddressBtn.disabled = true;
+        saveAddressBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        
+        await put('/customer/profile/address', {
+            delivery_address: deliveryAddressInput.value,
+            delivery_lat: currentLat,
+            delivery_lng: currentLng,
+            auto_fill_address: autoFillAddressCheckbox.checked
+        });
+
+        showToast('Đã lưu địa chỉ giao hàng mặc định', 'success');
+    } catch (e) {
+        showToast(e.message, 'error');
+    } finally {
+        saveAddressBtn.disabled = false;
+        saveAddressBtn.textContent = 'Lưu địa chỉ';
+    }
+}
+
 
 // Change avatar
 function changeAvatar() {
@@ -228,7 +335,9 @@ function initEventListeners() {
     }
     
     initLogout();
+    if (saveAddressBtn) saveAddressBtn.addEventListener('click', saveDeliveryAddress);
 }
+
 
 // Update navbar cart count
 function updateNavbarCartCount() {

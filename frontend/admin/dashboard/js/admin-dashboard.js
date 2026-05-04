@@ -412,9 +412,8 @@ function renderTopItems(items) {
 }
 
 // Format currency
-function formatCurrency(amount) {
-    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
-}
+// Dùng formatCurrency từ api.js
+
 
 // Escape HTML
 function escapeHtml(str) {

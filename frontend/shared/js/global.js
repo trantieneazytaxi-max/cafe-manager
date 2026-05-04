@@ -15,7 +15,9 @@ function initGlobalUI() {
     updateUserInfo();
     initLogout();
     updateNavbarCartCount();
+    initGlobalSearch();
 }
+
 
 // 1. Mobile Menu
 function initMobileMenu() {
@@ -170,4 +172,124 @@ function showGlobalToast(message, type = 'success') {
     setTimeout(() => {
         toast.style.display = 'none';
     }, 3000);
+}
+// 6. Global Search
+let globalSearchCache = [];
+let isSearchCacheLoaded = false;
+
+async function initGlobalSearch() {
+    const searchInput = document.getElementById('globalSearchInput');
+    if (!searchInput) return;
+
+    // Tạo container dropdown nếu chưa có
+    let searchDropdown = document.getElementById('globalSearchDropdown');
+    if (!searchDropdown) {
+        searchDropdown = document.createElement('div');
+        searchDropdown.id = 'globalSearchDropdown';
+        searchDropdown.className = 'search-results-dropdown';
+        searchInput.parentElement.appendChild(searchDropdown);
+    }
+
+    searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            const query = searchInput.value.trim();
+            if (!query) return;
+
+            if (window.location.pathname.includes('menu.html') && typeof searchMenuItems === 'function') {
+                searchMenuItems(query);
+                searchDropdown.style.display = 'none';
+            } else {
+                const menuPath = window.location.pathname.includes('/user/') 
+                    ? '../../menu/html/menu.html' 
+                    : '/user/menu/html/menu.html';
+                window.location.href = `${menuPath}?search=${encodeURIComponent(query)}`;
+            }
+        }
+    });
+
+    searchInput.addEventListener('input', async (e) => {
+        const query = e.target.value.trim().toLowerCase();
+        
+        if (!query) {
+            searchDropdown.style.display = 'none';
+            return;
+        }
+
+        // Fetch data if not loaded
+        if (!isSearchCacheLoaded) {
+            try {
+                // If we're already on menu.html and have allItems, use it
+                if (typeof allItems !== 'undefined' && Array.isArray(allItems) && allItems.length > 0) {
+                    globalSearchCache = allItems;
+                    isSearchCacheLoaded = true;
+                } else {
+                    const response = await fetch('http://localhost:5000/api/menu/items');
+                    globalSearchCache = await response.json();
+                    isSearchCacheLoaded = true;
+                }
+            } catch (err) {
+                console.error('Error fetching search items:', err);
+            }
+        }
+
+        const results = globalSearchCache.filter(item => 
+            !item.is_paused && (
+                item.item_name.toLowerCase().includes(query) || 
+                (item.description && item.description.toLowerCase().includes(query))
+            )
+        ).slice(0, 5); // Show top 5 results
+
+        if (results.length > 0) {
+            searchDropdown.innerHTML = results.map(item => {
+                let imgUrl = 'https://placehold.co/100x100?text=No+Image';
+                if (item.image_url) {
+                    const prefix = 'http://localhost:5000';
+                    imgUrl = item.image_url.startsWith('http') 
+                        ? item.image_url 
+                        : (item.image_url.startsWith('/') ? prefix + item.image_url : prefix + '/' + item.image_url);
+                }
+                
+                const menuPath = window.location.pathname.includes('/user/') 
+                    ? '../../menu/html/menu.html' 
+                    : '/user/menu/html/menu.html';
+
+                return `
+                    <a href="${menuPath}?search=${encodeURIComponent(item.item_name)}" class="search-result-item">
+                        <img src="${imgUrl}" alt="${item.item_name}">
+                        <div class="search-result-info">
+                            <span class="search-result-name">${item.item_name}</span>
+                            <span class="search-result-price">${typeof formatCurrency === 'function' ? formatCurrency(item.price) : item.price + 'đ'}</span>
+                        </div>
+                    </a>
+                `;
+            }).join('');
+            searchDropdown.style.display = 'flex';
+        } else {
+            searchDropdown.innerHTML = '<div style="padding: 15px; color: #8B7355; text-align: center;">Không tìm thấy kết quả</div>';
+            searchDropdown.style.display = 'flex';
+        }
+    });
+
+    // Ẩn dropdown khi click ngoài
+    document.addEventListener('click', (e) => {
+        if (!searchInput.contains(e.target) && !searchDropdown.contains(e.target)) {
+            searchDropdown.style.display = 'none';
+        }
+    });
+
+    const params = new URLSearchParams(window.location.search);
+    const searchParam = params.get('search');
+    if (searchParam && searchInput) {
+        searchInput.value = searchParam;
+    }
+}
+
+/**
+ * Standardize image URL resolving
+ */
+function getImgUrl(url, placeholder = 'https://placehold.co/300x200?text=No+Image') {
+    if (!url) return placeholder;
+    if (url.startsWith('http')) return url;
+    const prefix = 'http://localhost:5000';
+    return url.startsWith('/') ? prefix + url : prefix + '/' + url;
 }

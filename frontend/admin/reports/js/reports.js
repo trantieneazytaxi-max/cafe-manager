@@ -17,22 +17,22 @@ async function loadReportData() {
         const statsRes = await fetch(`http://localhost:5000/api/admin/stats?range=${range}`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        const stats = await statsRes.json();
+        const stats = statsRes.ok ? await statsRes.json() : { totalRevenue: 0, totalOrders: 0, totalCustomers: 0, revenueChange: 0, ordersChange: 0, labels: [], revenueData: [], customerData: [] };
         updateOverviewCards(stats);
         renderRevenueChart(stats);
-
+ 
         const catRes = await fetch(`http://localhost:5000/api/admin/category-stats?range=${range}`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        const catData = await catRes.json();
+        const catData = catRes.ok ? await catRes.json() : { labels: [], values: [] };
         renderCategoryChart(catData);
-
+ 
         const topRes = await fetch(`http://localhost:5000/api/admin/top-items?range=${range}`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        const topItems = await topRes.json();
-        renderTopItemsTable(topItems, stats.totalRevenue);
-
+        const topItems = topRes.ok ? await topRes.json() : [];
+        renderTopItemsTable(topItems, stats.totalRevenue || 0);
+ 
     } catch (error) {
         console.error('Lỗi load báo cáo:', error);
     }

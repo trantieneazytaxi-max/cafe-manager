@@ -10,7 +10,9 @@ router.get('/profile', async (req, res) => {
     try {
         const userId = req.user.userId;
         const result = await executeQuery(`
-            SELECT user_id, full_name, email, phone, role, is_active, created_at, loyalty_points 
+            SELECT user_id, full_name, email, phone, role, is_active, created_at, loyalty_points,
+                   delivery_address, delivery_lat, delivery_lng, auto_fill_address
+
             FROM Users 
             WHERE user_id = @userId
         `, { userId: userId });
@@ -18,10 +20,43 @@ router.get('/profile', async (req, res) => {
         if (result.recordset.length === 0) {
             return res.status(404).json({ message: 'Không tìm thấy người dùng' });
         }
-        res.json(result.recordset[0]);
+        const row = result.recordset[0];
+        res.json({
+            ...row,
+            delivery_lat: row.delivery_lat != null ? Number(row.delivery_lat) : null,
+            delivery_lng: row.delivery_lng != null ? Number(row.delivery_lng) : null
+        });
     } catch (error) {
         console.error('Lỗi lấy profile:', error);
         res.status(500).json({ message: 'Lỗi server' });
+    }
+});
+
+// Cập nhật địa chỉ giao hàng (Google Places)
+router.put('/profile/address', async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const { delivery_address, delivery_lat, delivery_lng, auto_fill_address } = req.body;
+        await executeQuery(`
+            UPDATE Users SET
+                delivery_address = @delivery_address,
+                delivery_lat = @delivery_lat,
+                delivery_lng = @delivery_lng,
+                auto_fill_address = @auto_fill,
+                updated_at = GETDATE()
+            WHERE user_id = @userId
+        `, {
+            userId,
+            delivery_address: delivery_address || null,
+            delivery_lat: delivery_lat != null && delivery_lat !== '' ? Number(delivery_lat) : null,
+            delivery_lng: delivery_lng != null && delivery_lng !== '' ? Number(delivery_lng) : null,
+            auto_fill: auto_fill_address === false ? 0 : 1
+        });
+
+        res.json({ success: true, message: 'Đã lưu địa chỉ' });
+    } catch (error) {
+        console.error('Lỗi cập nhật địa chỉ:', error);
+        res.status(500).json({ message: 'Lỗi server (chạy node migrate_user_address.js nếu thiếu cột)' });
     }
 });
 

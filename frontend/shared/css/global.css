@@ -99,7 +99,127 @@ body {
     color: #E67E22;
 }
 
+/* ========== SEARCH BAR ========== */
+.nav-search {
+    flex: 1 1 auto;
+    max-width: 800px;
+    min-width: 200px;
+    margin: 0 2rem;
+    position: relative;
+}
+
+.nav-search input {
+    width: 100%;
+    padding: 0.6rem 1rem 0.6rem 2.5rem;
+    border-radius: 50px;
+    border: 1px solid #F5E6D3;
+    background: #FFF8F0;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    color: #5C3A21;
+}
+
+.nav-search input:focus {
+    outline: none;
+    border-color: #E67E22;
+    background: #FFFFFF;
+    box-shadow: 0 0 0 4px rgba(230, 126, 34, 0.1);
+}
+
+.nav-search i {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #8B7355;
+    pointer-events: none;
+}
+
+.search-results-dropdown {
+    position: absolute;
+    top: 110%;
+    left: 0;
+    width: 100%;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    max-height: 400px;
+    overflow-y: auto;
+    z-index: 1001;
+    display: none;
+    flex-direction: column;
+}
+
+.search-result-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 15px;
+    cursor: pointer;
+    text-decoration: none;
+    color: #5C3A21;
+    transition: background 0.2s;
+    border-bottom: 1px solid #F5E6D3;
+}
+
+.search-result-item:last-child {
+    border-bottom: none;
+}
+
+.search-result-item img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #F5E6D3;
+}
+
+.search-result-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.search-result-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.search-result-price {
+    font-size: 0.85rem;
+    color: #E67E22;
+    font-weight: 600;
+}
+
+.search-result-item:hover {
+    background: #FFF8F0;
+}
+
+.search-result-item img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.search-result-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.search-result-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.search-result-price {
+    font-size: 0.85rem;
+    color: #E67E22;
+    font-weight: 500;
+}
+
 .nav-links {
+
     display: flex;
     gap: 2rem;
     align-items: center;
@@ -331,4 +451,9 @@ body {
     .nav-links.active {
         display: flex;
     }
-}
+
+    .nav-search {
+        margin: 0 1rem;
+        max-width: none;
+    }
+}

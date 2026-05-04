@@ -35,10 +35,12 @@ document.addEventListener('DOMContentLoaded', () => {
     loadDashboardData();
     loadTables();
     loadRecentOrders();
+    loadAttendanceStatus();
     initEventListeners();
     initMobileMenu();
     startStatusCheck();
 });
+
 
 // Load staff info
 function loadStaffInfo() {
@@ -312,7 +314,86 @@ function initEventListeners() {
             window.location.href = '../../auth/html/staff-login.html';
         });
     }
+
+    const checkInBtn = document.getElementById('checkInBtn');
+    const checkOutBtn = document.getElementById('checkOutBtn');
+
+    if (checkInBtn) {
+        checkInBtn.addEventListener('click', handleCheckIn);
+    }
+    if (checkOutBtn) {
+        checkOutBtn.addEventListener('click', handleCheckOut);
+    }
 }
+
+async function loadAttendanceStatus() {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch('http://localhost:5000/api/attendance/status', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await response.json();
+        
+        const statusEl = document.getElementById('attendanceStatus');
+        const inBtn = document.getElementById('checkInBtn');
+        const outBtn = document.getElementById('checkOutBtn');
+        
+        if (data.active) {
+            const timeStr = new Date(data.check_in).toLocaleTimeString('vi-VN');
+            if (statusEl) statusEl.innerHTML = `<span style="color: #10B981;">Đã check-in lúc ${timeStr}</span>`;
+            if (inBtn) inBtn.style.display = 'none';
+            if (outBtn) outBtn.style.display = 'block';
+        } else {
+            if (statusEl) statusEl.textContent = 'Chưa check-in';
+            if (inBtn) inBtn.style.display = 'block';
+            if (outBtn) outBtn.style.display = 'none';
+        }
+    } catch (e) {
+        console.error('Attendance status error:', e);
+    }
+}
+
+async function handleCheckIn() {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch('http://localhost:5000/api/attendance/check-in', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await response.json();
+        
+        if (response.ok) {
+            showToast('Check-in thành công', 'success');
+            loadAttendanceStatus();
+        } else {
+            showToast(data.message || 'Check-in thất bại', 'error');
+        }
+    } catch (e) {
+        showToast('Lỗi kết nối', 'error');
+    }
+}
+
+async function handleCheckOut() {
+    if (!confirm('Xác nhận kết thúc ca làm việc?')) return;
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch('http://localhost:5000/api/attendance/check-out', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await response.json();
+        
+        if (response.ok) {
+            showToast('Check-out thành công', 'success');
+            loadAttendanceStatus();
+        } else {
+            showToast(data.message || 'Check-out thất bại', 'error');
+        }
+    } catch (e) {
+        showToast('Lỗi kết nối', 'error');
+    }
+}
+
 
 // Mobile menu
 function initMobileMenu() {

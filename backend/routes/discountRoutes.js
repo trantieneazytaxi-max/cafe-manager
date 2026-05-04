@@ -4,10 +4,10 @@ const { executeQuery, sql, getConnection } = require('../config/js/db');
 const { verifyToken, isAdmin, optionalToken } = require('../middleware/authMiddleware');
 
 // 1. Kiểm tra mã giảm giá
-router.post('/apply', verifyToken, async (req, res) => {
+router.post('/apply', optionalToken, async (req, res) => {
     try {
         const { code, orderAmount } = req.body;
-        const userId = req.user.userId;
+        const userId = req.user ? req.user.userId : null;
 
         const result = await executeQuery(`
             SELECT * FROM DiscountCodes 

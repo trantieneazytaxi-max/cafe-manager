@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Staff Dashboard - Cà Phê Thông Minh</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="../css/staff-dashboard.css">
 </head>
@@ -54,8 +55,16 @@
             <div class="shift-info">
                 <i class="fas fa-clock"></i>
                 <div>
-                    <span class="shift-label">Ca làm việc hiện tại:</span>
-                    <span class="shift-value" id="shiftType">Sáng (07:00 - 12:00)</span>
+                    <span class="shift-label">Chấm công nhân viên:</span>
+                    <span class="shift-value" id="attendanceStatus">Chưa check-in</span>
+                    <div style="margin-top: 10px; display: flex; gap: 10px;">
+                        <button id="checkInBtn" class="btn-checkin" style="background: #00f3ff; color: #121212; border: none; padding: 8px 15px; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                            <i class="fas fa-sign-in-alt"></i> Check-in
+                        </button>
+                        <button id="checkOutBtn" class="btn-checkout hidden" style="background: #ff0055; color: #fff; border: none; padding: 8px 15px; border-radius: 8px; font-weight: 600; cursor: pointer; display: none;">
+                            <i class="fas fa-sign-out-alt"></i> Check-out
+                        </button>
+                    </div>
                 </div>
             </div>
             <div class="shift-stats">

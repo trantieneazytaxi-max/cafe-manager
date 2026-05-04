@@ -61,6 +61,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     <i class="fas fa-chart-bar"></i>
                     <span class="nav-text">Báo cáo</span>
                 </a>
+                <a href="../../attendance/html/index.html" class="nav-item" data-page="attendance">
+                    <i class="fas fa-calendar-check"></i>
+                    <span class="nav-text">Chấm công</span>
+                </a>
                 <a href="../../password-requests/html/password-requests.html" class="nav-item" data-page="passwords">
                     <i class="fas fa-key"></i>
                     <span class="nav-text">Yêu cầu đặt lại mật khẩu</span>

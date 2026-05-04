@@ -133,8 +133,13 @@
                         <input type="text" id="storeName" value="Cà Phê Thông Minh">
                     </div>
                     <div class="form-group">
-                        <label>Địa chỉ cửa hàng</label>
-                        <input type="text" id="storeAddress" value="123 Đường Cà Phê, Quận 1, TP.HCM">
+                        <label>Địa chỉ cửa hàng (Mapbox)</label>
+                        <input type="text" id="storeAddress" placeholder="Tìm địa chỉ, chọn kết quả để lưu tọa độ" autocomplete="off">
+                        <input type="hidden" id="storeLat" value="">
+                        <input type="hidden" id="storeLng" value="">
+                        <input type="hidden" id="storePlaceId" value="">
+                        <p style="font-size: 0.75rem; color: #8892b0; margin-top: 0.5rem;">Geocoding Mapbox. Cấu hình <code style="color:#00f3ff;">MAPBOX_ACCESS_TOKEN</code> (token public <code>pk....</code>) trong <code style="color:#00f3ff;">backend/.env</code>.</p>
+                        <div id="storeMap" style="height: 280px; border-radius: 12px; margin-top: 1rem; border: 1px solid rgba(0, 243, 255, 0.2);"></div>
                     </div>
                     <div class="form-group">
                         <label>Hotline liên hệ</label>
@@ -148,50 +153,179 @@
 
                 <!-- Financial Info -->
                 <div class="settings-card">
-                    <h3><i class="fas fa-money-bill-wave"></i> Cấu hình tài chính</h3>
+                    <h3><i class="fas fa-money-bill-wave"></i> Cấu hình tài chính & Ngôn ngữ</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                        <div class="form-group">
+                            <label>Đơn vị tiền tệ</label>
+                            <select id="currency" style="width: 100%; padding: 1rem; background: rgba(0, 243, 255, 0.05); border: 1px solid rgba(0, 243, 255, 0.1); border-radius: 12px; color: #fff;">
+                                <option value="VND">VNĐ (Việt Nam Đồng)</option>
+                                <option value="USD">USD (Dollar Mỹ)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Ngôn ngữ hệ thống</label>
+                            <select id="language" style="width: 100%; padding: 1rem; background: rgba(0, 243, 255, 0.05); border: 1px solid rgba(0, 243, 255, 0.1); border-radius: 12px; color: #fff;">
+                                <option value="vi">Tiếng Việt</option>
+                                <option value="en">English</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label>Thuế giá trị gia tăng (VAT %)</label>
                         <input type="number" id="vatRate" value="10">
                     </div>
                     <div class="form-group">
-                        <label>Phí vận chuyển chuẩn (VND)</label>
+                        <label>Phí vận chuyển chuẩn</label>
                         <input type="number" id="defaultShipping" value="20000">
                     </div>
                     <div class="form-group">
-                        <label>Ngưỡng miễn phí vận chuyển (VND)</label>
+                        <label>Ngưỡng miễn phí vận chuyển</label>
                         <input type="number" id="freeShipThreshold" value="200000">
                     </div>
-                    <div style="margin-top: 2rem; padding: 1rem; background: rgba(255, 0, 85, 0.05); border-radius: 12px; border-left: 4px solid #ff0055;">
+                    <div style="margin-top: 1rem; padding: 1rem; background: rgba(255, 0, 85, 0.05); border-radius: 12px; border-left: 4px solid #ff0055;">
                         <p style="font-size: 0.75rem; color: #ff0055; font-weight: 600;">LƯU Ý: Các thông số này sẽ áp dụng ngay lập tức cho toàn bộ hóa đơn mới.</p>
                     </div>
+                </div>
+            </div>
+
+            <!-- Promotional Banners Section -->
+            <div class="settings-card" style="margin-top: 2rem; max-width: 100%;">
+                <h3><i class="fas fa-images"></i> Quản lý Banner Quảng cáo (Trang chủ)</h3>
+                <div class="form-group">
+                    <label>Danh sách URL ảnh Banner (Mỗi URL 1 dòng. Định dạng: Ảnh | Link CTA)</label>
+                    <textarea id="heroBanners" rows="5" style="width: 100%; padding: 1rem; background: rgba(0, 243, 255, 0.05); border: 1px solid rgba(0, 243, 255, 0.1); border-radius: 12px; color: #fff; font-family: monospace;" placeholder="https://.../img.jpg | /user/menu/html/menu.html"></textarea>
+                    <p style="font-size: 0.8rem; color: #888; margin-top: 0.5rem;">Mỗi dòng là 1 banner. Dùng dấu "|" để thêm link điều hướng cho nút "Khám phá" trên banner.</p>
                 </div>
             </div>
 
             <!-- Security Section -->
             <div class="settings-card" style="margin-top: 2rem; max-width: 600px;">
                 <h3><i class="fas fa-shield-alt"></i> Quản trị & Bảo mật</h3>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-                    <div class="form-group">
-                        <label>Mật khẩu hiện tại</label>
-                        <input type="password" placeholder="••••••••">
+                <form id="adminSecurityForm" autocomplete="off" onsubmit="event.preventDefault(); return false;">
+                    <!-- Hidden username field for accessibility -->
+                    <input type="text" name="username" style="display:none" autocomplete="username" value="admin">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                        <div class="form-group">
+                            <label for="adminPwdCurrent">Mật khẩu hiện tại</label>
+                            <input id="adminPwdCurrent" name="current_password" type="password" placeholder="••••••••" autocomplete="current-password">
+                        </div>
+                        <div class="form-group">
+                            <label for="adminPwdNew">Mật khẩu quản trị mới</label>
+                            <input id="adminPwdNew" name="new_password" type="password" placeholder="Nhập mật khẩu mới" autocomplete="new-password">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>Mật khẩu quản trị mới</label>
-                        <input type="password" placeholder="Nhập mật khẩu mới">
+                    <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
+                        <button type="button" class="btn-outline">CẬP NHẬT BẢO MẬT</button>
                     </div>
-                </div>
-                <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
-                    <button class="btn-outline">CẬP NHẬT BẢO MẬT</button>
-                </div>
+                </form>
             </div>
         </main>
     </div>
 
+    <script src="../../../shared/js/maps-places.js"></script>
     <script src="../../dashboard/js/sidebar.js"></script>
     <script>
-        function saveSettings() {
-            alert('Đã cập nhật cấu hình hệ thống thành công!');
+        let adminStoreMap = null;
+        let adminStoreMarker = null;
+
+        async function initAdminMap(lat, lng) {
+            const container = document.getElementById('storeMap');
+            if (!container) return;
+            
+            const latN = parseFloat(lat) || 21.0278;
+            const lngN = parseFloat(lng) || 105.8342;
+
+            const picker = await initLeafletPicker('storeMap', {
+                center: [latN, lngN],
+                onSelect: (p) => {
+                    document.getElementById('storeLat').value = p.lat;
+                    document.getElementById('storeLng').value = p.lng;
+                }
+            });
+            adminStoreMap = picker.map;
+            adminStoreMarker = picker.marker;
         }
+
+        async function loadAdminStoreSettings() {
+            var token = localStorage.getItem('token');
+            var role = localStorage.getItem('role');
+            if (!token || role !== 'admin') {
+                window.location.href = '../../auth/html/admin-login.html';
+                return;
+            }
+            try {
+                var res = await fetch('http://localhost:5000/api/admin/store-settings', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                if (!res.ok) throw new Error('Không tải được cấu hình');
+                var d = await res.json();
+                
+                document.getElementById('storeName').value = d.storeName || '';
+                document.getElementById('storeAddress').value = d.address || '';
+                document.getElementById('storeLat').value = d.lat != null ? String(d.lat) : '';
+                document.getElementById('storeLng').value = d.lng != null ? String(d.lng) : '';
+                document.getElementById('storePhone').value = d.storePhone || '';
+                document.getElementById('storeEmail').value = d.storeEmail || '';
+                document.getElementById('vatRate').value = d.vatRate != null ? d.vatRate : 10;
+                document.getElementById('defaultShipping').value = d.defaultShipping != null ? d.defaultShipping : 20000;
+                document.getElementById('freeShipThreshold').value = d.freeShipThreshold != null ? d.freeShipThreshold : 200000;
+                document.getElementById('currency').value = d.currency || 'VND';
+                document.getElementById('language').value = d.language || 'vi';
+                
+                if (d.heroBanners) {
+                    try {
+                        const bannersArr = JSON.parse(d.heroBanners);
+                        document.getElementById('heroBanners').value = bannersArr.join('\n');
+                    } catch (e) {
+                        document.getElementById('heroBanners').value = d.heroBanners;
+                    }
+                }
+
+
+                // Khởi tạo bản đồ Leaflet
+                await initAdminMap(d.lat, d.lng);
+                
+            } catch (e) {
+                console.error(e);
+                alert('Lỗi tải cài đặt: ' + e.message);
+            }
+        }
+
+        async function saveSettings() {
+            var token = localStorage.getItem('token');
+            try {
+                var res = await fetch('http://localhost:5000/api/admin/store-settings', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({
+                        storeName: document.getElementById('storeName').value,
+                        address: document.getElementById('storeAddress').value,
+                        lat: document.getElementById('storeLat').value ? parseFloat(document.getElementById('storeLat').value) : null,
+                        lng: document.getElementById('storeLng').value ? parseFloat(document.getElementById('storeLng').value) : null,
+                        storePhone: document.getElementById('storePhone').value,
+                        storeEmail: document.getElementById('storeEmail').value,
+                        vatRate: parseFloat(document.getElementById('vatRate').value) || 10,
+                        defaultShipping: parseFloat(document.getElementById('defaultShipping').value) || 20000,
+                        freeShipThreshold: parseFloat(document.getElementById('freeShipThreshold').value) || 200000,
+                        currency: document.getElementById('currency').value,
+                        language: document.getElementById('language').value,
+                        heroBanners: JSON.stringify(document.getElementById('heroBanners').value.split('\n').map(l => l.trim()).filter(l => l))
+                    })
+                });
+                var data = await res.json().catch(function () { return {}; });
+                if (!res.ok) throw new Error(data.message || 'Lưu thất bại');
+                alert('Đã cập nhật cấu hình hệ thống thành công!');
+                location.reload();
+            } catch (e) {
+                alert(e.message);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadAdminStoreSettings);
     </script>
 </body>
+
 </html>

@@ -8,44 +8,13 @@
     <link rel="stylesheet" href="../css/payment.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="logo">
-                <i class="fas fa-mug-hot"></i>
-                <span>Cà Phê <span class="highlight">Thông Minh</span></span>
-            </div>
-            <div class="nav-links" id="navLinks">
-                <a href="../../index/html/index.html"><i class="fas fa-home"></i> Trang chủ</a>
-                <a href="../../menu/html/menu.html"><i class="fas fa-coffee"></i> Thực đơn</a>
-                <a href="../../offers/html/offers.html"><i class="fas fa-gift"></i> Ưu đãi</a>
-                <a href="../../tables/html/tables.html"><i class="fas fa-chair"></i> Đặt bàn</a>
-                <a href="../../orders/html/orders.html"><i class="fas fa-shopping-cart"></i> Giỏ hàng <span id="cartCount" class="cart-badge" style="display: none;">0</span></a>
-                <a href="../../history/html/history.html"><i class="fas fa-history"></i> Lịch sử</a>
-                
-                <!-- Profile Dropdown -->
-                <div class="profile-dropdown" id="profileDropdown">
-                    <button class="profile-btn" id="profileBtn">
-                        <img id="avatarImg" class="avatar-small" src="https://ui-avatars.com/api/?background=E67E22&color=fff&rounded=true" alt="Avatar">
-                        <span id="userNameShort"></span>
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
-                    <div class="dropdown-menu" id="dropdownMenu">
-                        <a href="../../profile/html/profile.html"><i class="fas fa-user-circle"></i> Thông tin cá nhân</a>
-                        <a href="../../history/html/history.html"><i class="fas fa-history"></i> Lịch sử đơn hàng</a>
-                        <a href="../../settings/html/settings.html"><i class="fas fa-cog"></i> Cài đặt</a>
-                        <hr>
-                        <a href="#" id="logoutDropdownBtn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
-                    </div>
-                </div>
-            </div>
-            <div class="menu-toggle" id="menuToggle">
-                <i class="fas fa-bars"></i>
-            </div>
-        </div>
-    </nav>
+    <!-- Header / Navbar Placeholder -->
+    <div id="navbar-placeholder"></div>
 
     <!-- Hero Section -->
     <section class="payment-hero">
@@ -74,7 +43,7 @@
                         <input type="radio" name="orderType" value="takeaway">
                         <div class="type-card">
                             <i class="fas fa-shopping-bag"></i>
-                            <span>Mang đi</span>
+                            <span>Tự đến lấy</span>
                         </div>
                     </label>
                     <label class="type-option">
@@ -101,11 +70,75 @@
                     </div>
                 </div>
                 <div id="deliveryAddressGroup" class="form-group hidden" style="margin-top: 15px;">
-                    <label>Địa chỉ giao hàng</label>
-                    <input type="text" id="deliveryAddress" placeholder="Số nhà, tên đường, phường/xã...">
-                    <small class="store-origin"><i class="fas fa-store"></i> Giao từ: 123 Đường Cà Phê, Quận 1, TP.HCM</small>
+                    <label>Địa chỉ giao hàng (gợi ý Mapbox)</label>
+                    <input type="text" id="deliveryAddress" placeholder="Tìm địa chỉ, chọn kết quả trong danh sách" autocomplete="off">
+                    <input type="hidden" id="deliveryLat" value="">
+                    <input type="hidden" id="deliveryLng" value="">
+                    <small id="mapsKeyHint" class="store-origin hidden" style="color:#c0392b;"><i class="fas fa-exclamation-circle"></i> Admin cần cấu hình MAPBOX_ACCESS_TOKEN (backend/.env) và địa chỉ quán.</small>
+                    <small class="store-origin"><i class="fas fa-store"></i> Giao từ: <span id="storeOriginLabel">Đang tải địa chỉ quán...</span></small>
+                    
+                    <!-- Distance-based delivery fee -->
+                    <div class="delivery-fee-calc" style="margin-top: 15px;">
+                        <input type="hidden" id="deliveryDistanceKm" value="3">
+                        <div id="distanceComputedBlock" class="hidden">
+                            <label><i class="fas fa-location-arrow"></i> Khoảng cách ước tính (đường chim bay)</label>
+                            <div class="distance-value-display" style="margin-bottom:10px;">
+                                <span id="distanceValueComputed">0</span> km
+                            </div>
+                        </div>
+                        <div id="distanceManualBlock">
+                        <label><i class="fas fa-route"></i> Khoảng cách giao hàng (km) — chỉnh tay khi chưa có tọa độ quán</label>
+                        <div class="distance-input-group">
+                            <div class="distance-slider-container">
+                                <input type="range" id="deliveryDistance" min="1" max="15" value="3" step="0.5" class="distance-slider">
+                                <div class="distance-value-display">
+                                    <span id="distanceValue">3</span> km
+                                </div>
+                            </div>
+                            <div class="delivery-fee-result">
+                                <span class="fee-label">Phí giao hàng:</span>
+                                <span class="fee-amount" id="deliveryFeeDisplay">20.000₫</span>
+                            </div>
+                        </div>
+                        <div class="fee-zones">
+                            <div class="fee-zone">
+                                <span class="zone-dot zone-near"></span>
+                                <span>0-5 km: 20.000₫ (cố định)</span>
+                            </div>
+                            <div class="fee-zone">
+                                <span class="zone-dot zone-far"></span>
+                                <span>>5 km: phụ thu 5.000₫/km</span>
+                            </div>
+                        </div>
+
+                        <!-- Surcharge warning for >5km -->
+                        <div id="surchargeWarning" class="surcharge-warning hidden">
+                            <div class="surcharge-banner">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <div class="surcharge-text">
+                                    <strong>Ngoài bán kính giao hàng tiêu chuẩn (5 km)</strong>
+                                    <p>Đơn hàng sẽ được tính <strong>phụ thu 5.000₫/km</strong> cho khoảng cách vượt quá 5 km. Đồ uống sẽ được mặc định <strong>đá riêng</strong> để đảm bảo chất lượng.</p>
+                                </div>
+                            </div>
+                            <label class="surcharge-confirm">
+                                <input type="checkbox" id="surchargeAccepted">
+                                <span>Tôi đồng ý phụ thu giao xa và nhận đá riêng</span>
+                            </label>
+                        </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 🆕 Leaflet Map Picker -->
+                    <div id="mapPickerSection" class="form-group hidden" style="margin-top: 20px;">
+                        <label><i class="fas fa-map-marked-alt"></i> Chọn vị trí trên bản đồ để tính phí giao hàng <span style="color: #10B981; font-weight: normal; font-size: 0.85rem;">(Freeship cho đơn >= 199k và ≤ 5km)</span></label>
+                        <div id="mapPicker" style="height: 300px; width: 100%; border-radius: 12px; margin-top: 10px; border: 2px solid #ddd; z-index: 1;"></div>
+                        <p style="font-size: 0.85rem; color: #666; margin-top: 5px;">
+                            <i class="fas fa-info-circle"></i> Bạn có thể kéo ghim hoặc click trực tiếp lên bản đồ.
+                        </p>
+                    </div>
                 </div>
             </div>
+
 
             <!-- 🆕 Available Coupons Section -->
             <div id="availableCouponsSection" class="available-coupons-section">
@@ -119,9 +152,11 @@
                 <!-- 🆕 Discount Coupon -->
             <div class="coupon-section">
                 <h3><i class="fas fa-ticket-alt"></i> Mã giảm giá</h3>
-                <div class="coupon-input">
-                    <input type="text" id="couponCode" placeholder="Nhập mã giảm giá">
-                    <button type="button" id="applyCouponBtn">Áp dụng</button>
+                <div class="coupon-input" style="display: flex; gap: 10px; align-items: center;">
+                    <input type="text" id="couponCode" placeholder="Nhập mã giảm giá" style="flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+                    <button type="button" id="scanQrBtn" class="btn-secondary" style="padding: 12px; border-radius: 8px;" title="Quét mã QR"><i class="fas fa-qrcode"></i></button>
+                    <button type="button" id="applyCouponBtn" style="padding: 12px 20px; background: #5C3A21; color: white; border: none; border-radius: 8px; cursor: pointer;">Áp dụng</button>
+                    <button type="button" id="clearCouponBtn" class="hidden" style="padding: 12px; background: #e74c3c; color: white; border: none; border-radius: 8px; cursor: pointer;" title="Bỏ qua mã giảm giá"><i class="fas fa-times"></i></button>
                 </div>
                 <p id="couponMessage" class="coupon-message"></p>
             </div>
@@ -168,7 +203,7 @@
                                 <i class="fas fa-money-bill-wave"></i>
                                 <div>
                                     <strong>Tiền mặt</strong>
-                                    <p>Thanh toán trực tiếp tại quầy</p>
+                                    <p>Thanh toán tiền mặt</p>
                                 </div>
                             </div>
                         </label>
@@ -188,7 +223,12 @@
                     <div id="cashSection" class="payment-detail-section">
                         <div class="payos-info">
                             <i class="fas fa-hand-holding-usd"></i>
-                            <p>Vui lòng thanh toán trực tiếp tại quầy sau khi xác nhận đơn hàng.</p>
+                            <p id="cashMessage">Vui lòng thanh toán bằng tiền mặt sau khi xác nhận đơn hàng.</p>
+                        </div>
+                        <!-- Counter payment notice for dine-in and takeaway -->
+                        <div id="counterPaymentNotice" class="payos-info hidden" style="margin-top: 15px; background: rgba(220, 53, 69, 0.1); border-left: 4px solid #dc3545; border-radius: 12px; padding: 1rem;">
+                            <i class="fas fa-exclamation-circle" style="color: #dc3545; margin-right: 10px;"></i>
+                            <p style="color: #dc3545; font-weight: 600; margin: 0;">Vui lòng đến quầy thanh toán khi nhận hàng.</p>
                         </div>
                     </div>
 
@@ -211,17 +251,68 @@
         </div>
     </section>
 
-    <!-- Success Modal -->
-    <div id="successModal" class="modal hidden">
-        <div class="modal-content">
-            <div class="modal-icon">
-                <i class="fas fa-check-circle"></i>
+    <!-- 🆕 Grab-Style Receipt Modal -->
+    <div id="receiptModal" class="modal hidden">
+        <div class="receipt-modal-content">
+            <div class="receipt-paper">
+                <div class="receipt-header">
+                    <div class="receipt-logo"><i class="fas fa-mug-hot"></i></div>
+                    <h2>CÀ PHÊ THÔNG MINH</h2>
+                    <p id="receiptStoreAddr">123 Đường Cà Phê, Quận 1</p>
+                    <p>Hotline: 0965 147 941</p>
+                    <div class="receipt-divider"></div>
+                    <p class="receipt-order-code">MÃ ĐƠN: <strong id="receiptOrderCode">#CM-0000</strong></p>
+                    <p id="receiptDate">02/05/2026 15:30</p>
+                </div>
+                
+                <div class="receipt-divider"></div>
+                
+                <div class="receipt-body">
+                    <table class="receipt-table">
+                        <thead>
+                            <tr>
+                                <th>Món</th>
+                                <th style="text-align: right;">Giá</th>
+                            </tr>
+                        </thead>
+                        <tbody id="receiptItemsList">
+                            <!-- Items go here -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="receipt-divider"></div>
+                
+                <div class="receipt-footer-calc">
+                    <div class="receipt-row">
+                        <span>Tạm tính:</span>
+                        <span id="receiptSubtotal">0₫</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span>Phí ship (<span id="receiptKm">0</span>km):</span>
+                        <span id="receiptShip">0₫</span>
+                    </div>
+                    <div class="receipt-row receipt-total-row">
+                        <span>TỔNG CỘNG:</span>
+                        <span id="receiptTotal">0₫</span>
+                    </div>
+                </div>
+                
+                <div class="receipt-divider"></div>
+                
+                <div class="receipt-end">
+                    <p>CHÚC QUÝ KHÁCH NGON MIỆNG!</p>
+                    <div class="receipt-qr" id="receiptQR">
+                        <!-- QR Code placeholder -->
+                         <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=CAFE_MANAGER" alt="QR Code">
+                    </div>
+                    <p style="font-size: 10px; margin-top: 5px;">Quét mã để theo dõi đơn hàng</p>
+                </div>
             </div>
-            <h2>Thanh toán thành công!</h2>
-            <p>Cảm ơn bạn đã đặt hàng. Đơn hàng của bạn đã được ghi nhận.</p>
-            <button class="modal-btn" id="closeModalBtn">Về trang chủ</button>
+            <button class="modal-btn" id="closeReceiptBtn" style="margin-top: 20px; width: 100%;">Hoàn tất</button>
         </div>
     </div>
+
 
     <!-- Footer -->
     <footer class="footer">
@@ -265,7 +356,9 @@
     </footer>
 
     <script src="../../../shared/js/api.js"></script>
+    <script src="../../../shared/js/maps-places.js"></script>
     <script src="../js/payment.js"></script>
+    <script src="../../../shared/js/navbar.js"></script>
     <script src="../../../shared/js/global.js"></script>
 </body>
 </html>

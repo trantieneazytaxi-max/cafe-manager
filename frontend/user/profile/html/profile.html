@@ -11,41 +11,8 @@
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="logo">
-                <i class="fas fa-mug-hot"></i>
-                <span>Cà Phê <span class="highlight">Thông Minh</span></span>
-            </div>
-            <div class="nav-links" id="navLinks">
-                <a href="../../index/html/index.html"><i class="fas fa-home"></i> Trang chủ</a>
-                <a href="../../menu/html/menu.html"><i class="fas fa-coffee"></i> Thực đơn</a>
-                <a href="../../offers/html/offers.html"><i class="fas fa-gift"></i> Ưu đãi</a>
-                <a href="../../tables/html/tables.html"><i class="fas fa-chair"></i> Đặt bàn</a>
-                <a href="../../orders/html/orders.html"><i class="fas fa-shopping-cart"></i> Giỏ hàng <span id="cartCount" class="cart-badge" style="display: none;">0</span></a>
-                <a href="../../history/html/history.html"><i class="fas fa-history"></i> Lịch sử</a>
-                
-                <!-- Profile Dropdown -->
-                <div class="profile-dropdown" id="profileDropdown">
-                    <button class="profile-btn" id="profileBtn">
-                        <img id="avatarImg" class="avatar-small" src="https://ui-avatars.com/api/?background=E67E22&color=fff&rounded=true" alt="Avatar">
-                        <span id="userNameShort"></span>
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
-                    <div class="dropdown-menu" id="dropdownMenu">
-                        <a href="../../profile/html/profile.html"><i class="fas fa-user-circle"></i> Thông tin cá nhân</a>
-                        <a href="../../history/html/history.html"><i class="fas fa-history"></i> Lịch sử đơn hàng</a>
-                        <a href="../../settings/html/settings.html"><i class="fas fa-cog"></i> Cài đặt</a>
-                        <hr>
-                        <a href="#" id="logoutDropdownBtn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
-                    </div>
-                </div>
-            </div>
-            <div class="menu-toggle" id="menuToggle">
-                <i class="fas fa-bars"></i>
-            </div>
-        </div>
-    </nav>
+    <!-- Header / Navbar Placeholder -->
+    <div id="navbar-placeholder"></div>
 
     <!-- Hero Section -->
     <section class="profile-hero">
@@ -98,8 +65,34 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Delivery Address Section -->
+            <div class="profile-card" style="margin-top: 2rem;">
+                <div class="profile-info" style="width: 100%;">
+                    <h3 style="color: #5C3A21; margin-bottom: 1.5rem;"><i class="fas fa-map-marker-alt" style="color: #E67E22;"></i> Địa chỉ giao hàng mặc định</h3>
+                    
+                    <div class="form-group">
+                        <label>Địa chỉ nhận hàng</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="text" id="deliveryAddress" placeholder="Tìm địa chỉ hoặc ghim trên bản đồ" style="flex: 1; padding: 0.8rem; border-radius: 12px; border: 1px solid #F5E6D3;">
+                            <button class="save-btn" id="saveAddressBtn" style="width: auto; padding: 0 1.5rem;">Lưu địa chỉ</button>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-bottom: 1.5rem;">
+                        <input type="checkbox" id="autoFillAddress" style="width: 20px; height: 20px; accent-color: #E67E22;">
+                        <label style="margin-bottom: 0; cursor: pointer;" for="autoFillAddress">Tự động điền thông tin này khi thanh toán</label>
+                    </div>
+
+                    <div id="deliveryMap" style="height: 300px; border-radius: 20px; border: 2px solid #F5E6D3; margin-top: 1rem;"></div>
+                    <p style="font-size: 0.8rem; color: #666; margin-top: 1rem;"><i class="fas fa-info-circle"></i> Di chuyển ghim hoặc click trên bản đồ để chọn vị trí chính xác của bạn.</p>
+                </div>
+            </div>
         </div>
     </section>
+
+    <script src="../../../shared/js/maps-places.js"></script>
 
     <!-- Edit Profile Modal -->
     <div id="editModal" class="modal hidden">
@@ -196,6 +189,7 @@
 
     <script src="../../../shared/js/api.js"></script>
     <script src="../js/profile.js"></script>
+    <script src="../../../shared/js/navbar.js"></script>
     <script src="../../../shared/js/global.js"></script>
 </body>
 </html>
