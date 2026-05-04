@@ -44,18 +44,22 @@ if (loginForm) {
                     throw new Error('Tài khoản không có quyền Admin');
                 }
                 
-                // Lưu token
+                // Lưu token (Bỏ avatar_url để tránh đầy bộ nhớ localStorage)
+                const storageUser = { ...data.user };
+                delete storageUser.avatar_url;
+                const userStr = JSON.stringify(storageUser);
+
                 if (rememberMe) {
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('role', data.user.role);
-                    localStorage.setItem('user', JSON.stringify(data.user));
+                    localStorage.setItem('user', userStr);
                 } else {
                     sessionStorage.setItem('token', data.token);
                     sessionStorage.setItem('role', data.user.role);
-                    sessionStorage.setItem('user', JSON.stringify(data.user));
+                    sessionStorage.setItem('user', userStr);
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('role', data.user.role);
-                    localStorage.setItem('user', JSON.stringify(data.user));
+                    localStorage.setItem('user', userStr);
                 }
                 
                 showToast(`Chào mừng Admin ${data.user.full_name}!`, 'success');

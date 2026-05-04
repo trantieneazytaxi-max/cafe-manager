@@ -281,18 +281,22 @@ async function mockLogin(email, password, rememberMe) {
             throw new Error(data.message || 'Đăng nhập thất bại');
         }
         
-        // Lưu token
+        // Lưu token (Bỏ avatar_url để tránh đầy bộ nhớ localStorage)
+        const storageUser = { ...data.user };
+        delete storageUser.avatar_url;
+        const userStr = JSON.stringify(storageUser);
+
         if (rememberMe) {
             localStorage.setItem('token', data.token);
             localStorage.setItem('role', data.user.role);
-            localStorage.setItem('user', JSON.stringify(data.user));
+            localStorage.setItem('user', userStr);
         } else {
             sessionStorage.setItem('token', data.token);
             sessionStorage.setItem('role', data.user.role);
-            sessionStorage.setItem('user', JSON.stringify(data.user));
+            sessionStorage.setItem('user', userStr);
             localStorage.setItem('token', data.token);
             localStorage.setItem('role', data.user.role);
-            localStorage.setItem('user', JSON.stringify(data.user));
+            localStorage.setItem('user', userStr);
         }
         
         showToast(`Chào mừng ${data.user.full_name}! Đăng nhập thành công`, 'success');
@@ -300,6 +304,8 @@ async function mockLogin(email, password, rememberMe) {
         setTimeout(() => {
             if (data.user.role === 'admin') {
                 window.location.href = '../../admin/dashboard/html/admin-dashboard.html';
+            } else if (data.user.role === 'staff') {
+                window.location.href = '../../staff/dashboard/html/staff-dashboard.html';
             } else {
                 window.location.href = '../../user/index/html/index.html';
             }
