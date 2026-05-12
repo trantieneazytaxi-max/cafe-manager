@@ -275,7 +275,12 @@ GO
 INSERT INTO DiscountCodes (code, description, discount_type, discount_value, min_order_amount, usage_limit, usage_count, type, points_required, expiry_date, is_active) VALUES
 (N'HELLO2026', N'Chào mừng năm mới 2026 - Giảm 30%', 'percentage', 30, 0, 1000, 0, 'new_member', 0, '2026-12-31', 1),
 (N'VIP50', N'Giảm trực tiếp 50K cho đơn từ 200K', 'fixed', 50000, 200000, 500, 0, 'manual', 0, '2026-12-31', 1),
-(N'LOYALTY20', N'Mã đổi điểm: Giảm 20%', 'percentage', 20, 0, NULL, 0, 'loyalty', 200, '2026-12-31', 1);
+(N'LOYALTY20', N'Mã đổi điểm: Giảm 20%', 'percentage', 20, 0, NULL, 0, 'loyalty', 200, '2026-12-31', 1),
+(N'QR_DISCOUNT_10', N'Giảm 10% từ quét mã QR', 'percentage', 10, 0, 1000, 0, 'manual', 0, '2026-12-31', 1),
+(N'BANMOI', N'Ưu đãi khách hàng mới - Giảm 50% (Max 50k)', 'percentage', 50, 0, 100, 0, 'new_member', 0, '2026-12-31', 1),
+(N'CAFEDAT', N'Giảm 20k cho đơn hàng từ 50k', 'fixed', 20000, 50000, 200, 0, 'manual', 0, '2026-12-31', 1),
+(N'TRASUA15', N'Ưu đãi tín đồ trà sữa - Giảm 15k', 'fixed', 15000, 40000, 300, 0, 'manual', 0, '2026-12-31', 1),
+(N'FLASH10', N'Flash Sale giờ vàng - Giảm 10%', 'percentage', 10, 0, 50, 0, 'manual', 0, '2026-12-31', 1);
 GO
 
 -- Đơn hàng Demo
@@ -304,9 +309,11 @@ GO
 
 -- Settings Demo
 INSERT INTO Settings (setting_key, setting_value, description) VALUES
-(N'STORE_NAME', N'Cà Phê Thông Minh', N'Tên quán cà phê'),
-(N'STORE_ADDRESS', N'123 Đường Cà Phê, Quận 1, TP.HCM', N'Địa chỉ quán'),
-(N'STORE_PHONE', N'0965147941', N'Số điện thoại liên hệ');
+(N'store_name', N'Cà Phê Thông Minh', N'Tên quán cà phê'),
+(N'store_address', N'123 Đường Cà Phê, Quận 1, TP.HCM', N'Địa chỉ quán'),
+(N'store_phone', N'0965147941', N'Số điện thoại liên hệ'),
+(N'store_email', N'contact@smartcoffee.vn', N'Email liên hệ'),
+(N'store_opening_hours', N'07:00 - 22:00', N'Giờ mở cửa hàng ngày');
 GO
 
 -- ============================================

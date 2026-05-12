@@ -17,6 +17,7 @@ function initGlobalUI() {
     updateNavbarCartCount();
     initGlobalSearch();
     initFloatingButtons();
+    updateFooterInfo();
 }
 
 
@@ -346,4 +347,61 @@ if (typeof formatCurrency !== 'function') {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
     }
     window.formatCurrency = formatCurrency;
+}
+
+/**
+ * 9. Update Footer Info Dynamically
+ */
+async function updateFooterInfo() {
+    try {
+        // Fetch from public store API
+        const response = await fetch('http://localhost:5000/api/store');
+        if (!response.ok) return;
+        const data = await response.json();
+
+        // Update Store Name in Footer Logo if exists
+        const footerLogoText = document.querySelector('.footer-logo span');
+        if (footerLogoText && data.storeName) {
+            const highlight = footerLogoText.querySelector('.highlight');
+            if (highlight) {
+                // Keep the "highlight" part if it's there
+                // This is specific to the current design
+            } else {
+                footerLogoText.textContent = data.storeName;
+            }
+        }
+
+        // Update Address
+        const addrEl = document.querySelector('.footer-col li i.fa-map-marker-alt')?.parentElement || document.getElementById('footer-address');
+        if (addrEl && data.address) {
+            addrEl.innerHTML = `<i class="fas fa-map-marker-alt"></i> ${data.address}`;
+        }
+
+        // Update Phone
+        const phoneEl = document.querySelector('.footer-col li i.fa-phone')?.parentElement || document.getElementById('footer-phone');
+        if (phoneEl && data.storePhone) {
+            phoneEl.innerHTML = `<i class="fas fa-phone"></i> ${data.storePhone}`;
+        }
+
+        // Update Email
+        const emailEl = document.querySelector('.footer-col li i.fa-envelope')?.parentElement || document.getElementById('footer-email');
+        if (emailEl && data.storeEmail) {
+            emailEl.innerHTML = `<i class="fas fa-envelope"></i> ${data.storeEmail}`;
+        }
+
+        // Update Opening Hours
+        // Looking for the column that says "Giờ mở cửa"
+        const hoursCol = Array.from(document.querySelectorAll('.footer-col h4')).find(h => h.textContent.includes('Giờ mở cửa'))?.parentElement;
+        if (hoursCol && data.storeOpeningHours) {
+            const hoursList = hoursCol.querySelector('ul');
+            if (hoursList) {
+                const hours = data.storeOpeningHours.split('\n').filter(line => line.trim());
+                if (hours.length > 0) {
+                    hoursList.innerHTML = hours.map(h => `<li><i class="fas fa-clock"></i> ${h}</li>`).join('');
+                }
+            }
+        }
+    } catch (err) {
+        console.warn('Could not update footer info:', err);
+    }
 }

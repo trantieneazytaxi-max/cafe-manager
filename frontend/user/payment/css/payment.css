@@ -403,6 +403,43 @@ body {
     margin-bottom: 1.5rem;
 }
 
+.collapsible-header {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0 !important; /* Reset margin when collapsible */
+    padding: 5px 0;
+}
+
+.collapsible-header span {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.toggle-icon {
+    transition: transform 0.3s ease;
+    color: #8c6a51;
+    font-size: 0.9rem;
+}
+
+.collapsible-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out, margin-top 0.3s ease;
+    margin-top: 1.5rem;
+}
+
+.collapsed .collapsible-content {
+    max-height: 0;
+    margin-top: 0;
+}
+
+.collapsed .toggle-icon {
+    transform: rotate(-180deg);
+}
+
 .coupons-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));

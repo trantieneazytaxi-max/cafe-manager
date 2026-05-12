@@ -2,17 +2,23 @@ const express = require('express');
 const router = express.Router();
 const { executeQuery } = require('../config/js/db');
 
-const STORE_KEYS = ['store_name', 'store_address', 'store_lat', 'store_lng', 'store_place_id', 'hero_banners'];
-const ADMIN_STORE_KEYS = [
-    ...STORE_KEYS,
-    'store_phone',
-    'store_email',
+const STORE_KEYS = [
+    'store_name', 
+    'store_address', 
+    'store_lat', 
+    'store_lng', 
+    'store_place_id', 
+    'hero_banners',
     'vat_rate',
     'default_shipping',
     'free_ship_threshold',
     'currency',
-    'language'
+    'language',
+    'store_phone',
+    'store_email',
+    'store_opening_hours'
 ];
+const ADMIN_STORE_KEYS = [...STORE_KEYS];
 
 
 async function upsertSetting(key, value) {
@@ -36,7 +42,8 @@ async function loadStoreMap() {
     );
     const map = {};
     for (const row of result.recordset) {
-        map[row.setting_key] = row.setting_value;
+        // Chuyển key về lowercase để đồng bộ với code JS
+        map[row.setting_key.toLowerCase()] = row.setting_value;
     }
     return map;
 }
@@ -48,7 +55,8 @@ async function loadAdminStoreMap() {
     );
     const map = {};
     for (const row of result.recordset) {
-        map[row.setting_key] = row.setting_value;
+        // Chuyển key về lowercase để đồng bộ với code JS
+        map[row.setting_key.toLowerCase()] = row.setting_value;
     }
     return map;
 }
@@ -67,13 +75,34 @@ router.get('/', async (req, res) => {
             placeId: map.store_place_id || null,
             currency: map.currency || 'VND',
             language: map.language || 'vi',
+            vatRate: map.vat_rate != null ? parseFloat(map.vat_rate) : 10,
+            defaultShipping: map.default_shipping != null ? parseFloat(map.default_shipping) : 20000,
+            freeShipThreshold: map.free_ship_threshold != null ? parseFloat(map.free_ship_threshold) : 200000,
+            storePhone: map.store_phone || '',
+            storeEmail: map.store_email || '',
+            storeOpeningHours: map.store_opening_hours || '',
             mapboxAccessToken: process.env.MAPBOX_ACCESS_TOKEN || '',
             heroBanners: map.hero_banners || ''
-
         });
     } catch (error) {
         console.error('store GET error:', error);
         res.status(500).json({ message: 'Lỗi server' });
+    }
+});
+
+// 🆕 Lấy số lượng nhân viên đang làm việc (đã check-in và chưa check-out)
+router.get('/active-staff', async (req, res) => {
+    try {
+        const result = await executeQuery(`
+            SELECT COUNT(DISTINCT user_id) as active_count 
+            FROM Attendance 
+            WHERE check_out IS NULL AND status = 'active'
+        `);
+        const count = result.recordset[0].active_count || 0;
+        res.json({ active_staff: Math.max(1, count) });
+    } catch (error) {
+        console.error('active-staff error:', error);
+        res.json({ active_staff: 1 }); // Mặc định là 1 nếu lỗi
     }
 });
 

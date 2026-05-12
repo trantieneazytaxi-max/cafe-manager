@@ -123,7 +123,7 @@ router.get('/redeemable', optionalToken, async (req, res) => {
         let query = `
             SELECT code_id, code, description, discount_type, discount_value, min_order_amount, points_required, type 
             FROM DiscountCodes 
-            WHERE is_active = 1 
+            WHERE is_active = 1 AND is_public = 1
             AND (expiry_date IS NULL OR expiry_date > GETDATE())
             AND (usage_limit IS NULL OR usage_count < usage_limit)
         `;
@@ -152,18 +152,18 @@ router.post('/admin/create', verifyToken, isAdmin, async (req, res) => {
         const { 
             code, description, discount_type, discount_value, 
             min_order_amount, max_discount_amount, usage_limit, 
-            expiry_date, type, points_required 
+            expiry_date, type, points_required, is_public 
         } = req.body;
 
         await executeQuery(`
             INSERT INTO DiscountCodes (
                 code, description, discount_type, discount_value, 
                 min_order_amount, max_discount_amount, usage_limit, 
-                expiry_date, type, points_required
+                expiry_date, type, points_required, is_public
             ) VALUES (
                 @code, @description, @discount_type, @discount_value, 
                 @min_order_amount, @max_discount_amount, @usage_limit, 
-                @expiry_date, @type, @points_required
+                @expiry_date, @type, @points_required, @is_public
             )
         `, {
             code, description, discount_type, discount_value,
@@ -172,12 +172,62 @@ router.post('/admin/create', verifyToken, isAdmin, async (req, res) => {
             usage_limit: usage_limit || null,
             expiry_date: expiry_date || null,
             type: type || 'manual',
-            points_required: points_required || 0
+            points_required: points_required || 0,
+            is_public: is_public !== undefined ? is_public : 1
         });
 
         res.json({ success: true, message: 'Tạo mã giảm giá thành công' });
     } catch (error) {
         console.error('Lỗi tạo discount:', error);
+        res.status(500).json({ message: 'Lỗi: ' + error.message });
+    }
+});
+
+// 5. Admin: Cập nhật mã giảm giá
+router.put('/admin/update/:id', verifyToken, isAdmin, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { 
+            code, description, discount_type, discount_value, 
+            min_order_amount, max_discount_amount, usage_limit, 
+            expiry_date, type, points_required, is_active, is_public 
+        } = req.body;
+
+        await executeQuery(`
+            UPDATE DiscountCodes SET
+                code = @code,
+                description = @description,
+                discount_type = @discount_type,
+                discount_value = @discount_value,
+                min_order_amount = @min_order_amount,
+                max_discount_amount = @max_discount_amount,
+                usage_limit = @usage_limit,
+                expiry_date = @expiry_date,
+                type = @type,
+                points_required = @points_required,
+                is_active = @is_active,
+                is_public = @is_public,
+                updated_at = GETDATE()
+            WHERE code_id = @id
+        `, {
+            id, code, description, discount_type, discount_value,
+            min_order_amount, max_discount_amount, usage_limit,
+            expiry_date, type, points_required, is_active, is_public
+        });
+
+        res.json({ success: true, message: 'Cập nhật thành công' });
+    } catch (error) {
+        res.status(500).json({ message: 'Lỗi: ' + error.message });
+    }
+});
+
+// 6. Admin: Xóa mã giảm giá
+router.delete('/admin/delete/:id', verifyToken, isAdmin, async (req, res) => {
+    try {
+        const { id } = req.params;
+        await executeQuery('DELETE FROM DiscountCodes WHERE code_id = @id', { id });
+        res.json({ success: true, message: 'Xóa thành công' });
+    } catch (error) {
         res.status(500).json({ message: 'Lỗi: ' + error.message });
     }
 });

@@ -99,7 +99,8 @@ cafe-manager/
 - Kho ưu đãi & **đổi điểm tích lũy** lấy mã giảm giá
 - Lịch sử đơn hàng chi tiết
 - Quản lý thông tin cá nhân & cài đặt
-- Header thống nhất trên toàn bộ trang (Navbar chung)
+- Header và Footer thống nhất, tự động cập nhật thông tin quán từ Database
+- Phần mã giảm giá trong thanh toán có thể thu gọn/mở rộng cho giao diện tối giản
 
 ### 🧑‍💼 Nhân viên (Staff)
 - Dashboard tổng quan: thống kê đơn hàng, doanh thu ca, trạng thái bàn
@@ -114,10 +115,10 @@ cafe-manager/
 - **Quản lý thực đơn nâng cao:** CRUD món ăn, cấu hình Size (giá cộng thêm), Topping (giá cộng thêm), đánh dấu **Best Seller**, tạm dừng món
 - Quản lý nhân viên: thêm / sửa / xóa / vô hiệu hóa tài khoản
 - Quản lý bàn: thêm / sửa / xóa
-- Quản lý mã giảm giá: tạo mã thủ công & mã đổi điểm
+- Quản lý mã giảm giá: tạo mã thủ công & mã đổi điểm (Hỗ trợ **Chỉnh sửa & Xóa mã** trực quan)
 - Phê duyệt yêu cầu đặt lại mật khẩu từ nhân viên
-- Báo cáo doanh thu (Chart.js)
-- Cài đặt hệ thống
+- Báo cáo doanh thu (Chart.js) - **Tối ưu hóa tốc độ load dữ liệu bằng SQL Aggregation**
+- Cài đặt hệ thống: Cấu hình tên quán, địa chỉ, hotline, email, giờ mở cửa và Mapbox API key
 
 ---
 

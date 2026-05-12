@@ -8,48 +8,19 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="../../dashboard/css/admin-dashboard.css">
     <link rel="stylesheet" href="../css/discounts.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="admin-container">
-        <!-- Sidebar (Copy from dashboard) -->
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <div class="logo">
-                    <i class="fas fa-mug-hot"></i>
-                    <span>Cà Phê <span class="highlight">Thông Minh</span></span>
-                </div>
-            </div>
-            <nav class="sidebar-nav">
-                <a href="../../dashboard/html/admin-dashboard.html" class="nav-item">
-                    <i class="fas fa-chart-line"></i>
-                    <span>Dashboard</span>
-                </a>
-                <a href="../../staff-management/html/staff-management.html" class="nav-item">
-                    <i class="fas fa-users"></i>
-                    <span>Quản lý nhân viên</span>
-                </a>
-                <a href="#" class="nav-item active">
-                    <i class="fas fa-ticket-alt"></i>
-                    <span>Mã giảm giá</span>
-                </a>
-                <a href="../../password-requests/html/password-requests.html" class="nav-item">
-                    <i class="fas fa-key"></i>
-                    <span>Yêu cầu mật khẩu</span>
-                </a>
-            </nav>
-            <div class="sidebar-footer">
-                <button class="logout-btn" id="logoutBtn">
-                    <i class="fas fa-sign-out-alt"></i> Đăng xuất
-                </button>
-            </div>
-        </aside>
+        <!-- Sidebar Placeholder -->
+        <div id="sidebar-placeholder"></div>
 
         <!-- Main Content -->
         <main class="main-content">
             <div class="top-bar">
-                <h2>Quản lý mã giảm giá</h2>
-                <button class="btn-primary" id="addDiscountBtn">
-                    <i class="fas fa-plus"></i> Tạo mã mới
+                <h2 style="font-family: 'Orbitron', sans-serif; letter-spacing: 2px; color: #fff; text-shadow: 0 0 10px #00f3ff;">QUẢN LÝ MÃ GIẢM GIÁ</h2>
+                <button class="btn-cyber" id="addDiscountBtn">
+                    <i class="fas fa-plus"></i> TẠO MÃ MỚI
                 </button>
             </div>
 
@@ -65,10 +36,11 @@
     <div id="discountModal" class="modal hidden">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Tạo mã giảm giá mới</h3>
+                <h3 id="modalTitle">Tạo mã giảm giá mới</h3>
                 <button class="close-btn">&times;</button>
             </div>
             <form id="discountForm">
+                <input type="hidden" id="code_id" name="code_id">
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Mã giảm giá</label>
@@ -110,6 +82,7 @@
                         <select id="type" name="type">
                             <option value="manual">Thủ công</option>
                             <option value="loyalty">Đổi điểm</option>
+                            <option value="redemption">Mã quy đổi (Redemption)</option>
                             <option value="weekly">Hàng tuần</option>
                             <option value="new_member">Thành viên mới</option>
                         </select>
@@ -118,15 +91,25 @@
                         <label>Điểm yêu cầu</label>
                         <input type="number" id="points_required" name="points_required" value="0">
                     </div>
+                    <div class="form-group" style="flex-direction: row; align-items: center; gap: 10px;">
+                        <input type="checkbox" id="is_public" name="is_public" checked style="width: 20px; height: 20px;">
+                        <label for="is_public" style="margin-bottom: 0;">Hiển thị công khai (Khách có thể thấy)</label>
+                    </div>
+                    <div class="form-group" style="flex-direction: row; align-items: center; gap: 10px;">
+                        <input type="checkbox" id="is_active" name="is_active" checked style="width: 20px; height: 20px;">
+                        <label for="is_active" style="margin-bottom: 0;">Đang hoạt động</label>
+                    </div>
                 </div>
                 <div class="form-actions">
-                    <button type="button" class="btn-secondary" id="cancelBtn">Hủy</button>
-                    <button type="submit" class="btn-primary">Lưu mã</button>
+                    <button type="button" class="btn-secondary" id="cancelBtn">HỦY BỎ</button>
+                    <button type="submit" class="btn-cyber">LƯU CẤU HÌNH</button>
                 </div>
             </form>
         </div>
     </div>
 
+    <script src="../../../shared/js/global.js"></script>
+    <script src="../../dashboard/js/sidebar.js"></script>
     <script src="../js/discounts.js"></script>
 </body>
 </html>

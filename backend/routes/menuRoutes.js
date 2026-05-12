@@ -126,24 +126,83 @@ router.put('/staff/items/:id(\\d+)/pause', verifyToken, isStaff, async (req, res
 router.get('/items/:id(\\d+)/options', async (req, res) => {
     try {
         const { id } = req.params;
-        const optionResult = await executeQuery(`
-            SELECT has_size, has_temperature 
-            FROM ItemOptions 
-            WHERE item_id = @item_id
-        `, { item_id: id });
+        const result = await executeQuery(`
+            SELECT customizations, price FROM Menu_Items WHERE item_id = @id
+        `, { id });
+
+        if (result.recordset.length === 0) {
+            return res.status(404).json({ message: 'Không tìm thấy món' });
+        }
+
+        const item = result.recordset[0];
+        let customizations = null;
+        try {
+            customizations = item.customizations ? JSON.parse(item.customizations) : null;
+        } catch (e) {
+            console.error('Lỗi parse customizations:', e);
+        }
+
+        // Map format JSON sang format frontend mong đợi (để giữ tương thích)
+        const response = {
+            has_size: customizations && customizations.sizes && customizations.sizes.length > 0 ? 1 : 0,
+            has_temperature: customizations && customizations.temperatures && customizations.temperatures.length > 0 ? 1 : 0,
+            sizes: (customizations && customizations.sizes) ? customizations.sizes.map((s, idx) => ({
+                size_id: idx + 1,
+                size_code: s.name,
+                size_name: s.name,
+                price_multiplier: 1, // Dùng để tương thích, thực tế dùng extraPrice
+                extra_price: s.extraPrice || 0
+            })) : [],
+            temperatures: (customizations && customizations.temperatures) ? customizations.temperatures.map((t, idx) => ({
+                temp_id: idx + 1,
+                temp_code: t.code || t.name,
+                temp_name: t.name
+            })) : []
+        };
         
-        const itemOptions = optionResult.recordset[0] || { has_size: 0, has_temperature: 0 };
-        const sizes = await executeQuery('SELECT size_id, size_code, size_name, price_multiplier FROM DrinkSizes ORDER BY sort_order');
-        const temps = await executeQuery('SELECT temp_id, temp_code, temp_name FROM DrinkTemperatures ORDER BY sort_order');
-        
-        res.json({
-            has_size: itemOptions.has_size,
-            has_temperature: itemOptions.has_temperature,
-            sizes: sizes.recordset,
-            temperatures: temps.recordset
-        });
+        res.json(response);
     } catch (error) {
         console.error('Lỗi lấy tùy chọn:', error);
+        res.status(500).json({ message: 'Lỗi server' });
+    }
+});
+
+// 🆕 Tính giá món theo tùy chọn
+router.post('/items/:id(\\d+)/calculate-price', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { size_id, temp_id } = req.body;
+        
+        const result = await executeQuery(`
+            SELECT customizations, price FROM Menu_Items WHERE item_id = @id
+        `, { id });
+
+        if (result.recordset.length === 0) {
+            return res.status(404).json({ message: 'Không tìm thấy món' });
+        }
+
+        const item = result.recordset[0];
+        let basePrice = item.price;
+        let extraPrice = 0;
+
+        if (item.customizations) {
+            try {
+                const cust = JSON.parse(item.customizations);
+                if (size_id && cust.sizes && cust.sizes[size_id - 1]) {
+                    extraPrice += cust.sizes[size_id - 1].extraPrice || 0;
+                }
+            } catch (e) {
+                console.error('Lỗi parse customizations trong calculate-price:', e);
+            }
+        }
+
+        res.json({
+            base_price: basePrice,
+            extra_price: extraPrice,
+            final_price: basePrice + extraPrice
+        });
+    } catch (error) {
+        console.error('Lỗi tính giá:', error);
         res.status(500).json({ message: 'Lỗi server' });
     }
 });

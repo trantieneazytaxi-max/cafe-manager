@@ -112,32 +112,42 @@ router.post('/create', optionalToken, async (req, res) => {
             
             // 2. Thêm chi tiết đơn hàng
             for (const item of items) {
+                // Chuyển size_id, temp_id thành customizations JSON nếu có
+                const customizations = (item.size_id || item.temp_id) ? JSON.stringify({
+                    size_id: item.size_id,
+                    temp_id: item.temp_id
+                }) : null;
+
                 await transaction.request()
                     .input('order_id', sql.Int, orderId)
                     .input('item_id', sql.Int, item.item_id)
                     .input('quantity', sql.Int, item.quantity)
                     .input('unit_price', sql.Decimal(10,2), item.price)
+                    .input('cust', sql.NVarChar, customizations)
                     .query(`
-                        INSERT INTO Order_Items (order_id, item_id, quantity, unit_price)
-                        VALUES (@order_id, @item_id, @quantity, @unit_price)
+                        INSERT INTO Order_Items (order_id, item_id, quantity, unit_price, customizations)
+                        VALUES (@order_id, @item_id, @quantity, @unit_price, @cust)
                     `);
             }
 
-            // 🆕 2.1 Cập nhật lượt dùng mã giảm giá (chỉ khi có user đăng nhập hoặc mã hợp lệ)
-            if (discount_id) {
-                await transaction.request()
-                    .input('code_id', sql.Int, discount_id)
-                    .input('userId', sql.Int, user_id)
-                    .query(`
-                        UPDATE DiscountCodes SET usage_count = usage_count + 1 WHERE code_id = @code_id;
-                        IF @userId IS NOT NULL
-                        BEGIN
-                            IF EXISTS (SELECT 1 FROM UserDiscounts WHERE user_id = @userId AND code_id = @code_id)
-                                UPDATE UserDiscounts SET used_at = GETDATE() WHERE user_id = @userId AND code_id = @code_id;
-                            ELSE
-                                INSERT INTO UserDiscounts (user_id, code_id, used_at) VALUES (@userId, @code_id, GETDATE());
-                        END
-                    `);
+            // 🆕 2.1 Cập nhật lượt dùng mã giảm giá (Hỗ trợ chồng mã)
+            const discount_ids = req.body.discount_ids || (discount_id ? [discount_id] : []);
+            if (discount_ids.length > 0) {
+                for (const dId of discount_ids) {
+                    await transaction.request()
+                        .input('code_id', sql.Int, dId)
+                        .input('userId', sql.Int, user_id)
+                        .query(`
+                            UPDATE DiscountCodes SET usage_count = usage_count + 1 WHERE code_id = @code_id;
+                            IF @userId IS NOT NULL
+                            BEGIN
+                                IF EXISTS (SELECT 1 FROM UserDiscounts WHERE user_id = @userId AND code_id = @code_id)
+                                    UPDATE UserDiscounts SET used_at = GETDATE() WHERE user_id = @userId AND code_id = @code_id;
+                                ELSE
+                                    INSERT INTO UserDiscounts (user_id, code_id, used_at) VALUES (@userId, @code_id, GETDATE());
+                            END
+                        `);
+                }
             }
             
             // 3. Tạo thanh toán
@@ -202,11 +212,13 @@ router.post('/create', optionalToken, async (req, res) => {
                         }
                     }
 
-                    sendInvoiceEmail(emailData, items.map(i => ({
-                        item_name: i.item_name || 'Món ăn',
-                        quantity: i.quantity,
-                        unit_price: i.price
-                    })));
+                    if (req.body.send_email === true) {
+                        sendInvoiceEmail(emailData, items.map(i => ({
+                            item_name: i.item_name || 'Món ăn',
+                            quantity: i.quantity,
+                            unit_price: i.price
+                        })));
+                    }
                 }
             } catch (emailError) {
                 console.error('Lỗi gửi email hóa đơn:', emailError);

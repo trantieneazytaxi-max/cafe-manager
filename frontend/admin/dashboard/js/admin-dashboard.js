@@ -120,9 +120,13 @@ async function loadDashboardData() {
         // Cập nhật biểu đồ phân tích (Line + Bar)
         updateRevenueChart(stats);
         
-        await loadChartData();
-        await loadTopItems();
-        await loadRatingData();
+        // Load additional data in parallel for performance
+        await Promise.all([
+            loadChartData(),
+            loadTopItems(),
+            loadRatingData(),
+            loadCategoryData()
+        ]);
         
     } catch (error) {
         console.error('Lỗi tải dashboard:', error);
@@ -139,8 +143,6 @@ async function loadChartData() {
         const data = await response.json();
         
         updateChartStats(data);
-        await loadCategoryData();
-        
     } catch (error) {
         console.error('Lỗi tải biểu đồ:', error);
     }

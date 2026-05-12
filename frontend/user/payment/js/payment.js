@@ -8,8 +8,16 @@ let orderItems = [];
 let subtotal = 0;
 let tax = 0;
 let total = 0;
-let appliedDiscount = null;
-let storeConfig = { lat: null, lng: null, address: '', storeName: '' };
+let appliedDiscounts = [];
+let storeConfig = { 
+    lat: null, 
+    lng: null, 
+    address: '', 
+    storeName: '',
+    vatRate: 10,
+    defaultShipping: 20000,
+    freeShipThreshold: 199000
+};
 let storeApiKeyPresent = false;
 let mapsInitPromise = null;
 
@@ -45,7 +53,10 @@ async function loadStoreConfig() {
             lat: data.lat,
             lng: data.lng,
             address: data.address || '',
-            storeName: data.storeName || ''
+            storeName: data.storeName || '',
+            vatRate: data.vatRate != null ? data.vatRate : 10,
+            defaultShipping: data.defaultShipping != null ? data.defaultShipping : 20000,
+            freeShipThreshold: data.freeShipThreshold != null ? data.freeShipThreshold : 199000
         };
         const label = document.getElementById('storeOriginLabel');
         if (label) {
@@ -123,6 +134,14 @@ async function initMapsForPayment() {
         console.error('Lỗi init Leaflet:', e);
     }
 }
+// Toggle Section Function
+function toggleSection(contentId) {
+    const content = document.getElementById(contentId);
+    if (!content) return;
+    
+    const parent = content.parentElement;
+    parent.classList.toggle('collapsed');
+}
 
 
 // DOM Elements
@@ -146,24 +165,49 @@ function initCouponEvents() {
 
     if (clearBtn) {
         clearBtn.addEventListener('click', () => {
-            appliedDiscount = null;
+            appliedDiscounts = [];
             couponInput.value = '';
             document.getElementById('couponMessage').textContent = '';
             clearBtn.classList.add('hidden');
             applyBtn.classList.remove('hidden');
+            renderAppliedCoupons();
             updateOrderSummary();
-            showToast('Đã bỏ qua mã giảm giá', 'info');
+            showToast('Đã xóa tất cả mã giảm giá', 'info');
+        });
+    }
+
+    const skipBtn = document.getElementById('skipCouponBtn');
+    if (skipBtn) {
+        skipBtn.addEventListener('click', () => {
+            appliedDiscounts = [];
+            couponInput.value = '';
+            document.getElementById('couponMessage').textContent = '';
+            if (clearBtn) clearBtn.classList.add('hidden');
+            applyBtn.classList.remove('hidden');
+            renderAppliedCoupons();
+            updateOrderSummary();
+            
+            // Cuộn xuống phần thanh toán
+            const paymentMethods = document.querySelector('.payment-methods');
+            if (paymentMethods) {
+                paymentMethods.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
         });
     }
     
     if (applyBtn) {
         applyBtn.addEventListener('click', async () => {
-            const code = couponInput.value.trim();
+            const code = couponInput.value.trim().toUpperCase();
             if (!code) {
                 showToast('Vui lòng nhập mã giảm giá', 'warning');
                 return;
             }
             
+            if (appliedDiscounts.some(d => d.code === code)) {
+                showToast('Mã này đã được áp dụng', 'warning');
+                return;
+            }
+
             if (!subtotal || subtotal <= 0) {
                 showToast('Không có đơn hàng để áp dụng mã', 'warning');
                 return;
@@ -174,12 +218,8 @@ function initCouponEvents() {
             
             try {
                 const token = localStorage.getItem('token');
-                const headers = {
-                    'Content-Type': 'application/json'
-                };
-                if (token) {
-                    headers.Authorization = `Bearer ${token}`;
-                }
+                const headers = { 'Content-Type': 'application/json' };
+                if (token) headers.Authorization = `Bearer ${token}`;
 
                 const response = await fetch('http://localhost:5000/api/discounts/apply', {
                     method: 'POST',
@@ -191,19 +231,18 @@ function initCouponEvents() {
                 const msgEl = document.getElementById('couponMessage');
                 
                 if (response.ok) {
-                    appliedDiscount = data.discount;
-                    msgEl.textContent = `Áp dụng thành công! Giảm ${formatCurrency(data.discount.discountAmount)}`;
+                    appliedDiscounts.push(data.discount);
+                    msgEl.textContent = `Đã áp dụng mã ${code}!`;
                     msgEl.className = 'coupon-message success';
                     
-                    applyBtn.classList.add('hidden');
+                    couponInput.value = '';
                     if (clearBtn) clearBtn.classList.remove('hidden');
                     
+                    renderAppliedCoupons();
                     updateOrderSummary();
                 } else {
-                    appliedDiscount = null;
                     msgEl.textContent = data.message;
                     msgEl.className = 'coupon-message error';
-                    updateOrderSummary();
                 }
             } catch (error) {
                 console.error('Lỗi apply coupon:', error);
@@ -215,18 +254,51 @@ function initCouponEvents() {
     }
 }
 
+function renderAppliedCoupons() {
+    const listEl = document.getElementById('appliedCouponsList');
+    if (!listEl) return;
+
+    if (appliedDiscounts.length === 0) {
+        listEl.innerHTML = '';
+        document.getElementById('clearCouponBtn')?.classList.add('hidden');
+        return;
+    }
+
+    document.getElementById('clearCouponBtn')?.classList.remove('hidden');
+    listEl.innerHTML = appliedDiscounts.map((d, idx) => `
+        <div class="applied-coupon-item" style="display: flex; justify-content: space-between; align-items: center; background: #f0f4f8; padding: 8px 12px; border-radius: 6px; border-left: 4px solid #5C3A21;">
+            <div style="font-size: 0.9rem;">
+                <strong style="color: #5C3A21;">${d.code}</strong>
+                <span style="color: #666; margin-left: 5px;">- ${formatCurrency(d.discountAmount)}</span>
+            </div>
+            <button onclick="removeCoupon(${idx})" style="background: none; border: none; color: #e74c3c; cursor: pointer; padding: 4px;">
+                <i class="fas fa-trash-alt"></i>
+            </button>
+        </div>
+    `).join('');
+}
+
+window.removeCoupon = function(index) {
+    appliedDiscounts.splice(index, 1);
+    renderAppliedCoupons();
+    updateOrderSummary();
+    showToast('Đã gỡ mã giảm giá', 'info');
+};
+
 // Tính phí giao hàng theo khoảng cách (km)
 // Miễn phí vận chuyển cho đơn >= 199.000đ và <= 5km
 // ≤5km: 20k cố định | >5km: 20k + phụ thu 5k/km vượt quá
 function calculateDeliveryFee(distanceKm, currentSubtotal = 0) {
-    if (currentSubtotal >= 199000 && distanceKm <= 5) {
+    // Ngưỡng miễn phí vận chuyển từ cấu hình
+    if (currentSubtotal >= storeConfig.freeShipThreshold && distanceKm <= 5) {
         return 0; // Freeship
     }
-    const baseFee = 20000; // Phí cố định 20k cho ≤5km
+    const baseFee = storeConfig.defaultShipping; // Phí cố định từ cấu hình (áp dụng cho ≤5km)
     if (distanceKm <= 5) {
         return baseFee;
     } else {
         const extraKm = distanceKm - 5;
+        // Phụ thu mỗi km vượt quá (giữ nguyên logic 5k/km)
         return baseFee + Math.round(extraKm * 5000);
     }
 }
@@ -250,15 +322,45 @@ function updateOrderSummary() {
     
     subtotalEl.textContent = formatCurrency(subtotal);
     
-    tax = subtotal * 0.1;
+    // Cập nhật nhãn VAT theo cấu hình
+    const vatLabel = document.getElementById('vatLabel');
+    if (vatLabel) vatLabel.textContent = `Phí VAT (${storeConfig.vatRate}%)`;
+
+    let discountVal = 0;
+    if (appliedDiscounts.length > 0) {
+        discountRow.style.display = 'flex';
+        discountVal = appliedDiscounts.reduce((sum, d) => sum + d.discountAmount, 0);
+        discountEl.textContent = `-${formatCurrency(discountVal)}`;
+    } else {
+        discountRow.style.display = 'none';
+    }
+
+    // ✅ SỬA: Thuế VAT tính trên giá trị SAU KHI giảm giá (Net amount)
+    const netAmount = Math.max(0, subtotal - discountVal);
+    tax = netAmount * (storeConfig.vatRate / 100);
     if (taxEl) taxEl.textContent = formatCurrency(tax);
     
     // Phí ship linh hoạt theo km (chỉ khi delivery)
     const orderType = document.querySelector('input[name="orderType"]:checked')?.value;
     let shippingFee = 0;
+    const km = getDeliveryKm();
     
     if (orderType === 'delivery') {
-        shippingFee = calculateDeliveryFee(getDeliveryKm(), subtotal);
+        shippingFee = calculateDeliveryFee(km, subtotal);
+    }
+
+    // 🆕 Gợi ý Freeship
+    const freeshipRec = document.getElementById('freeshipRec');
+    const neededForFreeship = document.getElementById('neededForFreeship');
+    if (freeshipRec && neededForFreeship) {
+        // Chỉ gợi ý nếu đang chọn Giao hàng, khoảng cách <= 5km và chưa đạt ngưỡng freeship
+        if (orderType === 'delivery' && km <= 5 && subtotal < storeConfig.freeShipThreshold) {
+            const needed = storeConfig.freeShipThreshold - subtotal;
+            neededForFreeship.textContent = formatCurrency(needed);
+            freeshipRec.style.display = 'block';
+        } else {
+            freeshipRec.style.display = 'none';
+        }
     }
 
     
@@ -269,18 +371,47 @@ function updateOrderSummary() {
         shippingFeeEl.textContent = formatCurrency(shippingFee);
     }
 
-    let currentTotal = subtotal + tax + shippingFee;
-    
-    if (appliedDiscount) {
-        discountRow.style.display = 'flex';
-        discountEl.textContent = `-${formatCurrency(appliedDiscount.discountAmount)}`;
-        currentTotal -= appliedDiscount.discountAmount;
-    } else {
-        discountRow.style.display = 'none';
-    }
+    let currentTotal = netAmount + tax + shippingFee;
     
     totalEl.textContent = formatCurrency(Math.max(0, currentTotal));
     total = currentTotal;
+
+    // Cập nhật thời gian chờ
+    updateWaitingTime();
+}
+
+async function updateWaitingTime() {
+    const box = document.getElementById('waitingTimeBox');
+    const text = document.getElementById('waitingTimeText');
+    if (!box || !text) return;
+
+    try {
+        const totalItems = orderItems.reduce((sum, item) => sum + (item.quantity || 1), 0);
+        if (totalItems === 0) {
+            box.style.display = 'none';
+            return;
+        }
+
+        // Fetch số lượng nhân viên thực tế từ backend
+        let activeStaff = 1;
+        try {
+            const resp = await fetch('http://localhost:5000/api/store/active-staff');
+            const data = await resp.json();
+            activeStaff = data.active_staff || 1;
+        } catch (e) {
+            activeStaff = 1;
+        }
+
+        // Công thức ước tính: 5 phút mỗi món, chia cho số nhân viên
+        const minutesPerItem = 5;
+        const estimatedMinutes = Math.max(5, Math.ceil((totalItems * minutesPerItem) / activeStaff));
+
+        text.innerHTML = `Chuẩn bị ${totalItems} món. Thời gian ước tính ${estimatedMinutes} phút`;
+        box.style.display = 'block';
+    } catch (error) {
+        console.error('Lỗi tính thời gian chờ:', error);
+        box.style.display = 'none';
+    }
 }
 const cashSection = document.getElementById('cashSection');
 const payosSection = document.getElementById('payosSection');
@@ -305,6 +436,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     initOrderTypeEvents();
     loadAvailableCoupons();
     checkPayOSCallback();
+    
+    // Collapse discount sections by default for cleaner UI
+    toggleSection('couponsList');
+    toggleSection('couponContent');
     
     // Check if user is Admin/Staff to show Fast Confirm option
     const userStr = localStorage.getItem('user');
@@ -370,7 +505,7 @@ async function loadAvailableCoupons() {
         renderCoupons(processedCoupons, bestCoupon);
 
         // Tự động áp dụng mã tốt nhất nếu có
-        if (bestCoupon && !appliedDiscount) {
+        if (bestCoupon && appliedDiscounts.length === 0) {
             applyCouponCode(bestCoupon.code);
         }
 
@@ -383,7 +518,7 @@ async function loadAvailableCoupons() {
 function renderCoupons(coupons, bestCoupon) {
     const listEl = document.getElementById('couponsList');
     listEl.innerHTML = coupons.map(c => `
-        <div class="coupon-card ${bestCoupon && c.code === bestCoupon.code ? 'recommended' : ''} ${!c.isValid ? 'disabled' : ''}">
+        <div class="coupon-card ${bestCoupon && c.code === bestCoupon.code ? 'recommended' : ''} ${!c.isValid || appliedDiscounts.some(ad => ad.code === c.code) ? 'disabled' : ''}">
             ${bestCoupon && c.code === bestCoupon.code ? '<div class="recommend-badge">Tốt nhất</div>' : ''}
             <div class="coupon-info">
                 <h4>${c.code}</h4>
@@ -392,8 +527,8 @@ function renderCoupons(coupons, bestCoupon) {
             </div>
             <button class="btn-apply-coupon" 
                     onclick="applyCouponCode('${c.code}')" 
-                    ${!c.isValid ? 'disabled' : ''}>
-                Áp dụng
+                    ${!c.isValid || appliedDiscounts.some(ad => ad.code === c.code) ? 'disabled' : ''}>
+                ${appliedDiscounts.some(ad => ad.code === c.code) ? 'Đã dùng' : 'Áp dụng'}
             </button>
         </div>
     `).join('');
@@ -561,11 +696,14 @@ async function finalizePayOSOrder(orderCode) {
             })),
             payment_method: 'payos',
             total_amount: total,
+            discount_ids: appliedDiscounts.map(d => d.code_id),
+            discount_amount: appliedDiscounts.reduce((sum, d) => sum + d.discountAmount, 0),
             order_type: orderType,
             guest_name: guestName || (orderType === 'dine-in' ? 'Khách tại bàn' : 'Khách vãng lai'),
             guest_phone: guestPhone || null,
             delivery_address: deliveryAddress || null,
-            note: `PayOS #${orderCode}`
+            note: `PayOS #${orderCode}`,
+            send_email: localStorage.getItem('emailNotification') === 'true'
         };
         
         const response = await fetch('http://localhost:5000/api/orders/create', {
@@ -608,19 +746,10 @@ function loadOrderData() {
     renderOrderItems();
 }
 
-// Calculate totals
+// Calculate totals (Consolidated to use updateOrderSummary)
 function calculateTotals() {
     subtotal = orderItems.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
-    tax = subtotal * 0.1;
-    total = subtotal + tax; // Cập nhật global total
-    
-    const subtotalEl = document.getElementById('subtotal');
-    const taxEl = document.getElementById('tax');
-    const totalEl = document.getElementById('totalPrice');
-    
-    if (subtotalEl) subtotalEl.textContent = formatCurrency(subtotal);
-    if (taxEl) taxEl.textContent = formatCurrency(tax);
-    if (totalEl) totalEl.textContent = formatCurrency(total);
+    updateOrderSummary();
 }
 
 // Render order items
@@ -792,13 +921,14 @@ async function processOrder(paymentMethod) {
             })),
             payment_method: paymentMethod,
             total_amount: total, // Đã bao gồm thuế và trừ giảm giá trong updateOrderSummary
-            discount_id: appliedDiscount ? appliedDiscount.code_id : null,
-            discount_amount: appliedDiscount ? appliedDiscount.discountAmount : 0,
+            discount_ids: appliedDiscounts.map(d => d.code_id),
+            discount_amount: appliedDiscounts.reduce((sum, d) => sum + d.discountAmount, 0),
             order_type: orderType,
             guest_name: guestName || (orderType === 'dine-in' ? 'Khách tại bàn' : 'Khách vãng lai'),
             guest_phone: guestPhone || null,
             delivery_address: deliveryAddress || null,
-            note: buildOrderNote(orderType, paymentMethod)
+            note: buildOrderNote(orderType, paymentMethod),
+            send_email: localStorage.getItem('emailNotification') === 'true'
         };
         
         const response = await fetch('http://localhost:5000/api/orders/create', {
@@ -871,11 +1001,12 @@ function initEventListeners() {
     const confirmNoDiscountBtn = document.getElementById('confirmNoDiscountBtn');
     if (confirmNoDiscountBtn) {
         confirmNoDiscountBtn.addEventListener('click', () => {
-            appliedDiscount = null;
+            appliedDiscounts = [];
             const couponInput = document.getElementById('couponCode');
             if (couponInput) couponInput.value = '';
             document.getElementById('clearCouponBtn')?.classList.add('hidden');
             document.getElementById('couponMessage').textContent = '';
+            renderAppliedCoupons();
             updateOrderSummary();
             confirmPayment();
         });

@@ -61,6 +61,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     <i class="fas fa-utensils"></i>
                     <span class="nav-text">Quản lý thực đơn</span>
                 </a>
+                <a href="${prefix}discounts/html/discounts.html" class="nav-item" data-page="discounts">
+                    <i class="fas fa-ticket-alt"></i>
+                    <span class="nav-text">Quản lý mã giảm giá</span>
+                </a>
                 <a href="${prefix}tables/html/tables-management.html" class="nav-item" data-page="tables">
                     <i class="fas fa-chair"></i>
                     <span class="nav-text">Quản lý bàn</span>
@@ -98,14 +102,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Set Active State
     const navItems = document.querySelectorAll('.nav-item');
-    navItems.forEach(item => {
-        const page = item.getAttribute('data-page');
-        if (path.includes(page)) {
-            item.classList.add('active');
-        } else if (path.includes('admin-dashboard') && page === 'dashboard') {
-            item.classList.add('active');
-        }
-    });
+        navItems.forEach(item => {
+            const page = item.getAttribute('data-page');
+            if (path.includes(page)) {
+                item.classList.add('active');
+            } else if (path.includes('admin-dashboard') && page === 'dashboard') {
+                item.classList.add('active');
+            } else if (path.includes('discounts') && page === 'discounts') {
+                item.classList.add('active');
+            }
+        });
 
     // Toggle Logic
     const sidebar = document.getElementById('mainSidebar');

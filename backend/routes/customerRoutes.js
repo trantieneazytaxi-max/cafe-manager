@@ -45,9 +45,9 @@ router.put('/profile', async (req, res) => {
         
         await executeQuery(`
             UPDATE Users SET
-                full_name = ISNULL(@full_name, full_name),
-                phone = ISNULL(@phone, phone),
-                avatar_url = ISNULL(@avatar_url, avatar_url),
+                full_name = COALESCE(@full_name, full_name),
+                phone = COALESCE(@phone, phone),
+                avatar_url = COALESCE(@avatar_url, avatar_url),
                 updated_at = GETDATE()
             WHERE user_id = @userId
         `, {

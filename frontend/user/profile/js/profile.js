@@ -159,14 +159,13 @@ function updateUIWithFetchedData(user) {
     const avatarUrl = user.avatar_url || `https://ui-avatars.com/api/?background=E67E22&color=fff&rounded=true&size=128&name=${encodeURIComponent(user.full_name || 'User')}`;
     if (profileAvatar) profileAvatar.src = avatarUrl;
     if (avatarImg) avatarImg.src = avatarUrl;
+    if (joinedDateEl) joinedDateEl.textContent = user.created_at ? new Date(user.created_at).toLocaleDateString('vi-VN') : 'Chưa có dữ liệu';
 
     const deliverySection = document.getElementById('deliveryAddressSection');
-    const staffSection = document.getElementById('staffInfoSection');
 
     // Hiển thị section theo Role
     if (user.role === 'customer') {
         if (deliverySection) deliverySection.classList.remove('hidden');
-        if (staffSection) staffSection.classList.add('hidden');
         
         if (deliveryAddressInput) deliveryAddressInput.value = user.delivery_address || '';
         if (autoFillAddressCheckbox) autoFillAddressCheckbox.checked = user.auto_fill_address !== 0;
@@ -181,21 +180,6 @@ function updateUIWithFetchedData(user) {
     } else {
         // Admin hoặc Staff
         if (deliverySection) deliverySection.classList.add('hidden');
-        if (staffSection) staffSection.classList.remove('hidden');
-
-        const posEl = document.getElementById('staffPosition');
-        const salEl = document.getElementById('staffSalary');
-        const hireEl = document.getElementById('staffHireDate');
-        const idEl = document.getElementById('staffIdentity');
-        const accEl = document.getElementById('staffBankAcc');
-        const bankEl = document.getElementById('staffBankName');
-
-        if (posEl) posEl.textContent = user.position || 'Chưa cập nhật';
-        if (salEl) salEl.textContent = user.salary ? formatCurrency(user.salary) : 'Chưa cập nhật';
-        if (hireEl) hireEl.textContent = user.hire_date ? new Date(user.hire_date).toLocaleDateString('vi-VN') : 'Chưa cập nhật';
-        if (idEl) idEl.textContent = user.identity_number || 'Chưa cập nhật';
-        if (accEl) accEl.textContent = user.bank_account || 'Chưa cập nhật';
-        if (bankEl) bankEl.textContent = user.bank_name || 'Chưa cập nhật';
     }
 }
 

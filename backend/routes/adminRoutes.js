@@ -92,72 +92,69 @@ router.get('/stats', isStaff, async (req, res) => {
             WHERE status IN ('paid', 'completed') AND created_at >= @compareStartDate AND created_at < @startDate
         `, { compareStartDate: compareStartDate, startDate: startDate });
         
-        // 3. Dữ liệu chi tiết cho biểu đồ (theo ngày/tuần/tháng)
+        // 3. Dữ liệu chi tiết cho biểu đồ (Tối ưu hóa bằng GROUP BY)
         let revenueData = [];
         let customerData = [];
         
         if (range === 'week') {
-            // Lấy dữ liệu 7 ngày gần nhất
-            for (let i = 0; i < 7; i++) {
-                const date = new Date();
-                date.setDate(date.getDate() - (6 - i));
-                const dayStart = new Date(date);
-                dayStart.setHours(0, 0, 0, 0);
-                const dayEnd = new Date(date);
-                dayEnd.setHours(23, 59, 59, 999);
-                
-                const dayResult = await executeQuery(`
-                    SELECT 
-                        ISNULL(SUM(total_amount), 0) as revenue,
-                        COUNT(DISTINCT user_id) as customers
-                    FROM Orders 
-                    WHERE status IN ('paid', 'completed') AND created_at BETWEEN @start AND @end
-                `, { start: dayStart, end: dayEnd });
-                
-                revenueData.push(dayResult.recordset[0].revenue);
-                customerData.push(dayResult.recordset[0].customers);
-            }
-        } else if (range === 'month') {
-            // Lấy dữ liệu theo 4 giai đoạn của tháng để không bỏ sót ngày
-            const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-            const periodSize = Math.ceil(daysInMonth / 4);
+            const weekResults = await executeQuery(`
+                SELECT 
+                    DATEDIFF(day, @startDate, created_at) as dayOffset,
+                    ISNULL(SUM(total_amount), 0) as revenue,
+                    COUNT(DISTINCT user_id) as customers
+                FROM Orders 
+                WHERE status IN ('paid', 'completed') AND created_at >= @startDate
+                GROUP BY DATEDIFF(day, @startDate, created_at)
+                ORDER BY dayOffset
+            `, { startDate: startDate });
             
-            for (let i = 0; i < 4; i++) {
-                const startDay = i * periodSize + 1;
-                const endDay = Math.min((i + 1) * periodSize, daysInMonth);
-                
-                const periodResult = await executeQuery(`
-                    SELECT 
-                        ISNULL(SUM(total_amount), 0) as revenue,
-                        COUNT(DISTINCT user_id) as customers
-                    FROM Orders 
-                    WHERE status IN ('paid', 'completed') 
-                        AND DAY(created_at) BETWEEN @startDay AND @endDay
-                        AND MONTH(created_at) = MONTH(GETDATE())
-                        AND YEAR(created_at) = YEAR(GETDATE())
-                `, { startDay, endDay });
-                
-                revenueData.push(periodResult.recordset[0].revenue);
-                customerData.push(periodResult.recordset[0].customers);
-            }
+            revenueData = new Array(7).fill(0);
+            customerData = new Array(7).fill(0);
+            weekResults.recordset.forEach(row => {
+                if (row.dayOffset >= 0 && row.dayOffset < 7) {
+                    revenueData[row.dayOffset] = row.revenue;
+                    customerData[row.dayOffset] = row.customers;
+                }
+            });
+        } else if (range === 'month') {
+            const monthResults = await executeQuery(`
+                SELECT 
+                    (DAY(created_at) - 1) / 7 as weekIndex,
+                    ISNULL(SUM(total_amount), 0) as revenue,
+                    COUNT(DISTINCT user_id) as customers
+                FROM Orders 
+                WHERE status IN ('paid', 'completed') 
+                    AND MONTH(created_at) = MONTH(GETDATE())
+                    AND YEAR(created_at) = YEAR(GETDATE())
+                GROUP BY (DAY(created_at) - 1) / 7
+            `);
+            
+            revenueData = new Array(4).fill(0);
+            customerData = new Array(4).fill(0);
+            monthResults.recordset.forEach(row => {
+                if (row.weekIndex >= 0 && row.weekIndex < 4) {
+                    revenueData[row.weekIndex] = row.revenue;
+                    customerData[row.weekIndex] = row.customers;
+                }
+            });
         } else if (range === 'year') {
-            // Lấy dữ liệu 12 tháng
-            for (let month = 1; month <= 12; month++) {
-                const monthResult = await executeQuery(`
-                    SELECT 
-                        ISNULL(SUM(total_amount), 0) as revenue,
-                        COUNT(DISTINCT user_id) as customers
-                    FROM Orders 
-                    WHERE status IN ('paid', 'completed') 
-                        AND MONTH(created_at) = @month
-                        AND YEAR(created_at) = YEAR(GETDATE())
-                `, { month: month });
-                
-                revenueData.push(monthResult.recordset[0].revenue);
-                customerData.push(monthResult.recordset[0].customers);
-            }
+            const yearResults = await executeQuery(`
+                SELECT 
+                    MONTH(created_at) as month,
+                    ISNULL(SUM(total_amount), 0) as revenue,
+                    COUNT(DISTINCT user_id) as customers
+                FROM Orders 
+                WHERE status IN ('paid', 'completed') AND YEAR(created_at) = YEAR(GETDATE())
+                GROUP BY MONTH(created_at)
+            `);
+            
+            revenueData = new Array(12).fill(0);
+            customerData = new Array(12).fill(0);
+            yearResults.recordset.forEach(row => {
+                revenueData[row.month - 1] = row.revenue;
+                customerData[row.month - 1] = row.customers;
+            });
         } else {
-            // Mặc định: 24 giờ (Tối ưu hóa thành 1 query duy nhất)
             const dayResults = await executeQuery(`
                 SELECT 
                     DATEPART(hour, created_at) as hour,
@@ -171,7 +168,6 @@ router.get('/stats', isStaff, async (req, res) => {
             
             revenueData = new Array(24).fill(0);
             customerData = new Array(24).fill(0);
-            
             dayResults.recordset.forEach(row => {
                 revenueData[row.hour] = row.revenue;
                 customerData[row.hour] = row.customers;
@@ -750,6 +746,7 @@ router.get('/store-settings', async (req, res) => {
             placeId: map.store_place_id || null,
             storePhone: map.store_phone || '',
             storeEmail: map.store_email || '',
+            storeOpeningHours: map.store_opening_hours || '',
             vatRate: map.vat_rate != null && map.vat_rate !== '' ? parseFloat(map.vat_rate) : 10,
             defaultShipping: map.default_shipping != null && map.default_shipping !== '' ? parseFloat(map.default_shipping) : 20000,
             freeShipThreshold: map.free_ship_threshold != null && map.free_ship_threshold !== '' ? parseFloat(map.free_ship_threshold) : 200000,
@@ -777,6 +774,7 @@ router.put('/store-settings', async (req, res) => {
         if (b.placeId !== undefined) await storeModule.upsertSetting('store_place_id', b.placeId || '');
         if (b.storePhone !== undefined) await storeModule.upsertSetting('store_phone', b.storePhone || '');
         if (b.storeEmail !== undefined) await storeModule.upsertSetting('store_email', b.storeEmail || '');
+        if (b.storeOpeningHours !== undefined) await storeModule.upsertSetting('store_opening_hours', b.storeOpeningHours || '');
         if (b.vatRate !== undefined) await storeModule.upsertSetting('vat_rate', String(b.vatRate));
         if (b.defaultShipping !== undefined) await storeModule.upsertSetting('default_shipping', String(b.defaultShipping));
         if (b.freeShipThreshold !== undefined) await storeModule.upsertSetting('free_ship_threshold', String(b.freeShipThreshold));

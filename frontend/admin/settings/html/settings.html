@@ -149,6 +149,10 @@
                         <label>Email hệ thống</label>
                         <input type="email" id="storeEmail" value="contact@cafe.com">
                     </div>
+                    <div class="form-group">
+                        <label>Giờ mở cửa (Hiển thị ở Footer)</label>
+                        <textarea id="storeOpeningHours" rows="3" style="width: 100%; padding: 1rem; background: rgba(0, 243, 255, 0.05); border: 1px solid rgba(0, 243, 255, 0.1); border-radius: 12px; color: #fff;" placeholder="VD: Thứ 2 - Thứ 6: 7:00 - 22:00&#10;Thứ 7 - CN: 8:00 - 23:00"></textarea>
+                    </div>
                 </div>
 
                 <!-- Financial Info -->
@@ -266,6 +270,7 @@
                 document.getElementById('storeLng').value = d.lng != null ? String(d.lng) : '';
                 document.getElementById('storePhone').value = d.storePhone || '';
                 document.getElementById('storeEmail').value = d.storeEmail || '';
+                document.getElementById('storeOpeningHours').value = d.storeOpeningHours || '';
                 document.getElementById('vatRate').value = d.vatRate != null ? d.vatRate : 10;
                 document.getElementById('defaultShipping').value = d.defaultShipping != null ? d.defaultShipping : 20000;
                 document.getElementById('freeShipThreshold').value = d.freeShipThreshold != null ? d.freeShipThreshold : 200000;
@@ -307,6 +312,7 @@
                         lng: document.getElementById('storeLng').value ? parseFloat(document.getElementById('storeLng').value) : null,
                         storePhone: document.getElementById('storePhone').value,
                         storeEmail: document.getElementById('storeEmail').value,
+                        storeOpeningHours: document.getElementById('storeOpeningHours').value,
                         vatRate: parseFloat(document.getElementById('vatRate').value) || 10,
                         defaultShipping: parseFloat(document.getElementById('defaultShipping').value) || 20000,
                         freeShipThreshold: parseFloat(document.getElementById('freeShipThreshold').value) || 200000,

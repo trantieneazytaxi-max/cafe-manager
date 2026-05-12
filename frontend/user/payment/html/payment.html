@@ -142,8 +142,11 @@
 
             <!-- 🆕 Available Coupons Section -->
             <div id="availableCouponsSection" class="available-coupons-section">
-                <h3><i class="fas fa-tags"></i> Mã giảm giá dành cho bạn</h3>
-                <div id="couponsList" class="coupons-list">
+                <h3 class="collapsible-header" onclick="toggleSection('couponsList')">
+                    <span><i class="fas fa-tags"></i> Mã giảm giá dành cho bạn</span>
+                    <i class="fas fa-chevron-up toggle-icon"></i>
+                </h3>
+                <div id="couponsList" class="coupons-list collapsible-content">
                     <div class="loading-coupons"><i class="fas fa-spinner fa-spin"></i> Đang tìm mã giảm giá...</div>
                 </div>
             </div>
@@ -151,14 +154,25 @@
             <div class="payment-layout">
                 <!-- 🆕 Discount Coupon -->
             <div class="coupon-section">
-                <h3><i class="fas fa-ticket-alt"></i> Mã giảm giá</h3>
-                <div class="coupon-input" style="display: flex; gap: 10px; align-items: center;">
-                    <input type="text" id="couponCode" placeholder="Nhập mã giảm giá" style="flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+                <h3 class="collapsible-header" onclick="toggleSection('couponContent')">
+                    <span><i class="fas fa-ticket-alt"></i> Nhập mã giảm giá</span>
+                    <i class="fas fa-chevron-up toggle-icon"></i>
+                </h3>
+                <div id="couponContent" class="collapsible-content">
+                    <div class="coupon-input" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+                    <input type="text" id="couponCode" placeholder="Nhập mã giảm giá" style="flex: 1; min-width: 200px; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
                     <button type="button" id="scanQrBtn" class="btn-secondary" style="padding: 12px; border-radius: 8px;" title="Quét mã QR"><i class="fas fa-qrcode"></i></button>
                     <button type="button" id="applyCouponBtn" style="padding: 12px 20px; background: #5C3A21; color: white; border: none; border-radius: 8px; cursor: pointer;">Áp dụng</button>
-                    <button type="button" id="clearCouponBtn" class="hidden" style="padding: 12px; background: #e74c3c; color: white; border: none; border-radius: 8px; cursor: pointer;" title="Bỏ qua mã giảm giá"><i class="fas fa-times"></i></button>
+                    <button type="button" id="clearCouponBtn" class="hidden" style="padding: 12px; background: #e74c3c; color: white; border: none; border-radius: 8px; cursor: pointer;" title="Bỏ mã giảm giá"><i class="fas fa-times"></i></button>
                 </div>
+                <!-- 🆕 Nút bỏ qua ưu đãi và tiếp tục -->
+                <button type="button" id="skipCouponBtn" class="btn-skip-coupon" style="margin-top: 10px; width: 100%; padding: 10px; background: #f8f9fa; border: 1px dashed #5C3A21; border-radius: 8px; color: #5C3A21; font-weight: 500; cursor: pointer;">
+                    <i class="fas fa-forward"></i> Bỏ qua ưu đãi và tiếp tục
+                </button>
                 <p id="couponMessage" class="coupon-message"></p>
+                <!-- 🆕 Danh sách mã đã áp dụng -->
+                    <div id="appliedCouponsList" class="applied-coupons-list" style="margin-top: 15px; display: flex; flex-direction: column; gap: 8px;"></div>
+                </div>
             </div>
 
             <!-- Order Summary -->
@@ -179,16 +193,32 @@
                             <span id="discountAmount">-0₫</span>
                         </div>
                         <div class="summary-row">
-                            <span>Phí VAT (10%)</span>
+                            <span id="vatLabel">Phí VAT (10%)</span>
                             <span id="tax">0₫</span>
                         </div>
                         <div id="shippingRow" class="summary-row" style="display: none;">
                             <span>Phí giao hàng</span>
                             <span id="shippingFee">20.000₫</span>
                         </div>
+                        
+                        <!-- 🆕 Freeship Recommendation -->
+                        <div id="freeshipRec" class="freeship-recommendation" style="display: none; margin: 10px 0; padding: 10px; background: #E3F2FD; border-radius: 8px; border: 1px dashed #2196F3; color: #0D47A1; font-size: 0.85rem; text-align: center;">
+                            <i class="fas fa-gift"></i> Mua thêm <strong id="neededForFreeship">0₫</strong> để được <strong>FREESHIP</strong>!
+                        </div>
                         <div class="summary-row total-row">
                             <span>Tổng cộng</span>
                             <span id="totalPrice">0₫</span>
+                        </div>
+                        
+                        <!-- 🆕 Waiting Time Estimation -->
+                        <div id="waitingTimeBox" class="waiting-time-box" style="margin-top: 15px; padding: 15px; background: #FFF8E1; border-radius: 12px; border: 1px solid #FFE082; display: none;">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <i class="fas fa-hourglass-half" style="font-size: 1.5rem; color: #FFA000;"></i>
+                                <div>
+                                    <strong style="display: block; color: #795548; font-size: 0.9rem;">Thời gian chờ dự kiến</strong>
+                                    <p id="waitingTimeText" style="margin: 0; font-size: 0.95rem; font-weight: 600; color: #5D4037;">Đang tính toán...</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -253,9 +283,6 @@
 
                     <button class="confirm-btn" id="confirmBtn">
                         <i class="fas fa-check-circle"></i> Xác nhận thanh toán
-                    </button>
-                    <button class="confirm-btn secondary-confirm" id="confirmNoDiscountBtn">
-                        <i class="fas fa-money-bill"></i> Thanh toán (Không dùng mã)
                     </button>
                     <button class="back-btn" onclick="window.location.href='../../orders/html/orders.html'">
                         <i class="fas fa-arrow-left"></i> Quay lại đơn hàng
