@@ -10,6 +10,7 @@ if (document.readyState === 'loading') {
 }
 
 function initGlobalUI() {
+    initDreamyTheme(); // Load theme first
     initMobileMenu();
     initDropdown();
     updateUserInfo();
@@ -18,6 +19,65 @@ function initGlobalUI() {
     initGlobalSearch();
     initFloatingButtons();
     updateFooterInfo();
+}
+
+/**
+ * Dreamy Theme Global Loader
+ */
+function initDreamyTheme() {
+    if (localStorage.getItem('dreamyTheme') === 'true') {
+        document.body.classList.add('dreamy-theme');
+        
+        // Find correct prefix for CSS injection
+        const path = window.location.pathname;
+        let prefix = '';
+        if (path.includes('/admin/')) {
+            if (path.includes('/dashboard/html/')) prefix = '../';
+            else if (path.includes('/html/')) prefix = '../../';
+        } else if (path.includes('/user/')) {
+             if (path.includes('/html/')) prefix = '../../../admin/dashboard/';
+        } else if (path === '/' || path.includes('main.html')) {
+             prefix = 'admin/dashboard/';
+        }
+
+        // Inject CSS if not already there
+        if (!document.getElementById('dreamy-css')) {
+            const link = document.createElement('link');
+            link.id = 'dreamy-css';
+            link.rel = 'stylesheet';
+            link.href = `${prefix}css/dreamy-theme.css`;
+            document.head.appendChild(link);
+        }
+        
+        // Inject Particles Container
+        if (!document.getElementById('dreamy-particles')) {
+            const div = document.createElement('div');
+            div.id = 'dreamy-particles';
+            document.body.appendChild(div);
+            
+            // Trigger petal creation after a short delay
+            setTimeout(createDreamyPetals, 500);
+        }
+    }
+}
+
+function createDreamyPetals() {
+    const container = document.getElementById('dreamy-particles');
+    if (!container || container.children.length > 0) return;
+    
+    for (let i = 0; i < 30; i++) {
+        const petal = document.createElement('div');
+        petal.className = 'petal';
+        petal.style.left = Math.random() * 100 + 'vw';
+        petal.style.animationDelay = Math.random() * 10 + 's';
+        petal.style.width = Math.random() * 15 + 10 + 'px';
+        petal.style.height = petal.style.width;
+        
+        const colors = ['#FFB6C1', '#FFC8D9', '#D8B4E8', '#B0E0E6'];
+        petal.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        
+        container.appendChild(petal);
+    }
 }
 
 
