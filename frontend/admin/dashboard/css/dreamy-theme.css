@@ -168,12 +168,55 @@ body.dreamy-theme .btn-add::before {
     display: none !important;
 }
 
+/* Neutralizing All Cyberpunk Elements */
+body.dreamy-theme * {
+    text-shadow: none !important;
+    font-family: 'Inter', sans-serif !important;
+}
+
+body.dreamy-theme h1, body.dreamy-theme h2, body.dreamy-theme h3, 
+body.dreamy-theme h4, body.dreamy-theme h5, body.dreamy-theme .logo-text {
+    font-family: 'Playfair Display', serif !important;
+}
+
+body.dreamy-theme .stat-change.positive,
+body.dreamy-theme .rating-percent,
+body.dreamy-theme .chart-stat-item strong,
+body.dreamy-theme .text-success {
+    color: #4A8C6F !important; /* Soft deep green for contrast on pink */
+}
+
+body.dreamy-theme .stat-change.negative,
+body.dreamy-theme .text-danger {
+    color: #C04D5C !important; /* Soft deep red */
+}
+
+body.dreamy-theme .rating-label,
+body.dreamy-theme .chart-stat-item span {
+    color: var(--dreamy-text-muted) !important;
+}
+
+body.dreamy-theme .rating-bar-container {
+    background: rgba(255, 255, 255, 0.4) !important;
+    border: 1px solid var(--dreamy-pink-soft) !important;
+}
+
+body.dreamy-theme .rating-bar {
+    background: linear-gradient(90deg, var(--dreamy-pink), var(--dreamy-lavender)) !important;
+    box-shadow: none !important;
+}
+
+body.dreamy-theme .rating-card h3 {
+    color: var(--dreamy-pink) !important;
+    font-family: 'Playfair Display', serif !important;
+}
+
 /* Specific Cyberpunk Element Killing */
 body.dreamy-theme .logo .highlight,
 body.dreamy-theme .logo-text .highlight,
-body.dreamy-theme .highlight {
+body.dreamy-theme .highlight,
+body.dreamy-theme .logo i {
     color: var(--dreamy-pink) !important;
-    text-shadow: none !important;
 }
 
 body.dreamy-theme .sidebar-toggle-inner {
