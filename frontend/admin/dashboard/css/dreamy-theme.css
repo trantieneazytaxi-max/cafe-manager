@@ -168,6 +168,45 @@ body.dreamy-theme .btn-add::before {
     display: none !important;
 }
 
+/* Specific Cyberpunk Element Killing */
+body.dreamy-theme .logo .highlight,
+body.dreamy-theme .logo-text .highlight,
+body.dreamy-theme .highlight {
+    color: var(--dreamy-pink) !important;
+    text-shadow: none !important;
+}
+
+body.dreamy-theme .sidebar-toggle-inner {
+    background: var(--dreamy-pink) !important;
+    color: white !important;
+    box-shadow: 0 0 10px rgba(255, 182, 193, 0.4) !important;
+}
+
+body.dreamy-theme .date-range {
+    background: rgba(255, 255, 255, 0.5) !important;
+    border-color: var(--dreamy-pink-soft) !important;
+}
+
+body.dreamy-theme .range-btn {
+    color: var(--dreamy-text) !important;
+    text-shadow: none !important;
+}
+
+body.dreamy-theme .range-btn.active {
+    background: linear-gradient(135deg, var(--dreamy-pink), var(--dreamy-lavender)) !important;
+    color: white !important;
+    box-shadow: 0 4px 10px rgba(216, 180, 232, 0.3) !important;
+}
+
+body.dreamy-theme .sidebar-header::after {
+    background: linear-gradient(90deg, transparent, var(--dreamy-pink), transparent) !important;
+}
+
+/* Charts Overrides (if canvas is used, we can only style the container or try to override chart.js colors if they are reactive) */
+body.dreamy-theme canvas {
+    filter: sepia(0.2) hue-rotate(-20deg) saturate(0.8) !important;
+}
+
 /* Tables - Super Comprehensive */
 body.dreamy-theme table,
 body.dreamy-theme .data-table,

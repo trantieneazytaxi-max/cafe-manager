@@ -47,7 +47,7 @@ app.get('/user', (req, res) => {
 
 // === Routes cho Admin ===
 app.get('/admin', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/admin/dashboard/html/index.html'));
+    res.sendFile(path.join(__dirname, '../frontend/admin/dashboard/html/admin-dashboard.html'));
 });
 
 app.get('/admin/login', (req, res) => {
