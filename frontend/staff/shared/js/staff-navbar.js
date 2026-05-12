@@ -15,6 +15,13 @@
     // Compute paths relative to the current HTML file
     let dashHref, tablesHref, ordersHref, stockHref, profileHref, authHref;
 
+    // Inject global.js if not present
+    if (!window.initGlobalUI) {
+        const globalScript = document.createElement('script');
+        globalScript.src = '/shared/js/global.js';
+        document.head.appendChild(globalScript);
+    }
+
     if (isDeep) {
         // From e.g. /staff/dashboard/tables/html/tables.html
         dashHref    = '../../html/staff-dashboard.html';

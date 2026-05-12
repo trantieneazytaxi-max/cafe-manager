@@ -1,7 +1,20 @@
-/**
- * GLOBAL SCRIPT - CAFE MANAGEMENT
- * Chứa các hàm dùng chung cho toàn bộ các trang (Navbar, Footer, Dropdown, Cart)
- */
+// Immediate theme check to prevent FOUC
+(function() {
+    if (localStorage.getItem('dreamyTheme') === 'true') {
+        document.documentElement.classList.add('dreamy-theme');
+        document.body?.classList.add('dreamy-theme');
+        
+        const cssId = 'dreamy-css';
+        if (!document.getElementById(cssId)) {
+            const link = document.createElement('link');
+            link.id = cssId;
+            link.rel = 'stylesheet';
+            // Use absolute path relative to frontend root
+            link.href = '/admin/dashboard/css/dreamy-theme.css';
+            document.head.appendChild(link);
+        }
+    }
+})();
 
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initGlobalUI);
@@ -10,7 +23,11 @@ if (document.readyState === 'loading') {
 }
 
 function initGlobalUI() {
-    initDreamyTheme(); // Load theme first
+    // Ensure body has class if HTML has it
+    if (document.documentElement.classList.contains('dreamy-theme')) {
+        document.body.classList.add('dreamy-theme');
+        initDreamyParticles();
+    }
     initMobileMenu();
     initDropdown();
     updateUserInfo();
@@ -22,42 +39,14 @@ function initGlobalUI() {
 }
 
 /**
- * Dreamy Theme Global Loader
+ * Dreamy Theme Particles Initialization
  */
-function initDreamyTheme() {
-    if (localStorage.getItem('dreamyTheme') === 'true') {
-        document.body.classList.add('dreamy-theme');
-        
-        // Find correct prefix for CSS injection
-        const path = window.location.pathname;
-        let prefix = '';
-        if (path.includes('/admin/')) {
-            if (path.includes('/dashboard/html/')) prefix = '../';
-            else if (path.includes('/html/')) prefix = '../../';
-        } else if (path.includes('/user/')) {
-             if (path.includes('/html/')) prefix = '../../../admin/dashboard/';
-        } else if (path === '/' || path.includes('main.html')) {
-             prefix = 'admin/dashboard/';
-        }
-
-        // Inject CSS if not already there
-        if (!document.getElementById('dreamy-css')) {
-            const link = document.createElement('link');
-            link.id = 'dreamy-css';
-            link.rel = 'stylesheet';
-            link.href = `${prefix}css/dreamy-theme.css`;
-            document.head.appendChild(link);
-        }
-        
-        // Inject Particles Container
-        if (!document.getElementById('dreamy-particles')) {
-            const div = document.createElement('div');
-            div.id = 'dreamy-particles';
-            document.body.appendChild(div);
-            
-            // Trigger petal creation after a short delay
-            setTimeout(createDreamyPetals, 500);
-        }
+function initDreamyParticles() {
+    if (localStorage.getItem('dreamyTheme') === 'true' && !document.getElementById('dreamy-particles')) {
+        const div = document.createElement('div');
+        div.id = 'dreamy-particles';
+        document.body.appendChild(div);
+        createDreamyPetals();
     }
 }
 

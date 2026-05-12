@@ -37,6 +37,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const prefix = getPathPrefix();
 
+    // Inject global.js if not present
+    if (!window.initGlobalUI) {
+        const globalScript = document.createElement('script');
+        globalScript.src = '/shared/js/global.js';
+        document.head.appendChild(globalScript);
+    }
+
     const sidebarHtml = `
         <aside class="sidebar" id="mainSidebar">
             <div class="sidebar-header">
