@@ -1,0 +1,135 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    color: #fff;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.error-container {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(15px);
+    padding: 3rem;
+    border-radius: 32px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    max-width: 500px;
+    width: 90%;
+    animation: fadeIn 0.8s ease-out;
+}
+
+.error-code {
+    font-size: 8rem;
+    font-weight: 900;
+    background: linear-gradient(to bottom, #e94560, #ff0055);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1;
+    margin-bottom: 1rem;
+    font-family: 'Orbitron', sans-serif;
+    text-shadow: 0 10px 20px rgba(233, 69, 96, 0.3);
+}
+
+h1 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: #00f3ff;
+}
+
+p {
+    color: #8892b0;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+.btn-home {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, #00f3ff, #0066ff);
+    color: #fff;
+    padding: 12px 30px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-home:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 243, 255, 0.3);
+}
+
+.coffee-icon {
+    font-size: 4rem;
+    color: #e94560;
+    margin-bottom: 1.5rem;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* Loading Spinner Styles */
+.loader-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.coffee-cup {
+    width: 60px;
+    height: 60px;
+    border: 4px solid #00f3ff;
+    border-radius: 0 0 30px 30px;
+    position: relative;
+    animation: fillCup 2s infinite ease-in-out;
+}
+
+.coffee-cup::after {
+    content: '';
+    position: absolute;
+    right: -15px;
+    top: 10px;
+    width: 15px;
+    height: 25px;
+    border: 4px solid #00f3ff;
+    border-left: none;
+    border-radius: 0 15px 15px 0;
+}
+
+@keyframes fillCup {
+    0% { background: transparent; }
+    50% { background: #5C3A21; }
+    100% { background: transparent; }
+}
+
+.loading-text {
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 4px;
+    color: #00f3ff;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}

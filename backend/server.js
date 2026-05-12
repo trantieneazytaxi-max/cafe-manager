@@ -79,6 +79,15 @@ app.use('/api/store', storeRoutes);
 app.use('/api/recommendations', recommendationRoutes);
 app.use('/api/attendance', attendanceRoutes);
 
+// === Special Pages ===
+app.get('/loading', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/shared/error/html/loading.html'));
+});
+
+app.get('/403', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/shared/error/html/access-denied.html'));
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
     res.json({ 
@@ -86,6 +95,11 @@ app.get('/api/health', (req, res) => {
         message: 'Server is running', 
         timestamp: new Date()
     });
+});
+
+// === 404 Handler (MUST BE LAST) ===
+app.use((req, res) => {
+    res.status(404).sendFile(path.join(__dirname, '../frontend/shared/error/html/404.html'));
 });
 
 // === Start server ===
