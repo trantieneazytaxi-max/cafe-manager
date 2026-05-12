@@ -1,16 +1,10 @@
-const express = require('express');
-const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { executeQuery, sql } = require('../config/js/db');
-const { verifyToken } = require('../middleware/authMiddleware');  // 🆕 THÊM IMPORT
+const { executeQuery } = require('../config/js/db');
 
-// Đăng ký
-router.post('/register', async (req, res) => {
+exports.register = async (req, res) => {
     try {
         const { full_name, email, phone, password, role } = req.body;
-        
-        console.log('Register request:', { full_name, email, phone, role });
         
         // Kiểm tra email đã tồn tại
         const checkUser = await executeQuery(
@@ -41,7 +35,7 @@ router.post('/register', async (req, res) => {
 
         const newUserId = userResult.recordset[0].user_id;
 
-        // 🆕 Tặng mã giảm giá cho thành viên mới (nếu có)
+        // Tặng mã giảm giá cho thành viên mới (nếu có)
         try {
             const welcomeCode = await executeQuery(`
                 SELECT TOP 1 code_id FROM DiscountCodes 
@@ -66,10 +60,9 @@ router.post('/register', async (req, res) => {
         console.error('Register error:', error);
         res.status(500).json({ message: 'Lỗi server: ' + error.message });
     }
-});
+};
 
-// Đăng nhập
-router.post('/login', async (req, res) => {
+exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
         
@@ -84,13 +77,11 @@ router.post('/login', async (req, res) => {
             return res.status(401).json({ message: 'Email hoặc mật khẩu không đúng' });
         }
         
-        // Kiểm tra tài khoản có bị vô hiệu hóa không
         if (user.is_active === 0) {
-            return res.status(403).json({ message: 'Tài khoản của bạn đã bị vô hiệu hóa! Vui lòng liên hệ quản trị viên để được hỗ trợ.' });
+            return res.status(403).json({ message: 'Tài khoản đã bị vô hiệu hóa!' });
         }
         
         const isValid = await bcrypt.compare(password, user.password_hash);
-        
         if (!isValid) {
             return res.status(401).json({ message: 'Email hoặc mật khẩu không đúng' });
         }
@@ -117,13 +108,11 @@ router.post('/login', async (req, res) => {
         console.error('Login error:', error);
         res.status(500).json({ message: 'Lỗi server: ' + error.message });
     }
-});
+};
 
-// Kiểm tra trạng thái tài khoản (cho staff)
-router.get('/check-status', verifyToken, async (req, res) => {
+exports.checkStatus = async (req, res) => {
     try {
         const userId = req.user.userId;
-        
         const result = await executeQuery(
             'SELECT is_active FROM Users WHERE user_id = @userId',
             { userId: userId }
@@ -134,17 +123,12 @@ router.get('/check-status', verifyToken, async (req, res) => {
         }
         
         const isActive = result.recordset[0].is_active;
-        
-        // 🆕 SỬA: So sánh đúng với false hoặc 0
         if (isActive === false || isActive === 0) {
             return res.status(403).json({ message: 'Tài khoản đã bị vô hiệu hóa' });
         }
         
         res.json({ success: true, is_active: true });
-        
     } catch (error) {
         res.status(500).json({ message: 'Lỗi server' });
     }
-});
-
-module.exports = router;
+};

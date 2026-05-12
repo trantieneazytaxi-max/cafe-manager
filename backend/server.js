@@ -5,20 +5,20 @@ const path = require('path');
 const { getConnection } = require('./config/js/db');
 
 // Import routes
-const verificationRoutes = require('./routes/verificationRoutes');
-const authRoutes = require('./routes/authRoutes');  
-const menuRoutes = require('./routes/menuRoutes');
-const tableRoutes = require('./routes/tableRoutes');
-const adminRoutes = require('./routes/adminRoutes');
-const orderRoutes = require('./routes/orderRoutes');
-const staffOrderRoutes = require('./routes/staffOrderRoutes');
-const forgotPasswordRoutes = require('./routes/forgotPasswordRoutes');
-const paymentRoutes = require('./routes/paymentRoutes');
-const customerRoutes = require('./routes/customerRoutes');
-const discountRoutes = require('./routes/discountRoutes');
-const storeRoutes = require('./routes/storeRoutes');
-const recommendationRoutes = require('./routes/recommendationRoutes');
-const attendanceRoutes = require('./routes/attendanceRoutes');
+const verificationRoutes = require('./routes/verification.route');
+const authRoutes = require('./routes/auth.route');  
+const menuRoutes = require('./routes/menu.route');
+const tableRoutes = require('./routes/table.route');
+const adminRoutes = require('./routes/admin.route');
+const orderRoutes = require('./routes/order.route');
+const staffOrderRoutes = require('./routes/staffOrder.route');
+const forgotPasswordRoutes = require('./routes/forgotPassword.route');
+const paymentRoutes = require('./routes/payment.route');
+const customerRoutes = require('./routes/customer.route');
+const discountRoutes = require('./routes/discount.route');
+const storeRoutes = require('./routes/store.route');
+const recommendationRoutes = require('./routes/recommendation.route');
+const attendanceRoutes = require('./routes/attendance.route');
 
 
 

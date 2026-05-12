@@ -65,23 +65,21 @@ cafe-manager/
 │   └── shared/                   # CSS/JS/Images dùng chung
 ├── backend/
 │   ├── config/                   # Cấu hình kết nối Database
+│   ├── controllers/              # Business Logic (MVC - Controller)
+│   │   ├── auth.controller.js
+│   │   ├── menu.controller.js
+│   │   ├── order.controller.js
+│   │   └── ... (Các controller khác)
+│   ├── models/                   # Data Access Patterns (MVC - Model)
+│   │   └── setting.model.js
 │   ├── middleware/               # JWT Auth, phân quyền (isAdmin, isStaff)
-│   ├── routes/
-│   │   ├── adminRoutes.js        # API quản trị
-│   │   ├── authRoutes.js         # Đăng nhập/Đăng ký
-│   │   ├── menuRoutes.js         # Thực đơn (CRUD, Size, Topping, Pause)
-│   │   ├── orderRoutes.js        # Đơn hàng (Customer)
-│   │   ├── staffOrderRoutes.js   # Đơn hàng (Staff)
-│   │   ├── tableRoutes.js        # Quản lý bàn
-│   │   ├── attendanceRoutes.js   # Quản lý chấm công
-│   │   ├── discountRoutes.js     # Mã giảm giá
-│   │   ├── customerRoutes.js     # Thông tin khách hàng
-│   │   ├── paymentRoutes.js      # Thanh toán VietQR
-│   │   ├── forgotPasswordRoutes.js   # Quên mật khẩu
-│   │   └── verificationRoutes.js     # Xác thực OTP Email
+│   ├── routes/                   # API Endpoints (MVC - Route)
+│   │   ├── auth.route.js         
+│   │   ├── menu.route.js         
+│   │   ├── admin.route.js        
+│   │   └── ... (Các route chuẩn hóa .route.js)
 │   ├── services/                 # Các dịch vụ bên thứ 3 (Email,...)
-│   ├── scratch/                  # Các script test và migrate dữ liệu
-│   └── server.js                 # Tệp chạy chính
+│   └── server.js                 # Tệp chạy chính (Khởi tạo App)
 └── database/                     # Script khởi tạo SQL Server
 ```
 
@@ -204,6 +202,10 @@ Truy cập: `http://localhost:5000`
 - [x] Sidebar chung cho toàn bộ trang Admin
 - [x] Phân quyền Middleware: isAdmin, isStaff, optionalToken
 - [x] Logout đúng đường dẫn cho Staff (`/staff/auth/html/staff-login.html`)
+- [x] **Tái cấu trúc Backend sang mô hình MVC (Model-View-Controller)**
+    - [x] Tách biệt logic xử lý sang `controllers/`
+    - [x] Chuẩn hóa định nghĩa API trong `routes/*.route.js`
+    - [x] Triển khai `models/` cho các logic truy vấn dữ liệu phức tạp
 
 ### 🔮 Dự kiến tiếp theo
 - [ ] Responsive hoàn chỉnh cho mobile
