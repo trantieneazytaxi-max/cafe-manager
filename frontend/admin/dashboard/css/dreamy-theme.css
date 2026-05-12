@@ -1,0 +1,116 @@
+/* ============================================
+   DREAMY THEME - NOSTALGIC & EMOTIONAL
+   ============================================ */
+
+body.dreamy-theme {
+    background: linear-gradient(135deg, #FFC8D9 0%, #D8B4E8 50%, #FAF4ED 100%) !important;
+    font-family: 'Inter', sans-serif;
+    color: #5C3A21;
+    transition: all 1s ease-in-out;
+}
+
+body.dreamy-theme .admin-container {
+    background: transparent !important;
+}
+
+/* Glassmorphism for content */
+body.dreamy-theme .main-content {
+    background: rgba(255, 255, 255, 0.2) !important;
+    backdrop-filter: blur(10px);
+    border-left: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Headers */
+body.dreamy-theme h1, 
+body.dreamy-theme h2, 
+body.dreamy-theme h3 {
+    font-family: 'Playfair Display', serif; /* Serif for headers */
+    color: #8B5A2B !important;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
+}
+
+/* Sidebar overrides */
+body.dreamy-theme .sidebar {
+    background: rgba(255, 237, 244, 0.8) !important;
+    backdrop-filter: blur(15px);
+    border-right: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+body.dreamy-theme .sidebar-logo span {
+    color: #FFB6C1 !important;
+}
+
+body.dreamy-theme .nav-item {
+    color: #8B7355 !important;
+}
+
+body.dreamy-theme .nav-item:hover, 
+body.dreamy-theme .nav-item.active {
+    background: rgba(255, 255, 255, 0.5) !important;
+    color: #FFB6C1 !important;
+    box-shadow: 0 4px 15px rgba(255, 182, 193, 0.2);
+}
+
+/* Stats Cards */
+body.dreamy-theme .stat-card {
+    background: rgba(255, 255, 255, 0.4) !important;
+    border: 1px solid rgba(255, 255, 255, 0.6) !important;
+    border-radius: 24px !important;
+    box-shadow: 0 10px 30px rgba(216, 180, 232, 0.2) !important;
+}
+
+body.dreamy-theme .stat-icon {
+    background: #FFC8D9 !important;
+    color: #FFFFFF !important;
+}
+
+/* Charts */
+body.dreamy-theme .chart-card,
+body.dreamy-theme .line-chart-card {
+    background: rgba(255, 255, 255, 0.5) !important;
+    border-radius: 32px !important;
+    border: 1px solid rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Particles effect container */
+#dreamy-particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    display: none;
+}
+
+body.dreamy-theme #dreamy-particles {
+    display: block;
+}
+
+.petal {
+    position: absolute;
+    background-color: #FFB6C1;
+    border-radius: 150% 0 150% 0;
+    opacity: 0.3;
+    transform: rotate(45deg);
+    animation: fall 10s linear infinite;
+}
+
+@keyframes fall {
+    0% { transform: translateY(-10vh) translateX(0) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.3; }
+    90% { opacity: 0.3; }
+    100% { transform: translateY(100vh) translateX(100px) rotate(360deg); opacity: 0; }
+}
+
+/* Custom Serif Font Import */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+
+/* Accent color for buttons */
+body.dreamy-theme .refresh-btn,
+body.dreamy-theme .range-btn.active {
+    background: #E8C8A0 !important;
+    color: white !important;
+    border: none !important;
+}

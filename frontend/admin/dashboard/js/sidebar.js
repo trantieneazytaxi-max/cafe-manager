@@ -142,4 +142,75 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = `${prefix}auth/html/admin-login.html`;
         });
     }
+
+    // === DREAMY THEME LOGIC ===
+    const secretTrigger = document.querySelector('.sidebar .logo i');
+    if (secretTrigger) {
+        secretTrigger.style.cursor = 'pointer';
+        secretTrigger.addEventListener('click', () => {
+            const body = document.body;
+            const isDreamy = body.classList.toggle('dreamy-theme');
+            localStorage.setItem('dreamyTheme', isDreamy);
+            
+            if (isDreamy) {
+                injectDreamyAssets();
+                createPetals();
+            } else {
+                removePetals();
+            }
+        });
+    }
+
+    // Restore theme on load
+    if (localStorage.getItem('dreamyTheme') === 'true') {
+        document.body.classList.add('dreamy-theme');
+        injectDreamyAssets();
+        setTimeout(createPetals, 1000);
+    }
+
+    function injectDreamyAssets() {
+        // Inject CSS if not already there
+        if (!document.getElementById('dreamy-css')) {
+            const link = document.createElement('link');
+            link.id = 'dreamy-css';
+            link.rel = 'stylesheet';
+            link.href = `${prefix}dashboard/css/dreamy-theme.css`;
+            document.head.appendChild(link);
+        }
+        
+        // Inject Particles Container
+        if (!document.getElementById('dreamy-particles')) {
+            const div = document.createElement('div');
+            div.id = 'dreamy-particles';
+            document.body.appendChild(div);
+        }
+    }
+
+    function createPetals() {
+        const container = document.getElementById('dreamy-particles');
+        if (!container) return;
+        
+        // Clear old petals
+        container.innerHTML = '';
+        
+        for (let i = 0; i < 30; i++) {
+            const petal = document.createElement('div');
+            petal.className = 'petal';
+            petal.style.left = Math.random() * 100 + 'vw';
+            petal.style.animationDelay = Math.random() * 10 + 's';
+            petal.style.width = Math.random() * 15 + 10 + 'px';
+            petal.style.height = petal.style.width;
+            
+            // Random color variations (Pastel)
+            const colors = ['#FFB6C1', '#FFC8D9', '#D8B4E8', '#B0E0E6'];
+            petal.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            
+            container.appendChild(petal);
+        }
+    }
+
+    function removePetals() {
+        const container = document.getElementById('dreamy-particles');
+        if (container) container.innerHTML = '';
+    }
 });
