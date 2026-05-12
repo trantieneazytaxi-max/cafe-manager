@@ -208,10 +208,9 @@ Truy cập: `http://localhost:5000`
     - [x] Triển khai `models/` cho các logic truy vấn dữ liệu phức tạp
 
 ### 🔮 Dự kiến tiếp theo
-- [ ] Responsive hoàn chỉnh cho mobile
-- [x] In hóa đơn PDF
-- [ ] Thông báo realtime (WebSocket)
-- [ ] Tài liệu hướng dẫn sử dụng (User Manual)
+- [x] Responsive hoàn chỉnh cho mobile
+- [x] Thông báo realtime (WebSocket)
+- [x] Tài liệu hướng dẫn sử dụng (User Manual)
 
 ---
 

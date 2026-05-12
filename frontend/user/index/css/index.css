@@ -636,30 +636,14 @@ body {
         display: flex;
     }
    
-    .hero h1 {
-        font-size: 2rem;
-    }
-   
-    .hero p {
-        font-size: 1rem;
-    }
-   
-    .hero-buttons {
-        flex-direction: column;
-        align-items: center;
-    }
-   
-    .section-header h2 {
-        font-size: 1.8rem;
-    }
-   
-    .features-grid, .menu-grid {
-        grid-template-columns: 1fr;
-    }
-   
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
+    .hero h1 { font-size: 2.2rem; }
+    .hero p { font-size: 1rem; padding: 0 1rem; }
+    .story-grid { grid-template-columns: 1fr; gap: 2rem; text-align: center; }
+    .story-image { order: 2; }
+    .story-content { order: 1; }
+    .section-header h2 { font-size: 1.8rem; }
+    .features-grid, .menu-grid { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 480px) {

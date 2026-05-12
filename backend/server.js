@@ -2,7 +2,9 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const http = require('http');
 const { getConnection } = require('./config/js/db');
+const socketUtils = require('./utils/socket');
 
 // Import routes
 const verificationRoutes = require('./routes/verification.route');
@@ -20,9 +22,9 @@ const storeRoutes = require('./routes/store.route');
 const recommendationRoutes = require('./routes/recommendation.route');
 const attendanceRoutes = require('./routes/attendance.route');
 
-
-
 const app = express();
+const server = http.createServer(app);
+const io = socketUtils.init(server);
 const PORT = process.env.PORT || 5000;
 
 // Middleware
@@ -77,8 +79,6 @@ app.use('/api/store', storeRoutes);
 app.use('/api/recommendations', recommendationRoutes);
 app.use('/api/attendance', attendanceRoutes);
 
-
-
 // Health check
 app.get('/api/health', (req, res) => {
     res.json({ 
@@ -94,7 +94,7 @@ async function startServer() {
         await getConnection();
         console.log('✅ Database connected');
         
-        app.listen(PORT, () => {
+        server.listen(PORT, () => {
             console.log(`🚀 Server running on http://localhost:${PORT}`);
             console.log(`🏠 Main page: http://localhost:${PORT}`);
             console.log(`👤 User: http://localhost:${PORT}/user`);

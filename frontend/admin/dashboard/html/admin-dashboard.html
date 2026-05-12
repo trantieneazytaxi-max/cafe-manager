@@ -201,6 +201,12 @@
     </div>
 
     <script src="../../../shared/js/global.js"></script>
+    <script src="../../../shared/js/notifications.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            window.notifSystem = new NotificationSystem('admin');
+        });
+    </script>
     <script src="../js/sidebar.js"></script>
     <script src="../js/admin-dashboard.js"></script>
 </body>

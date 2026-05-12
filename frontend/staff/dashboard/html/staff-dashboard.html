@@ -125,6 +125,13 @@
         </div>
     </main>
 
+    <script src="../../../shared/js/global.js"></script>
+    <script src="../../../shared/js/notifications.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            window.notifSystem = new NotificationSystem('staff');
+        });
+    </script>
     <script src="../../shared/js/staff-navbar.js"></script>
     <script src="../js/staff-dashboard.js"></script>
 </body>

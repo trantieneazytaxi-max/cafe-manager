@@ -55,13 +55,19 @@ exports.createOrder = async (req, res) => {
             }
             await transaction.commit();
             
+            // 🆕 Emit Socket.io event
             try {
-                if (guest_email || (req.user && req.user.email)) {
-                    if (req.body.send_email === true) {
-                        sendInvoiceEmail({ order_id: orderId, order_code: finalOrderCode, total_amount, discount_amount, shipping_fee, guest_name, guest_email: guest_email || req.user.email, created_at: new Date() }, items.map(i => ({ item_name: i.item_name || 'Món ăn', quantity: i.quantity, unit_price: i.price })));
-                    }
-                }
-            } catch (e) {}
+                const io = require('../utils/socket').getIO();
+                io.to('admin-room').to('staff-room').emit('new-order', {
+                    order_id: orderId,
+                    order_code: finalOrderCode,
+                    total_amount: total_amount,
+                    guest_name: guest_name || 'Khách vãng lai',
+                    created_at: new Date()
+                });
+            } catch (socketError) {
+                console.error('Socket emit error:', socketError);
+            }
 
             res.json({ success: true, message: 'Đặt hàng thành công', order_id: orderId, order_code: finalOrderCode, earned_points: earnedPoints });
         } catch (error) {

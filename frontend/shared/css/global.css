@@ -621,11 +621,26 @@ body {
 }
 
 /* Responsive Nav */
+@media (max-width: 992px) {
+    .nav-container { padding: 0.75rem 1.5rem; }
+    .nav-search { margin: 0 1rem; }
+    .nav-links { gap: 1rem; }
+}
+
 @media (max-width: 768px) {
-    .menu-toggle {
-        display: block;
+    body { padding-top: 70px; }
+    .menu-toggle { display: block; order: 3; }
+    .logo { order: 1; font-size: 1.2rem; }
+    .nav-search { 
+        order: 4; 
+        width: 100%; 
+        margin: 0.5rem 0 0; 
+        max-width: none;
+        display: none; /* Hide by default on mobile to save space, toggle with menu */
     }
-    
+    .nav-search.active { display: block; }
+    .profile-dropdown { order: 2; margin-left: auto; margin-right: 1rem; }
+
     .nav-links {
         display: none;
         position: absolute;
@@ -634,19 +649,34 @@ body {
         right: 0;
         background: white;
         flex-direction: column;
-        padding: 1rem;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        padding: 1.5rem;
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        gap: 1.25rem;
+        border-top: 1px solid #F5E6D3;
     }
     
-    .nav-links.active {
-        display: flex;
-    }
-
-    .nav-search {
-        margin: 0 1rem;
-        max-width: none;
-    }
+    .nav-links.active { display: flex; }
+    
+    .footer-grid { grid-template-columns: 1fr; gap: 2.5rem; text-align: center; }
+    .footer-col ul li { justify-content: center; }
+    .social-links { justify-content: center; }
+    .newsletter { flex-direction: column; }
+    
+    .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
 }
+
+@media (max-width: 480px) {
+    .stats-grid { grid-template-columns: 1fr; }
+    .stat-number { font-size: 2.5rem; }
+    .section-header h2 { font-size: 1.8rem; }
+    .btn-primary, .btn-secondary, .btn-outline { width: 100%; justify-content: center; }
+    .modal-content { width: 95%; margin: 0 10px; }
+    .option-buttons { justify-content: center; }
+}
+
+/* Helper for animations */
+.fade-in { animation: fadeIn 0.5s ease-in forwards; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
 /* ========== FLOATING ACTION BUTTONS (FAB) ========== */
 .fab-container {
