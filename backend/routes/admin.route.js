@@ -20,4 +20,8 @@ router.put('/staff/:id/toggle-status', isAdmin, adminController.toggleStaffStatu
 router.get('/store-settings', isAdmin, adminController.getStoreSettings);
 router.put('/store-settings', isAdmin, adminController.updateStoreSettings);
 
+// Đánh giá & Biểu đồ
+router.get('/ratings', isStaff, adminController.getRatings);
+router.get('/chart-data', isStaff, adminController.getChartData);
+
 module.exports = router;

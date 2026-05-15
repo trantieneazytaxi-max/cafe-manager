@@ -1,0 +1,413 @@
+/* ============================================
+   REVERIE THEME - ETHEREAL & NOSTALGIC (V3 - UNIVERSAL ADMIN)
+   Theme: Memories, Purple Dream, Reunion
+   ============================================ */
+
+:root {
+    --rv-bg: #F5F3FF;
+    --rv-bg-soft: #FAF5FF;
+    --rv-purple: #7E22CE;
+    --rv-purple-deep: #4C1D95;
+    --rv-purple-light: #A855F7;
+    --rv-pink: #EC4899;
+    --rv-pink-soft: #FBCFE8;
+    --rv-text: #1F2937;
+    --rv-text-muted: #6B7280;
+    --rv-white: #FFFFFF;
+    --rv-glass: rgba(255, 255, 255, 0.75);
+}
+
+/* Global Overrides */
+body.reverie-theme {
+    background: linear-gradient(135deg, var(--rv-bg) 0%, var(--rv-bg-soft) 100%) fixed !important;
+    color: var(--rv-text) !important;
+    font-family: 'Inter', sans-serif !important;
+}
+
+body.reverie-theme::before {
+    content: "" !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: radial-gradient(circle at 70% 20%, rgba(168, 85, 247, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 20% 80%, rgba(236, 72, 153, 0.15) 0%, transparent 50%) !important;
+    pointer-events: none !important;
+    z-index: -1 !important;
+}
+
+/* Fix Visibility & Contrast for Icons/Text */
+body.reverie-theme i,
+body.reverie-theme .fas,
+body.reverie-theme .far,
+body.reverie-theme .fab {
+    color: var(--rv-purple) !important;
+    text-shadow: none !important;
+}
+
+body.reverie-theme .highlight,
+body.reverie-theme .logo .highlight,
+body.reverie-theme .logo-text .highlight {
+    color: var(--rv-pink) !important;
+    text-shadow: none !important;
+}
+
+body.reverie-theme p, 
+body.reverie-theme span, 
+body.reverie-theme div:not(.bs-ember):not(.reverie-danmaku), 
+body.reverie-theme td, 
+body.reverie-theme th,
+body.reverie-theme label {
+    color: var(--rv-text) !important;
+    text-shadow: none !important;
+}
+
+body.reverie-theme h1, 
+body.reverie-theme h2, 
+body.reverie-theme h3,
+body.reverie-theme h4 {
+    color: var(--rv-purple-deep) !important;
+    font-family: 'Playfair Display', serif !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+    text-shadow: none !important;
+}
+
+/* Sidebar Overrides */
+body.reverie-theme .sidebar {
+    background: var(--rv-glass) !important;
+    backdrop-filter: blur(40px) !important;
+    border-right: 1px solid var(--rv-pink-soft) !important;
+    box-shadow: 10px 0 30px rgba(126, 34, 206, 0.05) !important;
+}
+
+body.reverie-theme .sidebar-header,
+body.reverie-theme .sidebar-footer {
+    border-color: var(--rv-pink-soft) !important;
+}
+
+body.reverie-theme .sidebar-header::after {
+    background: linear-gradient(90deg, transparent, var(--rv-purple-light), var(--rv-pink), transparent) !important;
+}
+
+body.reverie-theme .nav-item {
+    color: var(--rv-text-muted) !important;
+}
+
+body.reverie-theme .nav-item:hover,
+body.reverie-theme .nav-item.active {
+    background: rgba(168, 85, 247, 0.1) !important;
+    color: var(--rv-purple-deep) !important;
+    border-right-color: var(--rv-purple) !important;
+}
+
+body.reverie-theme .nav-item.active i {
+    color: var(--rv-pink) !important;
+}
+
+/* Aggressive Overrides for Cyberpunk Remnants */
+body.reverie-theme .btn-cyber,
+body.reverie-theme .btn-add,
+body.reverie-theme .btn-confirm,
+body.reverie-theme button[type="submit"],
+body.reverie-theme .btn-outline {
+    background: linear-gradient(135deg, var(--rv-purple), var(--rv-purple-light)) !important;
+    color: white !important;
+    border: none !important;
+    box-shadow: 0 10px 20px rgba(126, 34, 206, 0.2) !important;
+    text-shadow: none !important;
+    font-family: 'Inter', sans-serif !important;
+    letter-spacing: 1px !important;
+}
+
+body.reverie-theme .btn-outline {
+    background: transparent !important;
+    border: 2px solid var(--rv-purple) !important;
+    color: var(--rv-purple) !important;
+    box-shadow: none !important;
+}
+
+body.reverie-theme .btn-cyber:hover,
+body.reverie-theme .btn-add:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 15px 30px rgba(126, 34, 206, 0.3) !important;
+}
+
+/* Form Elements Contrast Fix */
+body.reverie-theme input, 
+body.reverie-theme select, 
+body.reverie-theme textarea {
+    background: white !important;
+    border: 1px solid var(--rv-pink-soft) !important;
+    color: var(--rv-text) !important;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02) !important;
+}
+
+body.reverie-theme input::placeholder,
+body.reverie-theme textarea::placeholder {
+    color: var(--rv-text-muted) !important;
+    opacity: 0.6 !important;
+}
+
+body.reverie-theme .form-group label {
+    color: var(--rv-purple-deep) !important;
+    text-shadow: none !important;
+}
+
+/* Settings Specific Fixes */
+body.reverie-theme .settings-card h3 {
+    color: var(--rv-purple) !important;
+    text-shadow: none !important;
+}
+
+body.reverie-theme .settings-card h3 i {
+    color: var(--rv-purple-light) !important;
+}
+
+body.reverie-theme .settings-card div[style*="background: rgba(255, 0, 85, 0.05)"] {
+    background: rgba(168, 85, 247, 0.05) !important;
+    border-left-color: var(--rv-purple) !important;
+    color: var(--rv-purple-deep) !important;
+}
+
+body.reverie-theme .settings-card p[style*="color: #ff0055"] {
+    color: var(--rv-purple-deep) !important;
+}
+
+/* Sidebar Toggle Fix */
+body.reverie-theme .sidebar-toggle-inner {
+    background: var(--rv-purple) !important;
+    color: white !important;
+    box-shadow: 0 4px 15px rgba(126, 34, 206, 0.3) !important;
+}
+
+/* Cards */
+body.reverie-theme .stat-card,
+body.reverie-theme .chart-card,
+body.reverie-theme .data-table-card,
+body.reverie-theme .top-items-card,
+body.reverie-theme .rating-card,
+body.reverie-theme .line-chart-card,
+body.reverie-theme .pie-chart-card,
+body.reverie-theme .report-card,
+body.reverie-theme .stat-mini-card,
+body.reverie-theme .section-card,
+body.reverie-theme .discount-card,
+body.reverie-theme .settings-card {
+    background: var(--rv-glass) !important;
+    border: 1px solid var(--rv-pink-soft) !important;
+    box-shadow: 0 10px 40px rgba(126, 34, 206, 0.08) !important;
+    backdrop-filter: blur(20px) !important;
+    border-radius: 20px !important;
+    color: var(--rv-text) !important;
+}
+
+/* Modals */
+body.reverie-theme .modal {
+    display: none; /* Default hidden */
+    background: rgba(15, 15, 25, 0.85) !important; /* Slightly darker for better contrast */
+    backdrop-filter: blur(20px) !important;
+    z-index: 9999 !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+body.reverie-theme .modal.active,
+body.reverie-theme .modal:not(.hidden) {
+    display: flex !important;
+}
+
+body.reverie-theme .modal-content {
+    background: var(--rv-white) !important;
+    border: 1px solid var(--rv-purple-light) !important;
+    box-shadow: 0 20px 60px rgba(126, 34, 206, 0.2) !important;
+    color: var(--rv-text) !important;
+}
+
+body.reverie-theme .modal-header h3,
+body.reverie-theme .modal-content h3 {
+    color: var(--rv-purple-deep) !important;
+    font-family: 'Playfair Display', serif !important;
+}
+
+/* Profile Page Specifics */
+body.reverie-theme .profile-card-cyber,
+body.reverie-theme .profile-left-col > div,
+body.reverie-theme .profile-right-col > div {
+    background: var(--rv-glass) !important;
+    border: 1px solid var(--rv-pink-soft) !important;
+    backdrop-filter: blur(20px) !important;
+    box-shadow: 0 10px 40px rgba(126, 34, 206, 0.08) !important;
+    border-radius: 24px !important;
+    color: var(--rv-text) !important;
+}
+
+body.reverie-theme .profile-card-cyber h2,
+body.reverie-theme .profile-card-cyber h3 {
+    color: var(--rv-purple-deep) !important;
+    font-family: 'Playfair Display', serif !important;
+}
+
+body.reverie-theme .cyber-btn,
+body.reverie-theme .close-btn,
+body.reverie-theme .close-modal {
+    position: relative !important;
+    z-index: 2001 !important;
+    pointer-events: auto !important;
+}
+
+body.reverie-theme .cyber-btn {
+    width: 100% !important;
+    margin: 10px 0 !important;
+    justify-content: center !important;
+    background: linear-gradient(135deg, var(--rv-purple), var(--rv-purple-light)) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 12px !important;
+    padding: 0.8rem !important;
+    box-shadow: 0 5px 15px rgba(126, 34, 206, 0.2) !important;
+    text-shadow: none !important;
+    font-family: 'Inter', sans-serif !important;
+    cursor: pointer !important;
+}
+
+body.reverie-theme .cyber-btn.secondary {
+    background: white !important;
+    color: var(--rv-purple) !important;
+    border: 1px solid var(--rv-purple) !important;
+    box-shadow: none !important;
+}
+
+body.reverie-theme .avatar-container img {
+    border: 4px solid var(--rv-purple) !important;
+    box-shadow: 0 0 20px rgba(126, 34, 206, 0.2) !important;
+}
+
+body.reverie-theme .edit-avatar-btn {
+    background: var(--rv-pink) !important;
+    color: white !important;
+    border: 2px solid white !important;
+}
+
+body.reverie-theme .info-item .label {
+    color: var(--rv-purple-light) !important;
+}
+
+body.reverie-theme .info-item .value {
+    color: var(--rv-text) !important;
+}
+
+body.reverie-theme .role-badge {
+    background: rgba(168, 85, 247, 0.1) !important;
+    color: var(--rv-purple) !important;
+    border: 1px solid var(--rv-pink-soft) !important;
+}
+
+/* Fix misalignment in profile grid */
+body.reverie-theme .profile-quick-actions {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+    align-items: center !important;
+}
+
+body.reverie-theme .profile-header-neon h1,
+body.reverie-theme .page-title {
+    color: var(--rv-purple-deep) !important;
+    text-shadow: none !important;
+    font-family: 'Playfair Display', serif !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+}
+
+body.reverie-theme .profile-header-neon p {
+    color: var(--rv-text-muted) !important;
+}
+
+/* Specific Fix for Discount Page Cards */
+body.reverie-theme .discount-card::before {
+    background: var(--rv-purple) !important;
+    box-shadow: 0 0 10px var(--rv-purple) !important;
+}
+
+body.reverie-theme .discount-card .value,
+body.reverie-theme .discount-card .details,
+body.reverie-theme .discount-card .stats {
+    color: var(--rv-text) !important;
+    border-top-color: var(--rv-pink-soft) !important;
+}
+
+/* Reverie Banner Styling */
+.reverie-banner {
+    width: 100%;
+    padding: 1.2rem;
+    background: var(--rv-glass) !important;
+    backdrop-filter: blur(20px) !important;
+    border: 1px solid var(--rv-pink-soft) !important;
+    border-radius: 24px !important;
+    box-shadow: 0 10px 30px rgba(126, 34, 206, 0.05) !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#reverie-banner-top {
+    margin-bottom: 2rem;
+    animation: fadeInDown 1s ease-out;
+}
+
+#reverie-banner-bottom {
+    margin-top: 3rem;
+    animation: fadeInUp 1s ease-out;
+}
+
+.banner-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.banner-text {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.4rem;
+    color: var(--rv-purple-deep) !important;
+    letter-spacing: 6px;
+    opacity: 0.8;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8) !important;
+    text-transform: uppercase;
+}
+
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Danmaku & Overlay */
+.reverie-danmaku {
+    position: fixed;
+    white-space: nowrap;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--rv-purple) !important;
+    opacity: 0.8 !important;
+    font-weight: 500 !important;
+    pointer-events: none;
+    z-index: 1500;
+    text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;600;700&display=swap');

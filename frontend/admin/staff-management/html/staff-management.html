@@ -63,7 +63,10 @@
     <!-- Modal Staff -->
     <div id="staffModal" class="modal">
         <div class="modal-content modal-large">
-            <h3 id="modalTitle" style="margin-bottom: 1.5rem; font-family: 'Orbitron', sans-serif; color: #00f3ff;">THÔNG TIN NHÂN VIÊN</h3>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3 id="modalTitle" style="margin-bottom: 0; font-family: 'Orbitron', sans-serif; color: #00f3ff;">THÔNG TIN NHÂN VIÊN</h3>
+                <button type="button" class="close-modal" id="closeModalX" style="background: none; border: none; color: #8892b0; font-size: 1.5rem; cursor: pointer;">&times;</button>
+            </div>
             <form id="staffForm">
                 <input type="hidden" id="staffId">
                 <div class="form-group" style="text-align: center; margin-bottom: 2rem;">
@@ -100,6 +103,39 @@
                     <div class="form-group">
                         <label>Số điện thoại</label>
                         <input type="tel" id="phone" required>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label>Vị trí</label>
+                            <input type="text" id="position">
+                        </div>
+                        <div class="form-group">
+                            <label>Lương cơ bản</label>
+                            <input type="number" id="salary">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label>Ngày vào làm</label>
+                            <input type="date" id="hire_date">
+                        </div>
+                        <div class="form-group">
+                            <label>Số CMND/CCCD</label>
+                            <input type="text" id="identity_number">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label>Số tài khoản</label>
+                            <input type="text" id="bank_account">
+                        </div>
+                        <div class="form-group">
+                            <label>Ngân hàng</label>
+                            <input type="text" id="bank_name">
+                        </div>
                     </div>
                 </div>
                 <div class="form-group" id="passwordGroup">

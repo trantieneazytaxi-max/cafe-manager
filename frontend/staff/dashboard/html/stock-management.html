@@ -70,34 +70,8 @@
             if (staffNameEl) staffNameEl.textContent = user.full_name || 'Nhân viên';
             if (staffAvatar) staffAvatar.src = `https://ui-avatars.com/api/?background=3498db&color=fff&rounded=true&name=${encodeURIComponent(user.full_name || 'Staff')}`;
 
-            // Dropdown toggle
-            const userInfo = document.querySelector('.user-info');
-            const userMenu = document.querySelector('.user-menu');
-            if (userInfo) {
-                userInfo.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    userMenu.classList.toggle('active');
-                });
-            }
-            document.addEventListener('click', () => {
-                if (userMenu) userMenu.classList.remove('active');
-            });
-
-            // Logout
-            document.getElementById('logoutBtn').addEventListener('click', (e) => {
-                e.preventDefault();
-                localStorage.clear();
-                sessionStorage.clear();
-                window.location.href = '../../../auth/html/staff-login.html';
-            });
-
-            // Mobile menu
-            const menuToggle = document.getElementById('menuToggle');
-            const navLinks = document.getElementById('navLinks');
-            if (menuToggle && navLinks) {
-                menuToggle.addEventListener('click', () => navLinks.classList.toggle('active'));
-            }
-
+            // Mobile menu is handled by global.js or staff-navbar.js
+            // But we keep search listener
             await loadItems();
             document.getElementById('searchInput').addEventListener('input', (e) => {
                 const keyword = e.target.value.toLowerCase();

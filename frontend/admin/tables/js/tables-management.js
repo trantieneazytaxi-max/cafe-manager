@@ -7,6 +7,9 @@ let allTables = [];
 document.addEventListener('DOMContentLoaded', () => {
     loadTables();
     document.getElementById('tableForm').addEventListener('submit', handleTableSubmit);
+    if (document.getElementById('closeTableModalX')) {
+        document.getElementById('closeTableModalX').addEventListener('click', closeTableModal);
+    }
 });
 
 async function loadTables() {

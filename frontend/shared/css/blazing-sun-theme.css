@@ -1,0 +1,404 @@
+/* ============================================
+   BLAZING SUN THEME - HEROIC & ETERNAL
+   Theme: Destiny, Sun, Rebirth, Eternal Cycle
+   Inspired by: "轮回 (Cycle)"
+   ============================================ */
+
+:root {
+    --bs-black: #0A0A0A;
+    --bs-charcoal: #111316;
+    --bs-gold: #E5C158;
+    --bs-gold-bright: #FFE87C;
+    --bs-gold-glow: rgba(229, 193, 88, 0.5);
+    --bs-crimson: #BF311A;
+    --bs-orange: #D94B2B;
+    --bs-text: #E0E0E0;
+    --bs-text-muted: #A0A0A0;
+    --bs-white: #FFFFFF;
+}
+
+/* Background & Global */
+body.blazing-sun-theme {
+    background: radial-gradient(circle at center, var(--bs-charcoal) 0%, var(--bs-black) 100%) fixed !important;
+    color: var(--bs-text) !important;
+    font-family: 'Inter', sans-serif !important;
+    overflow-x: hidden;
+}
+
+body.blazing-sun-theme::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Gradient inspired by the orange/red bottom part of the image */
+    background: linear-gradient(0deg, rgba(191, 49, 26, 0.1) 0%, transparent 40%, rgba(229, 193, 88, 0.05) 100%) !important;
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Texture Overlay */
+body.blazing-sun-theme::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('https://www.transparenttextures.com/patterns/dark-matter.png') !important;
+    opacity: 0.3 !important;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+/* Typography */
+body.blazing-sun-theme h1, 
+body.blazing-sun-theme h2, 
+body.blazing-sun-theme h3,
+body.blazing-sun-theme .logo span,
+body.blazing-sun-theme .logo .highlight,
+body.blazing-sun-theme .section-header h3,
+body.blazing-sun-theme .page-header h1 {
+    font-family: 'Oswald', sans-serif !important;
+    text-transform: uppercase !important;
+    letter-spacing: 3px !important;
+    color: var(--bs-gold) !important;
+    text-shadow: 0 0 15px var(--bs-gold-glow), 0 0 30px rgba(217, 75, 43, 0.3) !important;
+    font-weight: 700 !important;
+}
+
+/* Lyrics/Quotes Style */
+.bs-quote {
+    font-family: 'Playfair Display', serif !important;
+    font-style: italic;
+    color: var(--bs-white);
+    text-align: center;
+    margin: 2.5rem 0;
+    font-size: 1.6rem;
+    position: relative;
+    padding: 0 80px;
+    line-height: 1.8;
+    letter-spacing: 1.5px;
+    z-index: 5;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.bs-quote::before, .bs-quote::after {
+    content: '“';
+    font-size: 5rem;
+    color: var(--bs-gold);
+    opacity: 0.3;
+    position: absolute;
+    font-family: serif;
+}
+
+.bs-quote::before { left: 20px; top: -30px; }
+.bs-quote::after { right: 20px; bottom: -50px; content: '”'; }
+
+/* Sidebar & Navbar */
+body.blazing-sun-theme .navbar,
+body.blazing-sun-theme .nav-container {
+    background: rgba(10, 10, 10, 0.95) !important;
+    backdrop-filter: blur(25px) !important;
+    border-bottom: 2px solid var(--bs-gold) !important;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.9) !important;
+    z-index: 1001 !important;
+}
+
+body.blazing-sun-theme .nav-links a,
+body.blazing-sun-theme .user-info span,
+body.blazing-sun-theme .user-info i {
+    color: var(--bs-text-muted) !important;
+    font-family: 'Oswald', sans-serif !important;
+    letter-spacing: 1.5px !important;
+    text-transform: uppercase !important;
+    font-weight: 600 !important;
+}
+
+body.blazing-sun-theme .nav-links a:hover, 
+body.blazing-sun-theme .nav-links a.active {
+    color: var(--bs-gold-bright) !important;
+    border-bottom: 3px solid var(--bs-gold-bright) !important;
+    text-shadow: 0 0 15px var(--bs-gold-glow) !important;
+}
+
+body.blazing-sun-theme .user-info {
+    background: rgba(229, 193, 88, 0.08) !important;
+    border: 1px solid var(--bs-gold) !important;
+    border-radius: 30px !important;
+}
+
+/* Cards & Containers */
+body.blazing-sun-theme .stat-card,
+body.blazing-sun-theme .chart-card,
+body.blazing-sun-theme .section-card,
+body.blazing-sun-theme .data-table-card,
+body.blazing-sun-theme .menu-card,
+body.blazing-sun-theme .table-card,
+body.blazing-sun-theme .tables-container,
+body.blazing-sun-theme .stat-summary-item {
+    background: rgba(20, 20, 25, 0.85) !important;
+    border: 1px solid rgba(229, 193, 88, 0.4) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 15px 45px rgba(0,0,0,0.7) !important;
+    color: var(--bs-text) !important;
+    backdrop-filter: blur(10px);
+}
+
+body.blazing-sun-theme .stat-summary-item strong {
+    color: var(--bs-gold-bright) !important;
+}
+
+body.blazing-sun-theme .table-card:hover {
+    border-color: var(--bs-gold-bright) !important;
+    box-shadow: 0 0 30px var(--bs-gold-glow) !important;
+    transform: scale(1.02) !important;
+}
+
+body.blazing-sun-theme .table-icon {
+    color: var(--bs-gold) !important;
+    filter: drop-shadow(0 0 15px var(--bs-gold-glow)) !important;
+}
+
+body.blazing-sun-theme .table-number {
+    color: var(--bs-gold-bright) !important;
+    font-family: 'Oswald', sans-serif !important;
+}
+
+body.blazing-sun-theme .shift-card {
+    background: linear-gradient(135deg, var(--bs-crimson) 0%, var(--bs-black) 100%) !important;
+    border: 3px solid var(--bs-gold) !important;
+    box-shadow: 0 0 40px rgba(191, 49, 26, 0.5) !important;
+}
+
+body.blazing-sun-theme .stat-icon {
+    background: linear-gradient(135deg, var(--bs-orange), var(--bs-black)) !important;
+    color: var(--bs-gold-bright) !important;
+    border: 1px solid var(--bs-gold-bright) !important;
+    box-shadow: 0 0 25px rgba(217, 75, 43, 0.6) !important;
+}
+
+/* Tables */
+body.blazing-sun-theme th {
+    background: rgba(191, 49, 26, 0.4) !important;
+    color: var(--bs-gold-bright) !important;
+    border-bottom: 3px solid var(--bs-gold) !important;
+    font-family: 'Oswald', sans-serif !important;
+}
+
+body.blazing-sun-theme td {
+    border-bottom: 1px solid rgba(229, 193, 88, 0.15) !important;
+    color: var(--bs-text) !important;
+}
+
+body.blazing-sun-theme tr:hover td {
+    background: rgba(229, 193, 88, 0.08) !important;
+}
+
+/* Buttons */
+body.blazing-sun-theme .btn-primary,
+body.blazing-sun-theme .btn-cyber,
+body.blazing-sun-theme .btn-add,
+body.blazing-sun-theme .btn-view,
+body.blazing-sun-theme .btn-confirm,
+body.blazing-sun-theme .btn-checkin,
+body.blazing-sun-theme .btn-checkout {
+    background: linear-gradient(135deg, var(--bs-crimson) 0%, #400 100%) !important;
+    color: var(--bs-gold-bright) !important;
+    border: 2px solid var(--bs-gold) !important;
+    font-family: 'Oswald', sans-serif !important;
+    letter-spacing: 2.5px !important;
+    box-shadow: 0 0 20px rgba(191, 49, 26, 0.6) !important;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+body.blazing-sun-theme .btn-primary:hover {
+    transform: scale(1.05) !important;
+    box-shadow: 0 0 30px rgba(191, 49, 26, 0.8), 0 0 15px var(--bs-gold) !important;
+    border-color: var(--bs-gold-bright) !important;
+}
+
+/* Status Badges */
+body.blazing-sun-theme .status-pending { color: var(--bs-gold) !important; border-color: var(--bs-gold) !important; background: rgba(229, 193, 88, 0.15) !important; }
+body.blazing-sun-theme .status-paid { color: var(--bs-gold-bright) !important; border-color: var(--bs-gold-bright) !important; background: rgba(255, 232, 124, 0.15) !important; }
+
+/* Tables & Lists */
+body.blazing-sun-theme .table-container,
+body.blazing-sun-theme .item-list-card,
+body.blazing-sun-theme .orders-table,
+body.blazing-sun-theme .item-row {
+    background: rgba(20, 20, 25, 0.9) !important;
+    color: var(--bs-text) !important;
+    border-color: rgba(229, 193, 88, 0.2) !important;
+}
+
+body.blazing-sun-theme .orders-table th {
+    background: rgba(191, 49, 26, 0.4) !important;
+    color: var(--bs-gold-bright) !important;
+    border-bottom: 2px solid var(--bs-gold) !important;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+}
+
+body.blazing-sun-theme td {
+    background: transparent !important;
+    border-bottom: 1px solid rgba(229, 193, 88, 0.1) !important;
+}
+
+body.blazing-sun-theme tr:hover td {
+    background: rgba(229, 193, 88, 0.05) !important;
+}
+
+/* Filters & Tabs */
+body.blazing-sun-theme .tabs,
+body.blazing-sun-theme .order-type-filters {
+    background: transparent !important;
+}
+
+body.blazing-sun-theme .tab-btn,
+body.blazing-sun-theme .type-filter-btn,
+body.blazing-sun-theme .refresh-btn {
+    background: rgba(40, 40, 45, 0.8) !important;
+    color: var(--bs-text-muted) !important;
+    border: 1px solid rgba(229, 193, 88, 0.3) !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important;
+}
+
+body.blazing-sun-theme .tab-btn.active,
+body.blazing-sun-theme .type-filter-btn.active {
+    background: linear-gradient(135deg, var(--bs-crimson), #400) !important;
+    color: var(--bs-gold-bright) !important;
+    border-color: var(--bs-gold) !important;
+    box-shadow: 0 0 15px rgba(191, 49, 26, 0.5) !important;
+}
+
+/* Stats Summary */
+body.blazing-sun-theme .stat-item {
+    background: rgba(30, 30, 35, 0.9) !important;
+    border: 1px solid rgba(229, 193, 88, 0.3) !important;
+    color: var(--bs-text) !important;
+}
+
+body.blazing-sun-theme .stat-item strong {
+    color: var(--bs-gold-bright) !important;
+}
+
+/* Status Badges */
+body.blazing-sun-theme .status-badge,
+body.blazing-sun-theme .status-text,
+body.blazing-sun-theme .order-type-badge {
+    background: rgba(0, 0, 0, 0.4) !important;
+    border: 1px solid currentColor !important;
+    text-shadow: none !important;
+}
+
+body.blazing-sun-theme .status-pending { color: var(--bs-gold) !important; }
+body.blazing-sun-theme .status-paid, 
+body.blazing-sun-theme .status-available,
+body.blazing-sun-theme .status-confirmed { color: #4ADE80 !important; } /* Emerald Green */
+body.blazing-sun-theme .status-paused,
+body.blazing-sun-theme .status-cancelled { color: #F87171 !important; } /* Coral Red */
+
+/* Search Bar */
+body.blazing-sun-theme .search-bar,
+body.blazing-sun-theme #searchInput {
+    background: rgba(10, 10, 15, 0.8) !important;
+    border: 1px solid rgba(229, 193, 88, 0.3) !important;
+    color: var(--bs-white) !important;
+}
+
+body.blazing-sun-theme .search-bar input {
+    color: var(--bs-white) !important;
+}
+
+/* Switches (Stock Management) */
+body.blazing-sun-theme .slider {
+    background-color: #333 !important;
+}
+
+body.blazing-sun-theme input:checked + .slider {
+    background-color: var(--bs-gold) !important;
+}
+
+/* Buttons (Table actions) */
+body.blazing-sun-theme .action-btn,
+body.blazing-sun-theme .btn-view,
+body.blazing-sun-theme .btn-confirm-order {
+    background: rgba(229, 193, 88, 0.1) !important;
+    border: 1px solid var(--bs-gold) !important;
+    border-radius: 8px !important;
+    padding: 4px 8px !important;
+}
+
+body.blazing-sun-theme .action-btn i {
+    color: var(--bs-gold) !important;
+}
+
+/* Modals */
+body.blazing-sun-theme .modal-content {
+    background: var(--bs-charcoal) !important;
+    border: 2px solid var(--bs-gold) !important;
+    color: var(--bs-text) !important;
+}
+
+body.blazing-sun-theme .modal-header {
+    background: linear-gradient(90deg, var(--bs-crimson), var(--bs-black)) !important;
+    border-bottom: 2px solid var(--bs-gold) !important;
+}
+
+body.blazing-sun-theme .info-row {
+    border-bottom: 1px solid rgba(229, 193, 88, 0.1) !important;
+}
+
+body.blazing-sun-theme .info-row span:first-child {
+    color: var(--bs-text-muted) !important;
+}
+
+body.blazing-sun-theme .info-row span:last-child {
+    color: var(--bs-gold-bright) !important;
+}
+
+/* Particles - Sun Embers */
+.bs-ember {
+    position: fixed;
+    width: 4px;
+    height: 4px;
+    background: var(--bs-gold-bright);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    filter: blur(1.5px);
+    box-shadow: 0 0 10px var(--bs-orange), 0 0 20px var(--bs-gold);
+}
+
+@keyframes emberRise {
+    0% { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
+    10% { opacity: 1; }
+    100% { transform: translateY(-100vh) translateX(var(--drift)) scale(0); opacity: 0; }
+}
+
+/* Animations */
+@keyframes glowSun {
+    from { text-shadow: 0 0 10px var(--bs-gold); }
+    to { text-shadow: 0 0 25px var(--bs-gold-bright), 0 0 50px var(--bs-orange); }
+}
+
+.bs-glow {
+    animation: glowSun 4s ease-in-out infinite alternate;
+}
+
+/* Dropdown Menu */
+body.blazing-sun-theme .dropdown-menu {
+    background: var(--bs-black) !important;
+    border: 2px solid var(--bs-gold) !important;
+    box-shadow: 0 20px 60px rgba(0,0,0,1) !important;
+}
+
+body.blazing-sun-theme .dropdown-menu a:hover {
+    background: rgba(229, 193, 88, 0.25) !important;
+    color: var(--bs-gold-bright) !important;
+}
+
+/* Google Fonts Imports */
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap');

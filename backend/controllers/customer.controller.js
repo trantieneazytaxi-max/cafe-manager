@@ -15,10 +15,47 @@ exports.getProfile = async (req, res) => {
 exports.updateProfile = async (req, res) => {
     try {
         const userId = req.user.userId;
-        const { full_name, phone, avatar_url } = req.body;
-        await executeQuery(`UPDATE Users SET full_name = COALESCE(@full_name, full_name), phone = COALESCE(@phone, phone), avatar_url = COALESCE(@avatar_url, avatar_url), updated_at = GETDATE() WHERE user_id = @userId`, { userId, full_name: full_name || null, phone: phone || null, avatar_url: avatar_url || null });
+        const { 
+            full_name, phone, avatar_url, 
+            position, salary, hire_date, 
+            identity_number, bank_account, bank_name 
+        } = req.body;
+
+        // Update Users table
+        await executeQuery(`
+            UPDATE Users 
+            SET full_name = COALESCE(@full_name, full_name), 
+                phone = COALESCE(@phone, phone), 
+                avatar_url = COALESCE(@avatar_url, avatar_url), 
+                updated_at = GETDATE() 
+            WHERE user_id = @userId`, 
+            { userId, full_name: full_name || null, phone: phone || null, avatar_url: avatar_url || null }
+        );
+
+        // Update StaffProfile table if user is admin or staff
+        await executeQuery(`
+            UPDATE StaffProfile 
+            SET position = COALESCE(@position, position),
+                salary = COALESCE(@salary, salary),
+                hire_date = COALESCE(@hire_date, hire_date),
+                identity_number = COALESCE(@identity_number, identity_number),
+                bank_account = COALESCE(@bank_account, bank_account),
+                bank_name = COALESCE(@bank_name, bank_name)
+            WHERE user_id = @userId`,
+            { 
+                userId, 
+                position: position || null, 
+                salary: salary || null, 
+                hire_date: hire_date || null,
+                identity_number: identity_number || null,
+                bank_account: bank_account || null,
+                bank_name: bank_name || null
+            }
+        );
+
         res.json({ success: true, message: 'Đã cập nhật profile' });
     } catch (error) {
+        console.error('Update Profile Error:', error);
         res.status(500).json({ message: 'Lỗi server' });
     }
 };

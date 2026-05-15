@@ -54,6 +54,10 @@ app.get('/admin/login', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/admin/auth/html/index.html'));
 });
 
+app.get('/admin/profile', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/admin/dashboard/profile/html/profile.html'));
+});
+
 // === Routes cho Staff ===
 app.get('/staff', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/staff/dashboard/html/staff-dashboard.html'));
@@ -110,11 +114,13 @@ async function startServer() {
         
         server.listen(PORT, () => {
             console.log(`🚀 Server running on http://localhost:${PORT}`);
-            console.log(`🏠 Main page: http://localhost:${PORT}`);
-            console.log(`👤 User: http://localhost:${PORT}/user`);
-            console.log(`👨‍💼 Admin: http://localhost:${PORT}/admin`);
-            console.log(`👨‍🍳 Staff: http://localhost:${PORT}/staff`);
-            console.log(`📋 Health check: http://localhost:${PORT}/api/health`);
+            console.log(`🏠 Landing Page: http://localhost:${PORT}/`);
+            console.log(`👤 Customer Portal: http://localhost:${PORT}/user`);
+            console.log(`👨‍💼 Admin Dashboard: http://localhost:${PORT}/admin`);
+            console.log(`👨‍🍳 Staff Dashboard: http://localhost:${PORT}/staff`);
+            console.log(`🔑 Admin Login: http://localhost:${PORT}/admin/login`);
+            console.log(`🔑 Staff Login: http://localhost:${PORT}/staff/login`);
+            console.log(`📋 API Health: http://localhost:${PORT}/api/health`);
         });
     } catch (error) {
         console.error('❌ Failed to start server:', error.message);

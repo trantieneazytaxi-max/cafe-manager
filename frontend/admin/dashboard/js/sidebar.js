@@ -150,25 +150,39 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // === DREAMY THEME LOGIC ===
+    // === REVERIE THEME LOGIC ===
     const secretTrigger = document.querySelector('.sidebar .logo i');
     if (secretTrigger) {
         secretTrigger.style.cursor = 'pointer';
         secretTrigger.addEventListener('click', () => {
             const body = document.body;
-            const isDreamy = body.classList.toggle('dreamy-theme');
-            localStorage.setItem('dreamyTheme', isDreamy);
+            const isReverie = body.classList.toggle('reverie-theme');
+            localStorage.setItem('reverieTheme', isReverie);
             
-            if (isDreamy) {
-                // initDreamyTheme is available from global.js
-                if (typeof initDreamyTheme === 'function') initDreamyTheme();
-                // createDreamyPetals is available from global.js
-                if (typeof createDreamyPetals === 'function') createDreamyPetals();
+            if (isReverie) {
+                // Check if global.js functions are available
+                if (typeof initReverieTheme === 'function') {
+                    initReverieTheme();
+                } else {
+                    // Fallback injection if not loaded
+                    const cssId = 'reverie-css';
+                    if (!document.getElementById(cssId)) {
+                        const link = document.createElement('link');
+                        link.id = cssId;
+                        link.rel = 'stylesheet';
+                        link.href = '/admin/dashboard/css/reverie-theme.css';
+                        document.head.appendChild(link);
+                    }
+                }
             } else {
-                const container = document.getElementById('dreamy-particles');
-                if (container) container.innerHTML = '';
-                const dreamyCss = document.getElementById('dreamy-css');
-                if (dreamyCss) dreamyCss.remove();
+                document.documentElement.classList.remove('reverie-theme');
+                document.body.classList.remove('reverie-theme');
+                const overlay = document.getElementById('reverie-overlay');
+                if (overlay) overlay.remove();
+                document.querySelectorAll('.reverie-banner').forEach(el => el.remove());
+                document.querySelectorAll('.reverie-formal-text').forEach(el => el.remove());
+                const css = document.getElementById('reverie-css');
+                if (css) css.remove();
             }
         });
     }

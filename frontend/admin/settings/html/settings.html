@@ -192,6 +192,22 @@
                 </div>
             </div>
 
+            <!-- Theme & Effects Section (Visible only when Reverie is active) -->
+            <div id="reverieSettingsSection" class="settings-card" style="margin-top: 2rem; max-width: 100%; display: none;">
+                <h3><i class="fas fa-magic"></i> Giao diện & Hiệu ứng (Reverie Theme)</h3>
+                <div class="form-group" style="flex-direction: row; align-items: center; gap: 15px; background: rgba(0, 243, 255, 0.05); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(0, 243, 255, 0.1);">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <input type="checkbox" id="danmakuEnabled" style="width: 24px; height: 24px; cursor: pointer;">
+                        <label for="danmakuEnabled" style="margin-bottom: 0; cursor: pointer; color: #00f3ff; font-weight: 700;">KÍCH HOẠT HIỆU ỨNG DANMAKU (THÔNG BÁO BAY)</label>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-top: 1.5rem;">
+                    <label>Danh sách thông điệp Danmaku (Mỗi thông điệp 1 dòng)</label>
+                    <textarea id="danmakuMessages" rows="6" style="width: 100%; padding: 1rem; background: rgba(0, 243, 255, 0.05); border: 1px solid rgba(0, 243, 255, 0.1); border-radius: 12px; color: #fff; line-height: 1.6;" placeholder="Nhập những lời nhắn hoài niệm tại đây..."></textarea>
+                    <p style="font-size: 0.8rem; color: #888; margin-top: 0.5rem;">Những dòng này sẽ trôi lững lờ trên màn hình Admin khi bật chủ đề Reverie.</p>
+                </div>
+            </div>
+
             <!-- Promotional Banners Section -->
             <div class="settings-card" style="margin-top: 2rem; max-width: 100%;">
                 <h3><i class="fas fa-images"></i> Quản lý Banner Quảng cáo (Trang chủ)</h3>
@@ -276,6 +292,13 @@
                 document.getElementById('freeShipThreshold').value = d.freeShipThreshold != null ? d.freeShipThreshold : 200000;
                 document.getElementById('currency').value = d.currency || 'VND';
                 document.getElementById('language').value = d.language || 'vi';
+                document.getElementById('danmakuEnabled').checked = d.danmakuEnabled || false;
+                document.getElementById('danmakuMessages').value = d.danmakuMessages || '';
+                
+                // Show/Hide Reverie settings based on active theme
+                if (localStorage.getItem('reverieTheme') === 'true') {
+                    document.getElementById('reverieSettingsSection').style.display = 'block';
+                }
                 
                 if (d.heroBanners) {
                     try {
@@ -318,11 +341,17 @@
                         freeShipThreshold: parseFloat(document.getElementById('freeShipThreshold').value) || 200000,
                         currency: document.getElementById('currency').value,
                         language: document.getElementById('language').value,
+                        danmakuEnabled: document.getElementById('danmakuEnabled').checked,
+                        danmakuMessages: document.getElementById('danmakuMessages').value,
                         heroBanners: JSON.stringify(document.getElementById('heroBanners').value.split('\n').map(l => l.trim()).filter(l => l))
                     })
                 });
                 var data = await res.json().catch(function () { return {}; });
                 if (!res.ok) throw new Error(data.message || 'Lưu thất bại');
+                
+                // Update localStorage immediately
+                localStorage.setItem('danmakuEnabled', document.getElementById('danmakuEnabled').checked ? 'true' : 'false');
+                
                 alert('Đã cập nhật cấu hình hệ thống thành công!');
                 location.reload();
             } catch (e) {

@@ -102,9 +102,19 @@ async function editStaff(id) {
     document.getElementById('fullName').value = staff.full_name;
     document.getElementById('email').value = staff.email;
     document.getElementById('phone').value = staff.phone || '';
-    document.getElementById('position').value = staff.position || 'Nhân viên phục vụ';
+    document.getElementById('position').value = staff.position || '';
+    document.getElementById('salary').value = staff.salary || '';
+    document.getElementById('identity_number').value = staff.identity_number || '';
+    document.getElementById('bank_account').value = staff.bank_account || '';
+    document.getElementById('bank_name').value = staff.bank_name || '';
     document.getElementById('isActive').value = staff.is_active ? '1' : '0';
     document.getElementById('password').value = '';
+
+    if (staff.hire_date) {
+        document.getElementById('hire_date').value = staff.hire_date.split('T')[0];
+    } else {
+        document.getElementById('hire_date').value = '';
+    }
     
     // Load avatar preview
     const avatarPreview = document.getElementById('avatarPreview');
@@ -127,6 +137,11 @@ async function saveStaff(e) {
         email: document.getElementById('email').value,
         phone: document.getElementById('phone').value,
         position: document.getElementById('position').value,
+        salary: document.getElementById('salary').value,
+        hire_date: document.getElementById('hire_date').value,
+        identity_number: document.getElementById('identity_number').value,
+        bank_account: document.getElementById('bank_account').value,
+        bank_name: document.getElementById('bank_name').value,
         is_active: document.getElementById('isActive').value === '1',
         avatar_url: document.getElementById('staffAvatarUrl').value,
         role: 'staff'
@@ -174,6 +189,10 @@ function initEventListeners() {
     });
     
     document.getElementById('cancelModalBtn').addEventListener('click', () => {
+        document.getElementById('staffModal').classList.remove('active');
+    });
+
+    document.getElementById('closeModalX').addEventListener('click', () => {
         document.getElementById('staffModal').classList.remove('active');
     });
     

@@ -19,12 +19,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // Close category modal on outside click
     document.getElementById('categoryModal').addEventListener('click', function(e) {
         if (e.target === this) {
             closeCategoryModal();
         }
     });
+
+    if (document.getElementById('closeMenuModalX')) {
+        document.getElementById('closeMenuModalX').addEventListener('click', closeModal);
+    }
+    if (document.getElementById('closeCategoryModalX')) {
+        document.getElementById('closeCategoryModalX').addEventListener('click', closeCategoryModal);
+    }
 });
 
 async function loadCategories() {

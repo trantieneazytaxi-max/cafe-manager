@@ -1,6 +1,6 @@
 /**
  * ADMIN PROFILE PAGE JS
- * Cyberpunk Theme
+ * Cyberpunk & Reverie Theme
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     
     if (!token || (user.role !== 'admin' && user.role !== 'staff')) {
-        window.location.href = '../../../../auth/html/admin-login.html';
+        window.location.href = '/admin/login';
         return;
     }
 
@@ -33,8 +33,6 @@ const staffBankAcc = document.getElementById('staffBankAcc');
 const staffBankName = document.getElementById('staffBankName');
 
 const avatarUpload = document.getElementById('avatarUpload');
-const editModal = document.getElementById('editModal');
-const passwordModal = document.getElementById('passwordModal');
 
 let currentUser = null;
 
@@ -80,24 +78,83 @@ function updateUI(user) {
 function initEventListeners() {
     // Avatar upload
     document.getElementById('changeAvatarBtn').addEventListener('click', () => avatarUpload.click());
-    avatarUpload.addEventListener('change', handleAvatarChange);
-
     // Modals
-    document.getElementById('editProfileBtn').addEventListener('click', openEditModal);
-    document.getElementById('closeEditModal').addEventListener('click', () => editModal.classList.add('hidden'));
-    document.getElementById('cancelEditBtn').addEventListener('click', () => editModal.classList.add('hidden'));
-    
-    document.getElementById('changePasswordBtn').addEventListener('click', () => {
-        document.getElementById('username_hidden').value = currentUser.email || '';
-        passwordModal.classList.remove('hidden');
+    document.getElementById('closeEditModal').addEventListener('click', () => {
+        const modal = document.getElementById('editModal');
+        if (modal) {
+            modal.style.display = 'none';
+            modal.classList.add('hidden');
+            modal.classList.remove('active');
+        }
     });
-    document.getElementById('closePasswordModal').addEventListener('click', () => passwordModal.classList.add('hidden'));
-    document.getElementById('cancelPasswordBtn').addEventListener('click', () => passwordModal.classList.add('hidden'));
+    document.getElementById('cancelEditBtn').addEventListener('click', () => {
+        const modal = document.getElementById('editModal');
+        if (modal) {
+            modal.style.display = 'none';
+            modal.classList.add('hidden');
+            modal.classList.remove('active');
+        }
+    });
+    
+    document.getElementById('closePasswordModal').addEventListener('click', () => {
+        const modal = document.getElementById('passwordModal');
+        if (modal) {
+            modal.style.display = 'none';
+            modal.classList.add('hidden');
+            modal.classList.remove('active');
+        }
+    });
+    document.getElementById('cancelPasswordBtn').addEventListener('click', () => {
+        const modal = document.getElementById('passwordModal');
+        if (modal) {
+            modal.style.display = 'none';
+            modal.classList.add('hidden');
+            modal.classList.remove('active');
+        }
+    });
 
     // Forms
     document.getElementById('editProfileForm').addEventListener('submit', handleProfileUpdate);
     document.getElementById('changePasswordForm').addEventListener('submit', handlePasswordUpdate);
 }
+
+// Global functions for inline onclick
+window.openEditModal = function() {
+    const modal = document.getElementById('editModal');
+    if (!modal) return;
+    
+    if (currentUser) {
+        document.getElementById('editFullName').value = currentUser.full_name || '';
+        document.getElementById('editPhone').value = currentUser.phone || '';
+        document.getElementById('editPosition').value = currentUser.position || '';
+        document.getElementById('editSalary').value = currentUser.salary || '';
+        document.getElementById('editIdentity').value = currentUser.identity_number || '';
+        document.getElementById('editBankAcc').value = currentUser.bank_account || '';
+        document.getElementById('editBankName').value = currentUser.bank_name || '';
+        
+        if (currentUser.hire_date) {
+            document.getElementById('editHireDate').value = currentUser.hire_date.split('T')[0];
+        }
+    }
+    
+    modal.classList.remove('hidden');
+    modal.classList.add('active');
+    modal.style.display = 'flex';
+};
+
+window.openPasswordModal = function() {
+    const modal = document.getElementById('passwordModal');
+    if (!modal) return;
+    
+    if (currentUser) {
+        const userHidden = document.getElementById('username_hidden');
+        if (userHidden) userHidden.value = currentUser.email || '';
+    }
+    
+    modal.classList.remove('hidden');
+    modal.classList.add('active');
+    modal.style.display = 'flex';
+};
 
 async function handleAvatarChange(e) {
     const file = e.target.files[0];
@@ -125,21 +182,22 @@ async function handleAvatarChange(e) {
     reader.readAsDataURL(file);
 }
 
-function openEditModal() {
-    document.getElementById('editFullName').value = currentUser.full_name || '';
-    document.getElementById('editPhone').value = currentUser.phone || '';
-    editModal.classList.remove('hidden');
-}
-
 async function handleProfileUpdate(e) {
     e.preventDefault();
-    const newName = document.getElementById('editFullName').value;
-    const newPhone = document.getElementById('editPhone').value;
+    const payload = {
+        full_name: document.getElementById('editFullName').value,
+        phone: document.getElementById('editPhone').value,
+        position: document.getElementById('editPosition').value,
+        salary: document.getElementById('editSalary').value,
+        hire_date: document.getElementById('editHireDate').value,
+        identity_number: document.getElementById('editIdentity').value,
+        bank_account: document.getElementById('editBankAcc').value,
+        bank_name: document.getElementById('editBankName').value
+    };
 
     try {
-        await put('/customer/profile', { full_name: newName, phone: newPhone });
-        currentUser.full_name = newName;
-        currentUser.phone = newPhone;
+        await put('/customer/profile', payload);
+        currentUser = { ...currentUser, ...payload };
         
         // Tránh lưu avatar_url Base64 vào localStorage
         const storageUser = { ...currentUser };
@@ -147,7 +205,12 @@ async function handleProfileUpdate(e) {
         localStorage.setItem('user', JSON.stringify(storageUser));
         
         updateUI(currentUser);
-        editModal.classList.add('hidden');
+        const modal = document.getElementById('editModal');
+        if (modal) {
+            modal.style.display = 'none';
+            modal.classList.add('hidden');
+            modal.classList.remove('active');
+        }
         showGlobalToast('Cập nhật thông tin thành công', 'success');
     } catch (e) {
         showGlobalToast('Cập nhật thất bại', 'error');
@@ -168,7 +231,12 @@ async function handlePasswordUpdate(e) {
     try {
         // TODO: Password update API
         showGlobalToast('Đã gửi yêu cầu đổi mật khẩu', 'success');
-        passwordModal.classList.add('hidden');
+        const modal = document.getElementById('passwordModal');
+        if (modal) {
+            modal.style.display = 'none';
+            modal.classList.add('hidden');
+            modal.classList.remove('active');
+        }
     } catch (e) {
         showGlobalToast('Đổi mật khẩu thất bại', 'error');
     }

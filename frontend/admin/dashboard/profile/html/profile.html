@@ -7,8 +7,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="../../css/admin-dashboard.css">
-    <link rel="stylesheet" href="../css/profile.css">
+    <link rel="stylesheet" href="/admin/dashboard/css/admin-dashboard.css">
+    <link rel="stylesheet" href="/admin/dashboard/profile/css/profile.css">
 </head>
 <body>
     <div class="admin-container">
@@ -49,10 +49,10 @@
                         <p id="displayRole" class="role-badge">Quản trị viên</p>
                         
                         <div class="profile-quick-actions">
-                            <button class="cyber-btn primary" id="editProfileBtn">
+                            <button type="button" class="cyber-btn primary" id="editProfileBtn" onclick="openEditModal()">
                                 <i class="fas fa-user-edit"></i> Chỉnh sửa
                             </button>
-                            <button class="cyber-btn secondary" id="changePasswordBtn">
+                            <button type="button" class="cyber-btn secondary" id="changePasswordBtn" onclick="openPasswordModal()">
                                 <i class="fas fa-key"></i> Đổi mật khẩu
                             </button>
                         </div>
@@ -132,6 +132,39 @@
                         <label>Số điện thoại</label>
                         <input type="tel" id="editPhone" required>
                     </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label>Vị trí</label>
+                            <input type="text" id="editPosition">
+                        </div>
+                        <div class="form-group">
+                            <label>Lương cơ bản</label>
+                            <input type="number" id="editSalary">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label>Ngày vào làm</label>
+                            <input type="date" id="editHireDate">
+                        </div>
+                        <div class="form-group">
+                            <label>Số CMND/CCCD</label>
+                            <input type="text" id="editIdentity">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label>Số tài khoản</label>
+                            <input type="text" id="editBankAcc">
+                        </div>
+                        <div class="form-group">
+                            <label>Ngân hàng</label>
+                            <input type="text" id="editBankName">
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="cyber-btn" id="cancelEditBtn">Hủy</button>
@@ -172,9 +205,9 @@
         </div>
     </div>
 
-    <script src="../../../../shared/js/api.js"></script>
-    <script src="../../../../shared/js/global.js"></script>
-    <script src="../../js/sidebar.js"></script>
-    <script src="../js/profile.js"></script>
+    <script src="/shared/js/api.js"></script>
+    <script src="/shared/js/global.js"></script>
+    <script src="/admin/dashboard/js/sidebar.js"></script>
+    <script src="/admin/dashboard/profile/js/profile.js"></script>
 </body>
 </html>

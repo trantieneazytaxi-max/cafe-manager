@@ -1,16 +1,31 @@
 // Immediate theme check to prevent FOUC
 (function() {
-    if (localStorage.getItem('dreamyTheme') === 'true') {
-        document.documentElement.classList.add('dreamy-theme');
-        document.body?.classList.add('dreamy-theme');
+    // Reverie Theme - Only for Admin
+    if (localStorage.getItem('reverieTheme') === 'true' && window.location.pathname.includes('/admin/')) {
+        document.documentElement.classList.add('reverie-theme');
+        document.body?.classList.add('reverie-theme');
         
-        const cssId = 'dreamy-css';
+        const cssId = 'reverie-css';
         if (!document.getElementById(cssId)) {
             const link = document.createElement('link');
             link.id = cssId;
             link.rel = 'stylesheet';
-            // Use absolute path relative to frontend root
-            link.href = '/admin/dashboard/css/dreamy-theme.css';
+            link.href = '/admin/dashboard/css/reverie-theme.css';
+            document.head.appendChild(link);
+        }
+    }
+
+    // Blazing Sun Theme - Only for Staff
+    if (localStorage.getItem('blazingSunTheme') === 'true' && window.location.pathname.includes('/staff/')) {
+        document.documentElement.classList.add('blazing-sun-theme');
+        document.body?.classList.add('blazing-sun-theme');
+        
+        const cssId = 'blazing-sun-css';
+        if (!document.getElementById(cssId)) {
+            const link = document.createElement('link');
+            link.id = cssId;
+            link.rel = 'stylesheet';
+            link.href = '/shared/css/blazing-sun-theme.css';
             document.head.appendChild(link);
         }
     }
@@ -24,10 +39,16 @@ if (document.readyState === 'loading') {
 
 function initGlobalUI() {
     // Ensure body has class if HTML has it
-    if (document.documentElement.classList.contains('dreamy-theme')) {
-        document.body.classList.add('dreamy-theme');
-        initDreamyParticles();
+    if (document.documentElement.classList.contains('reverie-theme') && window.location.pathname.includes('/admin/')) {
+        document.body.classList.add('reverie-theme');
+        initReverieTheme();
     }
+    
+    if (document.documentElement.classList.contains('blazing-sun-theme') && window.location.pathname.includes('/staff/')) {
+        document.body.classList.add('blazing-sun-theme');
+        initBlazingSunTheme();
+    }
+
     initMobileMenu();
     initDropdown();
     updateUserInfo();
@@ -39,33 +60,203 @@ function initGlobalUI() {
 }
 
 /**
- * Dreamy Theme Particles Initialization
+ * Reverie Theme Initialization
  */
-function initDreamyParticles() {
-    if (localStorage.getItem('dreamyTheme') === 'true' && !document.getElementById('dreamy-particles')) {
-        const div = document.createElement('div');
-        div.id = 'dreamy-particles';
-        document.body.appendChild(div);
-        createDreamyPetals();
+async function initReverieTheme() {
+    if (localStorage.getItem('reverieTheme') === 'true' && 
+        window.location.pathname.includes('/admin/')) {
+        
+        // Apply classes immediately
+        document.documentElement.classList.add('reverie-theme');
+        document.body.classList.add('reverie-theme');
+
+        // Inject CSS if missing
+        const cssId = 'reverie-css';
+        if (!document.getElementById(cssId)) {
+            const link = document.createElement('link');
+            link.id = cssId;
+            link.rel = 'stylesheet';
+            link.href = '/admin/dashboard/css/reverie-theme.css';
+            document.head.appendChild(link);
+        }
+
+        if (!document.getElementById('reverie-overlay')) {
+            const div = document.createElement('div');
+            div.id = 'reverie-overlay';
+            div.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:1500;';
+            document.body.appendChild(div);
+            
+            // Create Top Banner
+            const bannerTop = document.createElement('div');
+            bannerTop.id = 'reverie-banner-top';
+            bannerTop.className = 'reverie-banner';
+            bannerTop.innerHTML = `<div class="banner-inner"><span class="banner-text"><i>HELLO WORLD</i></span></div>`;
+            
+            // Create Bottom Banner
+            const bannerBottom = document.createElement('div');
+            bannerBottom.id = 'reverie-banner-bottom';
+            bannerBottom.className = 'reverie-banner';
+            bannerBottom.innerHTML = `<div class="banner-inner"><span class="banner-text"><i>SEE YOU TOMORROW</i></span></div>`;
+            
+            const mainContent = document.querySelector('.main-content');
+            if (mainContent) {
+                mainContent.insertBefore(bannerTop, mainContent.firstChild);
+                mainContent.appendChild(bannerBottom);
+            } else {
+                document.body.appendChild(bannerTop);
+                document.body.appendChild(bannerBottom);
+            }
+            
+            // Fetch Danmaku Settings
+            try {
+                const token = localStorage.getItem('token');
+                const res = await fetch('http://localhost:5000/api/admin/store-settings', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const settings = await res.json();
+                
+                // Save to localStorage to persist across navigation/offline
+                localStorage.setItem('danmakuEnabled', settings.danmakuEnabled ? 'true' : 'false');
+                
+                if (settings.danmakuEnabled) {
+                    const customMessages = settings.danmakuMessages 
+                        ? settings.danmakuMessages.split('\n').filter(m => m.trim())
+                        : null;
+                    initReverieDanmaku(customMessages);
+                }
+            } catch (e) {
+                console.warn('Could not load Danmaku settings, checking localStorage');
+                // Fallback to localStorage if fetch fails
+                if (localStorage.getItem('danmakuEnabled') !== 'false') {
+                    initReverieDanmaku();
+                }
+            }
+        }
     }
 }
 
-function createDreamyPetals() {
-    const container = document.getElementById('dreamy-particles');
+/**
+ * Blazing Sun Theme Initialization
+ */
+function initBlazingSunTheme() {
+    if (localStorage.getItem('blazingSunTheme') === 'true' && 
+        window.location.pathname.includes('/staff/')) {
+        
+        document.documentElement.classList.add('blazing-sun-theme');
+        document.body.classList.add('blazing-sun-theme');
+
+        const cssId = 'blazing-sun-css';
+        if (!document.getElementById(cssId)) {
+            const link = document.createElement('link');
+            link.id = cssId;
+            link.rel = 'stylesheet';
+            link.href = '/shared/css/blazing-sun-theme.css';
+            document.head.appendChild(link);
+        }
+
+        initBlazingSunParticles();
+    }
+}
+
+function initReverieDanmaku(customMessages = null) {
+    const defaultMessages = [
+        "Đã lâu không gặp. Cách phối đồ hôm nay của bạn rất tinh tế, tôi rất thích",
+        "Bé Xám, *chúng tôi* đã mong đợi từ hôm qua rồi!",
+        "Những ngày được gặp lại bạn đều giống như ngày xuân ấm áp",
+        "Trông bạn thế này, chắc cuộc sống ổn nhỉ, có đang kiên trì rèn luyện không?",
+        "Ây da Xám à, đến là được rồi, còn mang nhiều đồ như vậy nữa!",
+        "Xám Cưng, tôi nhớ bạn chết đi được! Trời có đẹp không, bạn có khỏe không?",
+        "Gần đây du ngoạn khắp vũ trụ, bạn có chiêm nghiệm gì mới không? Tôi rất sẵn lòng đàm đạo cùng bạn",
+        "Cộng sự! Chỉ cần nghe thấy giọng nói của bạn là lại nhớ đến khoảng thời gian kề vai sát cánh trên cánh đồng lúa mì ngày trước",
+        "Hiếm khi cố nhân trùng phùng, nào, cạn ly vì những vì sao rực rỡ đêm nay!",
+        "Cá Xám, cạn ly cho cuộc hội ngộ sau bao ngày xa cách của chúng ta",
+        "Bạn đồng hành à, mỗi lần gặp bạn đều tuyệt vời như thuở ban đầu"
+    ];
+    
+    const messages = customMessages || defaultMessages;
+    const container = document.getElementById('reverie-overlay');
+    if (!container) return;
+
+    setInterval(() => {
+        if (localStorage.getItem('reverieTheme') !== 'true') return;
+        if (localStorage.getItem('danmakuEnabled') === 'false') return;
+        
+        const span = document.createElement('span');
+        span.className = 'reverie-danmaku';
+        span.textContent = messages[Math.floor(Math.random() * messages.length)];
+        
+        const top = Math.random() * 80 + 10;
+        span.style.top = `${top}%`;
+        span.style.right = '-600px';
+        
+        container.appendChild(span);
+        
+        const duration = Math.random() * 10000 + 15000;
+        const anim = span.animate([
+            { transform: 'translateX(0)' },
+            { transform: `translateX(-${window.innerWidth + 1200}px)` }
+        ], {
+            duration: duration,
+            easing: 'linear'
+        });
+        
+        anim.onfinish = () => span.remove();
+    }, 4000);
+}
+
+/**
+ * Blazing Sun Theme Particles Initialization (Embers)
+ */
+function initBlazingSunParticles() {
+    if (localStorage.getItem('blazingSunTheme') === 'true' && 
+        window.location.pathname.includes('/staff/') && 
+        !document.getElementById('blazing-sun-particles')) {
+        const div = document.createElement('div');
+        div.id = 'blazing-sun-particles';
+        document.body.appendChild(div);
+        createBlazingSunEmbers();
+        addBlazingSunQuote();
+    }
+}
+
+function createBlazingSunEmbers() {
+    const container = document.getElementById('blazing-sun-particles');
     if (!container || container.children.length > 0) return;
     
-    for (let i = 0; i < 30; i++) {
-        const petal = document.createElement('div');
-        petal.className = 'petal';
-        petal.style.left = Math.random() * 100 + 'vw';
-        petal.style.animationDelay = Math.random() * 10 + 's';
-        petal.style.width = Math.random() * 15 + 10 + 'px';
-        petal.style.height = petal.style.width;
+    for (let i = 0; i < 40; i++) {
+        const ember = document.createElement('div');
+        ember.className = 'bs-ember';
+        ember.style.left = Math.random() * 100 + 'vw';
+        ember.style.bottom = '-10px';
         
-        const colors = ['#FFB6C1', '#FFC8D9', '#D8B4E8', '#B0E0E6'];
-        petal.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        const duration = Math.random() * 5 + 5;
+        const delay = Math.random() * 10;
+        const drift = (Math.random() - 0.5) * 200;
         
-        container.appendChild(petal);
+        ember.style.setProperty('--drift', `${drift}px`);
+        ember.style.animation = `emberRise ${duration}s linear ${delay}s infinite`;
+        
+        container.appendChild(ember);
+    }
+}
+
+function addBlazingSunQuote() {
+    // Only add quote if it doesn't exist and we are on a dashboard-like page
+    if (document.querySelector('.bs-quote')) return;
+    
+    const mainContent = document.querySelector('.main-content');
+    if (mainContent) {
+        const quoteDiv = document.createElement('div');
+        quoteDiv.className = 'bs-quote bs-glow';
+        quoteDiv.innerHTML = '“无罪 无畏，为何不配？为何要跪？”<br><span style="font-size: 0.6em; opacity: 0.7;">咬断了命运枷锁，不疯狂不成活</span>';
+        
+        // Insert after the top-bar or at the beginning of main-content
+        const topBar = mainContent.querySelector('.top-bar');
+        if (topBar) {
+            topBar.after(quoteDiv);
+        } else {
+            mainContent.prepend(quoteDiv);
+        }
     }
 }
 
@@ -226,8 +417,10 @@ function showGlobalToast(message, type = 'success') {
     }, 3000);
 }
 // 6. Global Search
-let globalSearchCache = [];
-let isSearchCacheLoaded = false;
+if (typeof window.globalSearchCache === 'undefined') {
+    window.globalSearchCache = [];
+    window.isSearchCacheLoaded = false;
+}
 
 async function initGlobalSearch() {
     const searchInput = document.getElementById('globalSearchInput');
@@ -268,23 +461,23 @@ async function initGlobalSearch() {
         }
 
         // Fetch data if not loaded
-        if (!isSearchCacheLoaded) {
+        if (!window.isSearchCacheLoaded) {
             try {
                 // If we're already on menu.html and have allItems, use it
                 if (typeof allItems !== 'undefined' && Array.isArray(allItems) && allItems.length > 0) {
-                    globalSearchCache = allItems;
-                    isSearchCacheLoaded = true;
+                    window.globalSearchCache = allItems;
+                    window.isSearchCacheLoaded = true;
                 } else {
                     const response = await fetch('http://localhost:5000/api/menu/items');
-                    globalSearchCache = await response.json();
-                    isSearchCacheLoaded = true;
+                    window.globalSearchCache = await response.json();
+                    window.isSearchCacheLoaded = true;
                 }
             } catch (err) {
                 console.error('Error fetching search items:', err);
             }
         }
 
-        const results = globalSearchCache.filter(item => 
+        const results = window.globalSearchCache.filter(item => 
             !item.is_paused && (
                 item.item_name.toLowerCase().includes(query) || 
                 (item.description && item.description.toLowerCase().includes(query))

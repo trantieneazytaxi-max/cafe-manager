@@ -16,7 +16,8 @@
     let dashHref, tablesHref, ordersHref, stockHref, profileHref, authHref;
 
     // Inject global.js if not present
-    if (!window.initGlobalUI) {
+    const hasGlobalScript = Array.from(document.scripts).some(s => s.src.includes('global.js'));
+    if (!window.initGlobalUI && !hasGlobalScript) {
         const globalScript = document.createElement('script');
         globalScript.src = '/shared/js/global.js';
         document.head.appendChild(globalScript);
@@ -76,6 +77,11 @@
             </div>
             <div class="dropdown-menu" id="staffDropdownMenu">
                 <a href="${profileHref}"><i class="fas fa-user-circle"></i> Trang cá nhân</a>
+                <a href="#" id="toggleThemeBtn">
+                    <i class="fas fa-magic"></i> 
+                    <span id="themeBtnText">Chủ đề: Mặc định</span>
+                </a>
+                <hr>
                 <a href="#" id="staffLogoutBtn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
             </div>
         </div>
@@ -115,6 +121,67 @@
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
                 window.location.href = authHref;
+            });
+        }
+
+        // Theme Toggle Logic
+        const themeBtn = document.getElementById('toggleThemeBtn');
+        const themeBtnText = document.getElementById('themeBtnText');
+        
+        function updateThemeUI() {
+            const isBlazingSun = localStorage.getItem('blazingSunTheme') === 'true';
+            if (themeBtnText) {
+                themeBtnText.textContent = isBlazingSun ? 'Chủ đề: Blazing Sun' : 'Chủ đề: Mặc định';
+            }
+        }
+        
+        updateThemeUI();
+ 
+        if (themeBtn) {
+            themeBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const isBlazingSun = localStorage.getItem('blazingSunTheme') === 'true';
+                const nextState = !isBlazingSun;
+                
+                localStorage.setItem('blazingSunTheme', nextState);
+                
+                if (nextState) {
+                    document.documentElement.classList.add('blazing-sun-theme');
+                    document.body.classList.add('blazing-sun-theme');
+                    
+                    // Add CSS if not present
+                    if (!document.getElementById('blazing-sun-css')) {
+                        const link = document.createElement('link');
+                        link.id = 'blazing-sun-css';
+                        link.rel = 'stylesheet';
+                        link.href = '/shared/css/blazing-sun-theme.css';
+                        document.head.appendChild(link);
+                    }
+                    
+                    // Init particles
+                    if (typeof initBlazingSunParticles === 'function') {
+                        initBlazingSunParticles();
+                    }
+                } else {
+                    document.documentElement.classList.remove('blazing-sun-theme');
+                    document.body.classList.remove('blazing-sun-theme');
+                    
+                    // Remove particles
+                    const particles = document.getElementById('blazing-sun-particles');
+                    if (particles) particles.remove();
+                    
+                    // Remove quote
+                    const quote = document.querySelector('.bs-quote');
+                    if (quote) quote.remove();
+                    
+                    // Remove CSS
+                    const css = document.getElementById('blazing-sun-css');
+                    if (css) css.remove();
+                }
+                
+                updateThemeUI();
             });
         }
 
