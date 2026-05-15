@@ -4,40 +4,108 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Quản lý bàn - Admin Panel</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="../../dashboard/css/admin-dashboard.css">
+    <link rel="stylesheet" href="../../dashboard/css/reverie-theme.css">
     <style>
-        .stat-mini-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
-        .stat-mini-card { background: rgba(13, 13, 26, 0.7); border-radius: 20px; padding: 1.5rem; border: 1px solid rgba(0, 243, 255, 0.2); }
-        .stat-mini-card h4 { font-size: 0.7rem; color: #8892b0; margin-bottom: 0.5rem; text-transform: uppercase; font-family: 'Orbitron', sans-serif; letter-spacing: 1px; }
-        .stat-mini-card p { font-size: 1.4rem; font-weight: 700; font-family: 'Orbitron', sans-serif; color: #fff; text-shadow: 0 0 10px rgba(0, 243, 255, 0.5); }
+        :root {
+            --rv-bg: #F5F3FF;
+            --rv-purple: #7E22CE;
+            --rv-text: #1F2937;
+            --rv-white: #FFFFFF;
+        }
 
-        .tables-grid-admin { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 1rem; }
+        .main-content {
+            background: transparent !important;
+        }
+
+        .stat-mini-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 2rem; }
+        .stat-mini-card { 
+            background: white; 
+            border-radius: 20px; 
+            padding: 1.5rem; 
+            border: 1px solid rgba(126, 34, 206, 0.1); 
+            box-shadow: 0 4px 20px rgba(126, 34, 206, 0.05);
+        }
+        .stat-mini-card h4 { 
+            font-size: 0.8rem; 
+            color: #6B7280; 
+            margin-bottom: 0.5rem; 
+            text-transform: uppercase; 
+            font-weight: 600;
+            letter-spacing: 0.5px; 
+        }
+        .stat-mini-card p { 
+            font-size: 2rem; 
+            font-weight: 700; 
+            color: var(--rv-purple); 
+            font-family: 'Playfair Display', serif;
+        }
+
+        .tables-grid-admin { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 2rem; margin-top: 1rem; }
         .table-card-admin { 
-            background: rgba(13, 13, 26, 0.6); 
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.7); 
+            backdrop-filter: blur(20px);
             border-radius: 24px; 
             padding: 2rem; 
             text-align: center; 
-            border: 1px solid rgba(0, 243, 255, 0.2); 
+            border: 1px solid rgba(126, 34, 206, 0.1); 
             position: relative;
-            transition: all 0.3s ease; 
-            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            box-shadow: 0 10px 30px rgba(126, 34, 206, 0.05);
         }
         .table-card-admin::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0; height: 4px;
-            background: #3498db;
+            top: 0; left: 0; right: 0; height: 6px;
+            background: #cbd5e1;
+            border-radius: 24px 24px 0 0;
         }
-        .table-card-admin.occupied::before { background: #ff0055; box-shadow: 0 0 10px #ff0055; }
-        .table-card-admin.reserved::before { background: #f1c40f; box-shadow: 0 0 10px #f1c40f; }
-        .table-card-admin.available::before { background: #00ff88; box-shadow: 0 0 10px #00ff88; }
+        .table-card-admin.occupied::before { background: #ef4444; }
+        .table-card-admin.reserved::before { background: #f59e0b; }
+        .table-card-admin.available::before { background: #10b981; }
         
-        .table-card-admin:hover { transform: translateY(-5px); border-color: #00f3ff; box-shadow: 0 0 25px rgba(0, 243, 255, 0.2); }
-        .table-num { font-size: 1.8rem; font-weight: 800; margin-bottom: 0.5rem; font-family: 'Orbitron', sans-serif; color: #fff; }
-        .table-cap { font-size: 0.8rem; color: #8892b0; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 1px; }
+        .table-card-admin:hover { 
+            transform: translateY(-10px); 
+            border-color: var(--rv-purple); 
+            box-shadow: 0 20px 40px rgba(126, 34, 206, 0.12); 
+            background: white;
+        }
+        .table-num { 
+            font-size: 2.2rem; 
+            font-weight: 800; 
+            margin-bottom: 0.5rem; 
+            font-family: 'Playfair Display', serif; 
+            color: var(--rv-text); 
+        }
+        .table-cap { 
+            font-size: 0.9rem; 
+            color: #6B7280; 
+            margin-bottom: 1.5rem; 
+            font-weight: 500;
+        }
+        
+        .btn-action-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            opacity: 0.4;
+            transition: opacity 0.3s;
+        }
+        .table-card-admin:hover .btn-action-group { opacity: 1; }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            border: none;
+            background: #f3f4f6;
+            color: var(--rv-purple);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-icon:hover { background: var(--rv-purple); color: white; }
         
         @media (max-width: 992px) { .stat-mini-grid { grid-template-columns: repeat(2, 1fr); } }
     </style>
