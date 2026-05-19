@@ -32,20 +32,29 @@ exports.updateProfile = async (req, res) => {
             { userId, full_name: full_name || null, phone: phone || null, avatar_url: avatar_url || null }
         );
 
-        // Update StaffProfile table if user is admin or staff
+        // Update or Insert StaffProfile table if user is admin or staff
         await executeQuery(`
-            UPDATE StaffProfile 
-            SET position = COALESCE(@position, position),
-                salary = COALESCE(@salary, salary),
-                hire_date = COALESCE(@hire_date, hire_date),
-                identity_number = COALESCE(@identity_number, identity_number),
-                bank_account = COALESCE(@bank_account, bank_account),
-                bank_name = COALESCE(@bank_name, bank_name)
-            WHERE user_id = @userId`,
+            IF EXISTS (SELECT 1 FROM StaffProfile WHERE user_id = @userId)
+            BEGIN
+                UPDATE StaffProfile 
+                SET position = COALESCE(@position, position),
+                    salary = COALESCE(@salary, salary),
+                    hire_date = COALESCE(@hire_date, hire_date),
+                    identity_number = COALESCE(@identity_number, identity_number),
+                    bank_account = COALESCE(@bank_account, bank_account),
+                    bank_name = COALESCE(@bank_name, bank_name),
+                    updated_at = GETDATE()
+                WHERE user_id = @userId
+            END
+            ELSE
+            BEGIN
+                INSERT INTO StaffProfile (user_id, position, salary, hire_date, identity_number, bank_account, bank_name, updated_at)
+                VALUES (@userId, @position, @salary, @hire_date, @identity_number, @bank_account, @bank_name, GETDATE())
+            END`,
             { 
                 userId, 
                 position: position || null, 
-                salary: salary || null, 
+                salary: salary ? parseFloat(salary) : null, 
                 hire_date: hire_date || null,
                 identity_number: identity_number || null,
                 bank_account: bank_account || null,

@@ -54,15 +54,16 @@ function renderTables(tables) {
         <div class="table-card-admin ${table.status}">
             <div class="table-num">BÀN ${table.table_number}</div>
             <div class="table-cap">
-                <i class="fas fa-users" style="color: #00f3ff;"></i> ${table.capacity} chỗ
+                <i class="fas fa-users" style="color: var(--rv-purple);"></i> ${table.capacity} chỗ
                 <br>
-                <small style="color: #8892b0;">${table.location}</small>
+                <span style="font-size: 0.75rem; opacity: 0.8;">${table.location}</span>
             </div>
-            <div class="table-actions" style="margin-top: 1rem;">
+            
+            <div class="btn-action-group">
                 <button class="btn-icon" onclick="openEditTableModal(${table.table_id})" title="Chỉnh sửa">
                     <i class="fas fa-edit"></i>
                 </button>
-                <button class="btn-icon" style="color: #ff0055; background: rgba(255, 0, 85, 0.1);" onclick="deleteTable(${table.table_id})" title="Xóa">
+                <button class="btn-icon" style="color: #ef4444; background: rgba(239, 68, 68, 0.1);" onclick="deleteTable(${table.table_id})" title="Xóa">
                     <i class="fas fa-trash"></i>
                 </button>
             </div>
@@ -71,7 +72,7 @@ function renderTables(tables) {
 }
 
 function openAddTableModal() {
-    document.getElementById('tableModalTitle').textContent = 'THÊM BÀN MỚI';
+    document.getElementById('modalTitle').textContent = 'THÊM BÀN MỚI';
     document.getElementById('tableForm').reset();
     document.getElementById('editTableId').value = '';
     document.getElementById('statusGroup').style.display = 'none';
@@ -82,7 +83,7 @@ function openEditTableModal(id) {
     const table = allTables.find(t => t.table_id == id);
     if (!table) return;
     
-    document.getElementById('tableModalTitle').textContent = 'CHỈNH SỬA BÀN';
+    document.getElementById('modalTitle').textContent = 'CHỈNH SỬA BÀN';
     document.getElementById('editTableId').value = table.table_id;
     document.getElementById('tableNumber').value = table.table_number;
     document.getElementById('tableCapacity').value = table.capacity;

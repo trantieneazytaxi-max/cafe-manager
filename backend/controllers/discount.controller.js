@@ -74,10 +74,47 @@ exports.createDiscount = async (req, res) => {
 exports.updateDiscount = async (req, res) => {
     try {
         const { id } = req.params;
-        const { code, description, discount_type, discount_value, min_order_amount, max_discount_amount, usage_limit, expiry_date, type, points_required, is_active, is_public } = req.body;
-        await executeQuery(`UPDATE DiscountCodes SET code=@code, description=@description, discount_type=@discount_type, discount_value=@discount_value, min_order_amount=@min_order_amount, max_discount_amount=@max_discount_amount, usage_limit=@usage_limit, expiry_date=@expiry_date, type=@type, points_required=@points_required, is_active=@is_active, is_public=@is_public, updated_at=GETDATE() WHERE code_id=@id`, { id, code, description, discount_type, discount_value, min_order_amount, max_discount_amount, usage_limit, expiry_date, type, points_required, is_active, is_public });
+        const { 
+            code, description, discount_type, discount_value, 
+            min_order_amount, max_discount_amount, usage_limit, 
+            expiry_date, type, points_required, is_active, is_public 
+        } = req.body;
+
+        await executeQuery(`
+            UPDATE DiscountCodes 
+            SET code=@code, 
+                description=@description, 
+                discount_type=@discount_type, 
+                discount_value=@discount_value, 
+                min_order_amount=@min_order_amount, 
+                max_discount_amount=@max_discount_amount, 
+                usage_limit=@usage_limit, 
+                expiry_date=@expiry_date, 
+                type=@type, 
+                points_required=@points_required, 
+                is_active=@is_active, 
+                is_public=@is_public, 
+                updated_at=GETDATE() 
+            WHERE code_id=@id`, 
+            { 
+                id, 
+                code, 
+                description: description || null, 
+                discount_type, 
+                discount_value: parseFloat(discount_value), 
+                min_order_amount: min_order_amount ? parseFloat(min_order_amount) : 0, 
+                max_discount_amount: max_discount_amount ? parseFloat(max_discount_amount) : null, 
+                usage_limit: usage_limit ? parseInt(usage_limit) : null, 
+                expiry_date: expiry_date || null, 
+                type: type || 'manual', 
+                points_required: points_required ? parseInt(points_required) : 0, 
+                is_active: is_active !== undefined ? (is_active === true || is_active === 1 || is_active === '1' ? 1 : 0) : 1, 
+                is_public: is_public !== undefined ? (is_public === true || is_public === 1 || is_public === '1' ? 1 : 0) : 1 
+            }
+        );
         res.json({ success: true, message: 'Cập nhật thành công' });
     } catch (error) {
+        console.error('Update Discount Error:', error);
         res.status(500).json({ message: 'Lỗi server' });
     }
 };

@@ -154,6 +154,14 @@ async function editDiscount(id) {
         document.getElementById('usage_limit').value = discount.usage_limit || '';
         document.getElementById('expiry_date').value = discount.expiry_date ? discount.expiry_date.split('T')[0] : '';
         document.getElementById('type').value = discount.type;
+        document.getElementById('points_required').value = discount.points_required || 0;
+        
+        // Show/hide points group based on type
+        const pointsGroup = document.getElementById('pointsGroup');
+        if (pointsGroup) {
+            pointsGroup.style.display = discount.type === 'loyalty' ? 'block' : 'none';
+        }
+        
         document.getElementById('is_public').checked = !!discount.is_public;
         document.getElementById('is_active').checked = !!discount.is_active;
         

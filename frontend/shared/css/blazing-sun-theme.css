@@ -3,6 +3,7 @@
    Theme: Destiny, Sun, Rebirth, Eternal Cycle
    Inspired by: "轮回 (Cycle)"
    ============================================ */
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap');
 
 :root {
     --bs-black: #0A0A0A;
@@ -56,16 +57,22 @@ body.blazing-sun-theme::after {
 body.blazing-sun-theme h1, 
 body.blazing-sun-theme h2, 
 body.blazing-sun-theme h3,
-body.blazing-sun-theme .logo span,
+body.blazing-sun-theme .logo-text,
+body.blazing-sun-theme .logo-text span,
 body.blazing-sun-theme .logo .highlight,
 body.blazing-sun-theme .section-header h3,
 body.blazing-sun-theme .page-header h1 {
     font-family: 'Oswald', sans-serif !important;
     text-transform: uppercase !important;
-    letter-spacing: 3px !important;
+    letter-spacing: 2px !important;
     color: var(--bs-gold) !important;
     text-shadow: 0 0 15px var(--bs-gold-glow), 0 0 30px rgba(217, 75, 43, 0.3) !important;
     font-weight: 700 !important;
+}
+
+body.blazing-sun-theme .logo-svg {
+    stroke: var(--bs-gold) !important;
+    filter: drop-shadow(0 0 8px var(--bs-gold-glow)) !important;
 }
 
 /* Lyrics/Quotes Style */
@@ -106,6 +113,33 @@ body.blazing-sun-theme .nav-container {
     z-index: 1001 !important;
 }
 
+/* Mobile Menu Blazing Sun Fix */
+@media (max-width: 768px) {
+    body.blazing-sun-theme .nav-links {
+        background: rgba(15, 15, 20, 0.98) !important;
+        border: 2px solid var(--bs-gold) !important;
+        border-top: none !important;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.8) !important;
+        padding: 2rem 1.5rem !important;
+        gap: 1.5rem !important;
+        border-radius: 0 0 24px 24px !important;
+    }
+
+    body.blazing-sun-theme .nav-links a {
+        font-size: 1.1rem !important;
+        padding: 1rem !important;
+        border-radius: 12px !important;
+        background: rgba(229, 193, 88, 0.05) !important;
+        border: 1px solid rgba(229, 193, 88, 0.1) !important;
+        justify-content: center !important;
+    }
+
+    body.blazing-sun-theme .nav-links a.active {
+        background: linear-gradient(90deg, rgba(191, 49, 26, 0.2), rgba(229, 193, 88, 0.1)) !important;
+        border-color: var(--bs-gold) !important;
+    }
+}
+
 body.blazing-sun-theme .nav-links a,
 body.blazing-sun-theme .user-info span,
 body.blazing-sun-theme .user-info i {
@@ -129,6 +163,11 @@ body.blazing-sun-theme .user-info {
     border-radius: 30px !important;
 }
 
+body.blazing-sun-theme .menu-toggle {
+    color: var(--bs-gold) !important;
+    text-shadow: 0 0 10px var(--bs-gold-glow) !important;
+}
+
 /* Cards & Containers */
 body.blazing-sun-theme .stat-card,
 body.blazing-sun-theme .chart-card,
@@ -137,13 +176,35 @@ body.blazing-sun-theme .data-table-card,
 body.blazing-sun-theme .menu-card,
 body.blazing-sun-theme .table-card,
 body.blazing-sun-theme .tables-container,
-body.blazing-sun-theme .stat-summary-item {
+body.blazing-sun-theme .stat-summary-item,
+body.blazing-sun-theme .card,
+body.blazing-sun-theme .profile-sidebar .card,
+body.blazing-sun-theme .profile-main .card {
     background: rgba(20, 20, 25, 0.85) !important;
     border: 1px solid rgba(229, 193, 88, 0.4) !important;
     border-radius: 16px !important;
     box-shadow: 0 15px 45px rgba(0,0,0,0.7) !important;
     color: var(--bs-text) !important;
     backdrop-filter: blur(10px);
+}
+
+body.blazing-sun-theme .detail-item label {
+    color: var(--bs-gold) !important;
+    font-family: 'Oswald', sans-serif !important;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+body.blazing-sun-theme .detail-item p {
+    color: var(--bs-white) !important;
+    font-size: 1.1rem;
+}
+
+body.blazing-sun-theme .staff-badge {
+    background: var(--bs-crimson) !important;
+    color: var(--bs-gold-bright) !important;
+    border: 1px solid var(--bs-gold) !important;
 }
 
 body.blazing-sun-theme .stat-summary-item strong {
@@ -399,6 +460,3 @@ body.blazing-sun-theme .dropdown-menu a:hover {
     background: rgba(229, 193, 88, 0.25) !important;
     color: var(--bs-gold-bright) !important;
 }
-
-/* Google Fonts Imports */
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap');

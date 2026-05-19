@@ -2,6 +2,8 @@
    REVERIE THEME - ETHEREAL & NOSTALGIC (V3 - UNIVERSAL ADMIN)
    Theme: Memories, Purple Dream, Reunion
    ============================================ */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;600;700&display=swap');
+
 
 :root {
     --rv-bg: #F5F3FF;
@@ -102,6 +104,19 @@ body.reverie-theme .nav-item.active {
     border-right-color: var(--rv-purple) !important;
 }
 
+/* Mobile Toggle Theme Support */
+body.reverie-theme .mobile-sidebar-toggle {
+    background: var(--rv-glass) !important;
+    border-color: var(--rv-pink-soft) !important;
+    color: var(--rv-purple) !important;
+    box-shadow: 0 4px 15px rgba(126, 34, 206, 0.1) !important;
+}
+
+body.reverie-theme .mobile-sidebar-toggle:hover {
+    background: var(--rv-purple-light) !important;
+    color: white !important;
+}
+
 body.reverie-theme .nav-item.active i {
     color: var(--rv-pink) !important;
 }
@@ -128,11 +143,44 @@ body.reverie-theme .btn-outline {
     box-shadow: none !important;
 }
 
+body.reverie-theme .btn-secondary {
+    background: white !important;
+    color: var(--rv-purple) !important;
+    border: 1px solid var(--rv-purple) !important;
+    box-shadow: none !important;
+    font-family: 'Inter', sans-serif !important;
+}
+
+body.reverie-theme .btn-secondary:hover {
+    background: var(--rv-bg) !important;
+    transform: translateY(-2px) !important;
+}
+
+body.reverie-theme .btn-primary {
+    background: linear-gradient(135deg, var(--rv-purple), var(--rv-purple-light)) !important;
+    color: white !important;
+    border: none !important;
+    box-shadow: 0 10px 20px rgba(126, 34, 206, 0.2) !important;
+    font-family: 'Inter', sans-serif !important;
+}
+
+
+
+body.reverie-theme select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%237E22CE'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 1rem center !important;
+    background-size: 1.2em !important;
+    padding-right: 2.5rem !important;
+}
+
 body.reverie-theme .btn-cyber:hover,
 body.reverie-theme .btn-add:hover {
     transform: translateY(-2px) !important;
     box-shadow: 0 15px 30px rgba(126, 34, 206, 0.3) !important;
 }
+
 
 /* Form Elements Contrast Fix */
 body.reverie-theme input, 
@@ -408,6 +456,3 @@ body.reverie-theme .discount-card .stats {
     z-index: 1500;
     text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5) !important;
 }
-
-/* Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;600;700&display=swap');

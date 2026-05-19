@@ -34,6 +34,7 @@ if (loginForm) {
         submitBtn.disabled = true;
         
         try {
+            showLoading('Đang xác thực...');
             const response = await fetch('http://localhost:5000/api/auth/login', {
                 method: 'POST',
                 headers: {
@@ -84,6 +85,7 @@ if (loginForm) {
             console.error('Login error:', error);
             showToast(error.message, 'error');
         } finally {
+            hideLoading();
             submitBtn.innerHTML = originalText;
             submitBtn.disabled = false;
         }
@@ -126,6 +128,7 @@ if (submitForgotBtn) {
         submitForgotBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
         
         try {
+            showLoading('Đang gửi yêu cầu...');
             const response = await fetch('http://localhost:5000/api/forgot-password/request', {
                 method: 'POST',
                 headers: {
@@ -147,6 +150,7 @@ if (submitForgotBtn) {
             console.error('Forgot password error:', error);
             showToast('Không thể gửi yêu cầu', 'error');
         } finally {
+            hideLoading();
             submitForgotBtn.disabled = false;
             submitForgotBtn.innerHTML = 'Gửi yêu cầu';
         }

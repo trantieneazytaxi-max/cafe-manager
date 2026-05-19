@@ -54,6 +54,9 @@
                     <button class="btn btn-preview" id="previewReceiptBtn" style="background: #5C3A21; color: white; margin-bottom: 10px;">
                         <i class="fas fa-eye"></i> Xem trước biên lai
                     </button>
+                    <button class="btn btn-review" id="openReviewBtn" style="background: #E67E22; color: white; margin-bottom: 10px;">
+                        <i class="fas fa-star"></i> Đánh giá đơn hàng
+                    </button>
                     <button class="btn btn-pdf" id="printPdfBtn">
                         <i class="fas fa-file-pdf"></i> In đơn hàng (PDF)
                     </button>
@@ -70,6 +73,32 @@
         <!-- Confetti Canvas -->
         <canvas id="confetti-canvas"></canvas>
     </section>
+
+    <!-- Review Modal -->
+    <div id="reviewModal" class="modal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2100; display: none; align-items: center; justify-content: center; padding: 20px;">
+        <div class="modal-content" style="background: white; width: 100%; max-width: 450px; border-radius: 20px; padding: 30px; position: relative; box-shadow: 0 15px 40px rgba(0,0,0,0.2);">
+            <button id="closeReviewModal" style="position: absolute; top: 15px; right: 15px; border: none; background: none; font-size: 1.5rem; cursor: pointer; color: #777;">&times;</button>
+            <h2 style="font-family: 'Playfair Display', serif; color: #3d2b1f; text-align: center; margin-bottom: 10px;">Đánh giá trải nghiệm</h2>
+            <p style="text-align: center; color: #666; font-size: 0.9rem; margin-bottom: 25px;">Hãy chia sẻ cảm nhận của bạn về đơn hàng này nhé!</p>
+            
+            <form id="reviewForm">
+                <div class="rating-stars" style="display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; font-size: 2.5rem; color: #ddd; cursor: pointer;">
+                    <i class="fas fa-star" data-rating="1"></i>
+                    <i class="fas fa-star" data-rating="2"></i>
+                    <i class="fas fa-star" data-rating="3"></i>
+                    <i class="fas fa-star" data-rating="4"></i>
+                    <i class="fas fa-star" data-rating="5"></i>
+                </div>
+                <input type="hidden" id="ratingInput" name="rating" value="5">
+                
+                <div style="margin-bottom: 20px;">
+                    <textarea name="comment" id="reviewComment" placeholder="Viết đánh giá của bạn tại đây..." style="width: 100%; height: 120px; padding: 15px; border-radius: 12px; border: 1px solid #eee; background: #f9f9f9; font-family: inherit; resize: none; outline: none; transition: border-color 0.2s;"></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 15px; border-radius: 12px; font-weight: 600; font-size: 1rem; border: none; background: #E67E22; color: white; cursor: pointer; box-shadow: 0 4px 15px rgba(230, 126, 34, 0.3);">GỬI ĐÁNH GIÁ</button>
+            </form>
+        </div>
+    </div>
 
     <!-- Receipt Preview Modal -->
     <div id="receiptPreviewModal" class="modal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px;">

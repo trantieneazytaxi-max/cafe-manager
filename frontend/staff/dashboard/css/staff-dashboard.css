@@ -34,9 +34,20 @@ body {
 }
 
 .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.logo-svg {
+    stroke: #e67e22;
+}
+
+.logo-text {
     font-size: 1.3rem;
-    font-weight: 700;
+    font-weight: 800;
     color: #2c3e50;
+    letter-spacing: -0.5px;
 }
 
 .logo i {
@@ -81,6 +92,9 @@ body {
 
 .nav-links a:hover, .nav-links a.active {
     color: #3498db;
+}
+
+.nav-links a.active {
     border-bottom: 2px solid #3498db;
 }
 
@@ -136,7 +150,7 @@ body {
     z-index: 100;
 }
 
-.user-menu.active .dropdown-menu {
+.dropdown-menu.show {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
@@ -478,6 +492,20 @@ body {
     
     .nav-links.active {
         display: flex;
+        border-bottom: 1px solid #eee;
+    }
+
+    .nav-links a {
+        padding: 1rem;
+        justify-content: center;
+        border-bottom: none !important;
+        font-size: 1.1rem;
+    }
+    
+    .nav-links a.active {
+        background: #f8f9fa;
+        color: #3498db;
+        border-radius: 12px;
     }
     
     .shift-card {

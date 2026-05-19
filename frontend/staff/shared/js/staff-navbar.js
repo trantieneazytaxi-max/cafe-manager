@@ -46,43 +46,57 @@
     }
 
     const user = JSON.parse(localStorage.getItem('user') || '{}');
-    const avatarUrl = `https://ui-avatars.com/api/?background=00f3ff&color=fff&rounded=true&name=${encodeURIComponent(user.full_name || 'S')}`;
+    const isBlazingSun = localStorage.getItem('blazingSunTheme') === 'true';
+    const avatarBg = isBlazingSun ? 'D94B2B' : '00f3ff';
+    const avatarUrl = `https://ui-avatars.com/api/?background=${avatarBg}&color=fff&rounded=true&name=${encodeURIComponent(user.full_name || 'S')}`;
 
     const navHTML = `
     <div class="nav-container">
-        <div class="logo">
-            <i class="fas fa-mug-hot"></i>
-            <span>Cà Phê <span class="highlight">Thông Minh</span></span>
+        <a href="${dashHref}" class="logo" style="text-decoration: none; display: flex; align-items: center; gap: 8px;">
+            <svg class="logo-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8h1a4 4 0 1 1 0 8h-1"></path><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"></path><line x1="6" y1="2" x2="6" y2="4"></line><line x1="10" y1="2" x2="10" y2="4"></line><line x1="14" y1="2" x2="14" y2="4"></line></svg>
+            <span class="logo-text">Cà Phê <span class="highlight">Thông Minh</span></span>
             <span class="staff-badge">STAFF</span>
-        </div>
+        </a>
         <div class="nav-links" id="navLinks">
             <a href="${dashHref}" class="${isActive('staff-dashboard')}">
-                <i class="fas fa-chart-line"></i> Dashboard
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                Dashboard
             </a>
             <a href="${tablesHref}" class="${isActive('/tables/')}">
-                <i class="fas fa-chair"></i> Quản lý bàn
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                Bàn
             </a>
             <a href="${ordersHref}" class="${isActive('/orders/')}">
-                <i class="fas fa-receipt"></i> Đơn hàng
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                Đơn hàng
             </a>
             <a href="${stockHref}" class="${isActive('stock-management')}">
-                <i class="fas fa-box"></i> Tạm dừng món
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                Hết món
             </a>
         </div>
         <div class="user-menu">
             <div class="user-info" id="staffUserInfo">
                 <img id="staffAvatarNav" class="avatar" src="${avatarUrl}" alt="Avatar">
-                <span id="staffNameNav">${user.full_name || 'Nhân viên'}</span>
-                <i class="fas fa-chevron-down"></i>
+                <span id="staffNameNav" style="font-weight: 700;">${user.full_name || 'Nhân viên'}</span>
+                <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-left: 5px;">
+                    <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
             </div>
             <div class="dropdown-menu" id="staffDropdownMenu">
-                <a href="${profileHref}"><i class="fas fa-user-circle"></i> Trang cá nhân</a>
-                <a href="#" id="toggleThemeBtn">
-                    <i class="fas fa-magic"></i> 
+                <a href="${profileHref}" style="display: flex; align-items: center; gap: 10px;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    Trang cá nhân
+                </a>
+                <a href="#" id="toggleThemeBtn" style="display: flex; align-items: center; gap: 10px;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
                     <span id="themeBtnText">Chủ đề: Mặc định</span>
                 </a>
-                <hr>
-                <a href="#" id="staffLogoutBtn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                <hr style="border: none; border-top: 1px solid #eee; margin: 5px 0;">
+                <a href="#" id="staffLogoutBtn" style="color: #e74c3c; display: flex; align-items: center; gap: 10px;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                    Đăng xuất
+                </a>
             </div>
         </div>
         <div class="menu-toggle" id="staffMenuToggle">
@@ -112,7 +126,7 @@
         }
 
         if (toggle && navLinks) {
-            toggle.addEventListener('click', () => navLinks.classList.toggle('show'));
+            toggle.addEventListener('click', () => navLinks.classList.toggle('active'));
         }
 
         if (logoutBtn) {

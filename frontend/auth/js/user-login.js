@@ -200,11 +200,13 @@ if (loginForm) {
         submitBtn.disabled = true;
         
         try {
+            showLoading('Đang xử lý...');
             await mockLogin(email, password, rememberMe);
         } catch (error) {
             console.error('Login error:', error);
             showToast(error.message || 'Đăng nhập thất bại', 'error');
         } finally {
+            hideLoading();
             submitBtn.innerHTML = originalText;
             submitBtn.disabled = false;
         }
@@ -253,11 +255,13 @@ if (registerForm) {
         submitBtn.disabled = true;
         
         try {
+            showLoading('Đang xử lý...');
             await mockRegister(fullName, email, phone, password, selectedVerificationMethod);
         } catch (error) {
             console.error('Register error:', error);
             showToast(error.message || 'Đăng ký thất bại', 'error');
         } finally {
+            hideLoading();
             submitBtn.innerHTML = originalText;
             submitBtn.disabled = false;
         }

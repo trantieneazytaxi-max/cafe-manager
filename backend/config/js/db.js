@@ -16,7 +16,8 @@ const dbConfig = {
         trustServerCertificate: true,
         enableArithAbort: true,
         requestTimeout: 30000,
-        connectionTimeout: 30000
+        connectionTimeout: 30000,
+        useUTC: false // Đảm bảo sử dụng giờ địa phương (UTC+7)
     },
     pool: {
         max: 20, // Tăng số lượng connection

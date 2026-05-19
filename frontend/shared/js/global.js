@@ -1,5 +1,15 @@
 // Immediate theme check to prevent FOUC
 (function() {
+    // FontAwesome Check & Inject (Fix for missing icons)
+    const faId = 'fa-css';
+    if (!document.getElementById(faId)) {
+        const faLink = document.createElement('link');
+        faLink.id = faId;
+        faLink.rel = 'stylesheet';
+        faLink.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css';
+        document.head.appendChild(faLink);
+    }
+
     // Reverie Theme - Only for Admin
     if (localStorage.getItem('reverieTheme') === 'true' && window.location.pathname.includes('/admin/')) {
         document.documentElement.classList.add('reverie-theme');
@@ -13,6 +23,9 @@
             link.href = '/admin/dashboard/css/reverie-theme.css';
             document.head.appendChild(link);
         }
+
+        // Water Effects for Reverie
+        initReverieWaterEffects();
     }
 
     // Blazing Sun Theme - Only for Staff
@@ -57,6 +70,148 @@ function initGlobalUI() {
     initGlobalSearch();
     initFloatingButtons();
     updateFooterInfo();
+    injectGlobalComponents(); // Inject Loading Screen & Modals
+}
+
+/**
+ * Inject Loading Screen and Global Modals
+ */
+function injectGlobalComponents() {
+    if (!document.getElementById('global-loading-screen')) {
+        const loading = document.createElement('div');
+        loading.id = 'global-loading-screen';
+        loading.className = 'global-overlay';
+        loading.innerHTML = `
+            <div class="loader-content">
+                <div class="cyber-spinner"></div>
+                <p class="loading-text">Đang xử lý...</p>
+            </div>
+        `;
+        document.body.appendChild(loading);
+    }
+
+    if (!document.getElementById('logout-confirm-modal')) {
+        const modal = document.createElement('div');
+        modal.id = 'logout-confirm-modal';
+        modal.className = 'global-overlay modal-hidden';
+        modal.innerHTML = `
+            <div class="global-modal-content">
+                <h3>Xác nhận đăng xuất</h3>
+                <p>Bạn có chắc chắn muốn rời khỏi hệ thống không?</p>
+                <div class="modal-actions">
+                    <button id="cancelLogout" class="btn-secondary">HỦY</button>
+                    <button id="confirmLogout" class="btn-primary">ĐĂNG XUẤT</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+
+        document.getElementById('cancelLogout').onclick = () => {
+            modal.classList.add('modal-hidden');
+        };
+    }
+
+    // Add Styles
+    if (!document.getElementById('global-components-style')) {
+        const style = document.createElement('style');
+        style.id = 'global-components-style';
+        style.textContent = `
+            .global-overlay {
+                position: fixed;
+                inset: 0;
+                background: rgba(5, 5, 10, 0.9);
+                backdrop-filter: blur(10px);
+                z-index: 10000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s ease;
+                opacity: 1;
+                pointer-events: all;
+            }
+            .global-overlay.modal-hidden {
+                opacity: 0;
+                pointer-events: none;
+            }
+            .global-modal-content {
+                background: rgba(13, 13, 26, 0.95);
+                border: 1px solid rgba(0, 243, 255, 0.3);
+                border-radius: 24px;
+                padding: 2.5rem;
+                width: 90%;
+                max-width: 400px;
+                text-align: center;
+                box-shadow: 0 0 50px rgba(0, 243, 255, 0.1);
+            }
+            .global-modal-content h3 {
+                color: #00f3ff;
+                font-family: 'Orbitron', sans-serif;
+                margin-bottom: 1rem;
+                letter-spacing: 1px;
+            }
+            .global-modal-content p {
+                color: #8892b0;
+                margin-bottom: 2rem;
+            }
+            .modal-actions {
+                display: flex;
+                gap: 15px;
+                justify-content: center;
+            }
+            .loader-content { text-align: center; }
+            .cyber-spinner {
+                width: 60px;
+                height: 60px;
+                border: 4px solid rgba(0, 243, 255, 0.1);
+                border-top-color: #00f3ff;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+                margin: 0 auto 1.5rem;
+                box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+            }
+            .loading-text {
+                color: #00f3ff;
+                font-family: 'Orbitron', sans-serif;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                animation: pulse 1.5s infinite;
+            }
+            @keyframes spin { to { transform: rotate(360deg); } }
+            @keyframes pulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+
+            /* Theme overrides for Loading/Modal */
+            body.reverie-theme .global-overlay { background: rgba(245, 243, 255, 0.9); }
+            body.reverie-theme .global-modal-content {
+                background: #fff;
+                border-color: #A855F7;
+                box-shadow: 0 10px 40px rgba(126, 34, 206, 0.1);
+            }
+            body.reverie-theme .global-modal-content h3 { color: #4C1D95; font-family: 'Playfair Display', serif; }
+            body.reverie-theme .cyber-spinner { 
+                border-color: rgba(126, 34, 206, 0.1);
+                border-top-color: #7E22CE;
+                box-shadow: 0 0 15px rgba(126, 34, 206, 0.2);
+            }
+            body.reverie-theme .loading-text { color: #7E22CE; font-family: 'Playfair Display', serif; }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    // Hide loading by default
+    hideLoading();
+}
+
+function showLoading(text = 'Đang xử lý...') {
+    const loading = document.getElementById('global-loading-screen');
+    if (loading) {
+        loading.querySelector('.loading-text').textContent = text;
+        loading.classList.remove('modal-hidden');
+    }
+}
+
+function hideLoading() {
+    const loading = document.getElementById('global-loading-screen');
+    if (loading) loading.classList.add('modal-hidden');
 }
 
 /**
@@ -133,6 +288,123 @@ async function initReverieTheme() {
             }
         }
     }
+}
+
+function initReverieWaterEffects() {
+    if (localStorage.getItem('reverieTheme') !== 'true') return;
+    
+    const styleId = 'reverie-water-style';
+    if (!document.getElementById(styleId)) {
+        const style = document.createElement('style');
+        style.id = styleId;
+        style.textContent = `
+            .rv-ripple {
+                position: fixed;
+                border-radius: 50%;
+                background: rgba(168, 85, 247, 0.3);
+                pointer-events: none;
+                z-index: 9999;
+                transform: scale(0);
+                animation: rvRippleAnim 1s ease-out forwards;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            }
+            @keyframes rvRippleAnim {
+                to { transform: scale(4); opacity: 0; }
+            }
+            .rv-drop {
+                position: fixed;
+                width: 8px;
+                height: 8px;
+                background: radial-gradient(circle, rgba(236, 72, 153, 0.6) 0%, transparent 80%);
+                border-radius: 50%;
+                pointer-events: none;
+                z-index: 9998;
+                opacity: 0.8;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // Click effect
+    window.addEventListener('mousedown', (e) => {
+        if (localStorage.getItem('reverieTheme') !== 'true') return;
+        const ripple = document.createElement('div');
+        ripple.className = 'rv-ripple';
+        const size = 50;
+        ripple.style.width = ripple.style.height = `${size}px`;
+        ripple.style.left = `${e.clientX - size/2}px`;
+        ripple.style.top = `${e.clientY - size/2}px`;
+        document.body.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 1000);
+    });
+
+    // Move effect (Trail)
+    let lastTime = 0;
+    window.addEventListener('mousemove', (e) => {
+        const now = Date.now();
+        if (now - lastTime < 50) return; // Throttling
+        lastTime = now;
+        
+        if (localStorage.getItem('reverieTheme') !== 'true') return;
+        
+        const drop = document.createElement('div');
+        drop.className = 'rv-drop';
+        drop.style.left = `${e.clientX - 4}px`;
+        drop.style.top = `${e.clientY - 4}px`;
+        document.body.appendChild(drop);
+        
+        const anim = drop.animate([
+            { transform: 'translateY(0) scale(1)', opacity: 0.8 },
+            { transform: `translateY(${Math.random() * 20 + 10}px) scale(0)`, opacity: 0 }
+        ], { duration: 800, easing: 'ease-out' });
+        
+        anim.onfinish = () => drop.remove();
+    });
+
+    // Falling Flowers (Petals)
+    initReveriePetals();
+}
+
+function initReveriePetals() {
+    const container = document.getElementById('reverie-overlay');
+    if (!container) return;
+
+    const petals = ['🌸', '💮', '✿', '❀', '✾'];
+    
+    setInterval(() => {
+        if (localStorage.getItem('reverieTheme') !== 'true') return;
+        
+        const petal = document.createElement('span');
+        petal.className = 'reverie-petal';
+        petal.textContent = petals[Math.floor(Math.random() * petals.length)];
+        petal.style.cssText = `
+            position: fixed;
+            top: -50px;
+            left: ${Math.random() * 100}vw;
+            font-size: ${Math.random() * 10 + 15}px;
+            color: #FFB7C5;
+            pointer-events: none;
+            z-index: 1400;
+            opacity: 0.6;
+            user-select: none;
+        `;
+        
+        container.appendChild(petal);
+        
+        const duration = Math.random() * 5000 + 8000;
+        const drift = (Math.random() - 0.5) * 400;
+        const rotation = Math.random() * 360;
+        
+        const anim = petal.animate([
+            { transform: 'translateY(0) translateX(0) rotate(0deg)', opacity: 0 },
+            { transform: `translateY(${window.innerHeight + 100}px) translateX(${drift}px) rotate(${rotation + 720}deg)`, opacity: 0.6 }
+        ], {
+            duration: duration,
+            easing: 'linear'
+        });
+        
+        anim.onfinish = () => petal.remove();
+    }, 1500);
 }
 
 /**
@@ -266,10 +538,12 @@ function initMobileMenu() {
     const menuToggle = document.getElementById('menuToggle');
     const navLinks = document.getElementById('navLinks');
     
-    if (menuToggle && navLinks) {
-        menuToggle.addEventListener('click', () => {
+    if (menuToggle && navLinks && !menuToggle.dataset.handled) {
+        menuToggle.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent bubbling to parent delegation listeners
             navLinks.classList.toggle('active');
         });
+        menuToggle.dataset.handled = "true";
     }
 }
 
@@ -343,15 +617,25 @@ function updateUserInfo() {
 function initLogout() {
     const logoutBtn = document.getElementById('logoutDropdownBtn');
     if (logoutBtn) {
-        // Remove old listener to prevent duplicates if called multiple times
+        // Remove old listener
         const newBtn = logoutBtn.cloneNode(true);
         logoutBtn.parentNode.replaceChild(newBtn, logoutBtn);
         
         newBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            localStorage.clear();
-            sessionStorage.clear();
-            window.location.href = '../../../auth/html/user-login.html';
+            const modal = document.getElementById('logout-confirm-modal');
+            if (modal) {
+                modal.classList.remove('modal-hidden');
+                document.getElementById('confirmLogout').onclick = () => {
+                    modal.classList.add('modal-hidden');
+                    showLoading('Đang đăng xuất...');
+                    setTimeout(() => {
+                        localStorage.clear();
+                        sessionStorage.clear();
+                        window.location.href = '../../../auth/html/user-login.html';
+                    }, 1000);
+                };
+            }
         });
     }
 }

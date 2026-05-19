@@ -102,7 +102,10 @@ async function editStaff(id) {
     document.getElementById('fullName').value = staff.full_name;
     document.getElementById('email').value = staff.email;
     document.getElementById('phone').value = staff.phone || '';
-    document.getElementById('position').value = staff.position || '';
+    document.getElementById('staffPositionSelect').value = staff.position || 'Nhân viên phục vụ';
+    // If there's a detail field, we'd load it here, but DB only has one 'position' column.
+    // For now, let's just use the select for position.
+    document.getElementById('staffPositionDetail').value = ''; 
     document.getElementById('salary').value = staff.salary || '';
     document.getElementById('identity_number').value = staff.identity_number || '';
     document.getElementById('bank_account').value = staff.bank_account || '';
@@ -136,7 +139,7 @@ async function saveStaff(e) {
         full_name: document.getElementById('fullName').value,
         email: document.getElementById('email').value,
         phone: document.getElementById('phone').value,
-        position: document.getElementById('position').value,
+        position: document.getElementById('staffPositionSelect').value,
         salary: document.getElementById('salary').value,
         hire_date: document.getElementById('hire_date').value,
         identity_number: document.getElementById('identity_number').value,

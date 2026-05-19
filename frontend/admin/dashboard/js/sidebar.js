@@ -45,6 +45,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const sidebarHtml = `
+        <button class="mobile-sidebar-toggle" id="mobileSidebarToggle">
+            <i class="fas fa-bars"></i>
+        </button>
         <aside class="sidebar" id="mainSidebar">
             <div class="sidebar-header">
                 <div class="logo">
@@ -79,6 +82,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 <a href="${prefix}reports/html/reports.html" class="nav-item" data-page="reports">
                     <i class="fas fa-file-invoice-dollar"></i>
                     <span class="nav-text">Báo cáo doanh thu</span>
+                </a>
+                <a href="${prefix}reviews/html/reviews.html" class="nav-item" data-page="reviews">
+                    <i class="fas fa-star"></i>
+                    <span class="nav-text">Quản lý đánh giá</span>
                 </a>
                 <a href="${prefix}settings/html/settings.html" class="nav-item" data-page="settings">
                     <i class="fas fa-cog"></i>
@@ -115,14 +122,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.classList.add('active');
             } else if (path.includes('admin-dashboard') && page === 'dashboard') {
                 item.classList.add('active');
-            } else if (path.includes('discounts') && page === 'discounts') {
-                item.classList.add('active');
             }
         });
 
     // Toggle Logic
     const sidebar = document.getElementById('mainSidebar');
     const toggleBtn = document.getElementById('sidebarToggleInner');
+    const mobileToggle = document.getElementById('mobileSidebarToggle');
     const body = document.body;
 
     if (sidebar && toggleBtn) {
@@ -137,6 +143,22 @@ document.addEventListener('DOMContentLoaded', () => {
             sidebar.classList.toggle('collapsed');
             body.classList.toggle('sidebar-collapsed');
             localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+        });
+    }
+
+    if (mobileToggle && sidebar) {
+        mobileToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            sidebar.classList.toggle('mobile-active');
+        });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', (e) => {
+            if (sidebar.classList.contains('mobile-active') && 
+                !sidebar.contains(e.target) && 
+                !mobileToggle.contains(e.target)) {
+                sidebar.classList.remove('mobile-active');
+            }
         });
     }
 

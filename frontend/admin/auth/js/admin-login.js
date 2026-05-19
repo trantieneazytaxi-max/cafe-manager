@@ -27,6 +27,7 @@ if (loginForm) {
         submitBtn.disabled = true;
         
         try {
+            showLoading('Đang xác thực...');
             // Gọi API login
             const response = await fetch('http://localhost:5000/api/auth/login', {
                 method: 'POST',
@@ -75,6 +76,7 @@ if (loginForm) {
             console.error('Login error:', error);
             showToast(error.message, 'error');
         } finally {
+            hideLoading();
             submitBtn.innerHTML = originalText;
             submitBtn.disabled = false;
         }

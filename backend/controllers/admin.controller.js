@@ -95,7 +95,14 @@ exports.getTopItems = async (req, res) => {
 // ========== QUẢN LÝ NHÂN VIÊN ==========
 exports.getStaffList = async (req, res) => {
     try {
-        const result = await executeQuery(`SELECT u.user_id, u.full_name, u.email, u.phone, u.is_active, u.created_at, u.avatar_url, sp.position, sp.salary FROM Users u LEFT JOIN StaffProfile sp ON u.user_id = sp.user_id WHERE u.role = 'staff' ORDER BY u.created_at DESC`);
+        const result = await executeQuery(`
+            SELECT u.user_id, u.full_name, u.email, u.phone, u.is_active, u.created_at, u.avatar_url, 
+                   sp.position, sp.salary, sp.hire_date, sp.identity_number, sp.bank_account, sp.bank_name 
+            FROM Users u 
+            LEFT JOIN StaffProfile sp ON u.user_id = sp.user_id 
+            WHERE u.role = 'staff' 
+            ORDER BY u.created_at DESC
+        `);
         res.json(result.recordset);
     } catch (error) {
         res.status(500).json({ message: 'Lỗi server' });

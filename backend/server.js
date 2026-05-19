@@ -1,4 +1,5 @@
 require('dotenv').config();
+process.env.TZ = 'Asia/Ho_Chi_Minh';
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -82,6 +83,7 @@ app.use('/api/discounts', discountRoutes);
 app.use('/api/store', storeRoutes);
 app.use('/api/recommendations', recommendationRoutes);
 app.use('/api/attendance', attendanceRoutes);
+app.use('/api/reviews', require('./routes/review.route'));
 
 // === Special Pages ===
 app.get('/loading', (req, res) => {

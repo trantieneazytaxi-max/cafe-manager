@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     initOrderInfo();
     initTime();
+    initReviewLogic();
     
     // Only fire confetti on fresh payment (no orderId in URL)
     if (!urlParams.get('orderId')) {
@@ -319,3 +320,94 @@ function fireConfetti() {
 }
 
 
+function initReviewLogic() {
+    const openReviewBtn = document.getElementById('openReviewBtn');
+    const reviewModal = document.getElementById('reviewModal');
+    const closeReviewModal = document.getElementById('closeReviewModal');
+    const reviewForm = document.getElementById('reviewForm');
+    const stars = document.querySelectorAll('.rating-stars i');
+    const ratingInput = document.getElementById('ratingInput');
+
+    if (!openReviewBtn) return;
+
+    openReviewBtn.addEventListener('click', () => {
+        reviewModal.style.display = 'flex';
+    });
+
+    if (closeReviewModal) {
+        closeReviewModal.addEventListener('click', () => {
+            reviewModal.style.display = 'none';
+        });
+    }
+
+    // Star rating interactivity
+    stars.forEach(star => {
+        star.addEventListener('mouseover', function() {
+            const rating = this.getAttribute('data-rating');
+            highlightStars(rating);
+        });
+
+        star.addEventListener('click', function() {
+            const rating = this.getAttribute('data-rating');
+            ratingInput.value = rating;
+            highlightStars(rating, true);
+        });
+    });
+
+    const starContainer = document.querySelector('.rating-stars');
+    if (starContainer) {
+        starContainer.addEventListener('mouseleave', () => {
+            highlightStars(ratingInput.value, true);
+        });
+    }
+
+    function highlightStars(rating, permanent = false) {
+        stars.forEach(s => {
+            const sRating = s.getAttribute('data-rating');
+            if (sRating <= rating) {
+                s.style.color = '#f1c40f';
+            } else {
+                s.style.color = '#ddd';
+            }
+        });
+    }
+
+    // Form submission
+    if (reviewForm) {
+        reviewForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const orderId = sessionStorage.getItem('lastOrderId');
+            const rating = ratingInput.value;
+            const comment = document.getElementById('reviewComment').value;
+
+            if (!orderId) {
+                alert('Không tìm thấy mã đơn hàng');
+                return;
+            }
+
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('http://localhost:5000/api/reviews/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ orderId, rating, comment })
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    alert('Cảm ơn bạn đã đánh giá!');
+                    reviewModal.style.display = 'none';
+                    openReviewBtn.style.display = 'none'; // Hide button after review
+                } else {
+                    alert(data.message || 'Lỗi gửi đánh giá');
+                }
+            } catch (error) {
+                console.error('Review error:', error);
+                alert('Lỗi kết nối server');
+            }
+        });
+    }
+}

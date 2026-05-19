@@ -1,0 +1,15 @@
+COLUMN_NAME                                                                                                                     
+--------------------------------------------------------------------------------------------------------------------------------
+user_id                                                                                                                         
+position                                                                                                                        
+salary                                                                                                                          
+hire_date                                                                                                                       
+cccd                                                                                                                            
+address                                                                                                                         
+updated_at                                                                                                                      
+bank_account                                                                                                                    
+bank_name                                                                                                                       
+date_of_birth                                                                                                                   
+identity_number                                                                                                                 
+
+(11 rows affected)
