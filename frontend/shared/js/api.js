@@ -100,17 +100,12 @@ async function getStoreSettings() {
 
 // 🆕 Định dạng tiền tệ theo cấu hình
 function formatCurrency(amount) {
-    const currency = localStorage.getItem('store_currency') || 'VND';
-    const lang = localStorage.getItem('store_language') || 'vi';
-    
-    // Nếu USD, có thể chia tỷ giá (giả định 1 USD = 25000 VND nếu dữ liệu gốc là VND)
-    // Hoặc nếu dữ liệu đã là USD thì cứ để nguyên.
-    // Ở đây ta giả định nếu currency là USD thì format theo chuẩn USD.
-    
-    return new Intl.NumberFormat(lang === 'vi' ? 'vi-VN' : 'en-US', {
-        style: 'currency',
-        currency: currency
-    }).format(amount);
+    if (amount === undefined || amount === null) amount = 0;
+    const currency = localStorage.getItem('currency') || localStorage.getItem('store_currency') || 'VND';
+    if (currency === 'USD') {
+        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount / 25000);
+    }
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
 }
 
 // Export cho các trang sử dụng (nếu dùng module)

@@ -52,6 +52,11 @@ function loadAdminInfo() {
 
 // Global utilities
 function formatCurrency(amount) {
+    if (amount === undefined || amount === null) amount = 0;
+    const currency = localStorage.getItem('currency') || localStorage.getItem('store_currency') || 'VND';
+    if (currency === 'USD') {
+        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount / 25000);
+    }
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
 }
 

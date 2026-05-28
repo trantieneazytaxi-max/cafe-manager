@@ -157,6 +157,11 @@ async function saveSettings() {
     }
     
     showToast('Đã lưu cài đặt thành công', 'success');
+    
+    // Reload page to apply language and other settings
+    setTimeout(() => {
+        window.location.reload();
+    }, 1000);
 }
 
 // Clear cart data

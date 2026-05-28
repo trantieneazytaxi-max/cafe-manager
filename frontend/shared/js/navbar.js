@@ -252,14 +252,14 @@ function updateMiniCart() {
                     </div>
                     <div class="item-price-qty">
                         <span class="qty">${item.quantity} x</span>
-                        <span class="price">${(item.price).toLocaleString('vi-VN')}đ</span>
+                        <span class="price">${formatCurrency(item.price)}</span>
                     </div>
                 </div>
             </div>
         `;
     }).join('');
 
-    if (totalDisplay) totalDisplay.textContent = `${total.toLocaleString('vi-VN')}đ`;
+    if (totalDisplay) totalDisplay.textContent = formatCurrency(total);
 }
 
 function handleMiniCartCheckout() {

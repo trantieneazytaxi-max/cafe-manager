@@ -72,8 +72,8 @@ async function loadOrderDetail(orderId) {
                                 ${item.size_name ? `<span class="item-options">Size: ${item.size_name}</span>` : ''}
                             </td>
                             <td style="text-align: center;">${item.quantity}</td>
-                            <td style="text-align: right;">${item.unit_price.toLocaleString('vi-VN')}₫</td>
-                            <td style="text-align: right;">${(item.quantity * item.unit_price).toLocaleString('vi-VN')}₫</td>
+                            <td style="text-align: right;">${formatCurrency(item.unit_price)}</td>
+                            <td style="text-align: right;">${formatCurrency(item.quantity * item.unit_price)}</td>
                         </tr>
                     `).join('')}
                 </tbody>
@@ -82,21 +82,21 @@ async function loadOrderDetail(orderId) {
             <div class="summary-section">
                 <div class="summary-row">
                     <span>Tạm tính:</span>
-                    <span>${(order.total_amount - (order.shipping_fee || 0) + (order.discount_amount || 0)).toLocaleString('vi-VN')}₫</span>
+                    <span>${formatCurrency(order.total_amount - (order.shipping_fee || 0) + (order.discount_amount || 0))}</span>
                 </div>
                 ${order.discount_amount ? `
                 <div class="summary-row" style="color: #e74c3c;">
                     <span>Giảm giá:</span>
-                    <span>-${order.discount_amount.toLocaleString('vi-VN')}₫</span>
+                    <span>-${formatCurrency(order.discount_amount)}</span>
                 </div>` : ''}
                 ${order.shipping_fee ? `
                 <div class="summary-row">
                     <span>Phí vận chuyển:</span>
-                    <span>+${order.shipping_fee.toLocaleString('vi-VN')}₫</span>
+                    <span>+${formatCurrency(order.shipping_fee)}</span>
                 </div>` : ''}
                 <div class="summary-row total">
                     <span>Tổng cộng:</span>
-                    <span>${order.total_amount.toLocaleString('vi-VN')}₫</span>
+                    <span>${formatCurrency(order.total_amount)}</span>
                 </div>
             </div>
 
@@ -140,9 +140,9 @@ async function generateOrderPDF(order, items) {
         <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px;">
             <div style="flex: 1;">
                 <div>${item.item_name}</div>
-                <div style="font-size: 12px; color: #777;">SL: ${item.quantity} x ${item.unit_price.toLocaleString('vi-VN')}₫</div>
+                <div style="font-size: 12px; color: #777;">SL: ${item.quantity} x ${formatCurrency(item.unit_price)}</div>
             </div>
-            <div style="font-weight: 500;">${(item.unit_price * item.quantity).toLocaleString('vi-VN')}₫</div>
+            <div style="font-weight: 500;">${formatCurrency(item.unit_price * item.quantity)}</div>
         </div>
     `).join('');
 
@@ -183,21 +183,21 @@ async function generateOrderPDF(order, items) {
         <div style="margin-bottom: 20px; font-size: 14px;">
             <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
                 <span>Tạm tính:</span>
-                <span>${(order.total_amount - (order.shipping_fee || 0) + (order.discount_amount || 0)).toLocaleString('vi-VN')}₫</span>
+                <span>${formatCurrency(order.total_amount - (order.shipping_fee || 0) + (order.discount_amount || 0))}</span>
             </div>
             ${order.discount_amount ? `
             <div style="display: flex; justify-content: space-between; margin-bottom: 5px; color: #e74c3c;">
                 <span>Giảm giá:</span>
-                <span>-${order.discount_amount.toLocaleString('vi-VN')}₫</span>
+                <span>-${formatCurrency(order.discount_amount)}</span>
             </div>` : ''}
             ${order.shipping_fee ? `
             <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
                 <span>Phí vận chuyển:</span>
-                <span>+${order.shipping_fee.toLocaleString('vi-VN')}₫</span>
+                <span>+${formatCurrency(order.shipping_fee)}</span>
             </div>` : ''}
             <div style="display: flex; justify-content: space-between; margin-top: 10px; padding-top: 10px; border-top: 1px solid #333; font-weight: 800; font-size: 18px;">
                 <span>TỔNG CỘNG:</span>
-                <span style="color: #E67E22;">${order.total_amount.toLocaleString('vi-VN')}₫</span>
+                <span style="color: #E67E22;">${formatCurrency(order.total_amount)}</span>
             </div>
         </div>
         

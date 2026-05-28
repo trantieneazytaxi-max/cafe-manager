@@ -61,10 +61,27 @@ exports.confirmOrder = async (req, res) => {
 exports.updateStatus = async (req, res) => {
     try {
         const { orderId } = req.params;
-        const { status } = req.body;
-        await executeQuery(`UPDATE Orders SET status = @status, updated_at = GETDATE() WHERE order_id = @orderId`, { status, orderId });
+        const { status, cancel_reason } = req.body;
+        
+        let updateQuery = `UPDATE Orders SET status = @status, updated_at = GETDATE()`;
+        if (status === 'cancelled' && cancel_reason) {
+            updateQuery += `, note = ISNULL(note, '') + CHAR(13) + CHAR(10) + 'Lý do hủy: ' + @cancel_reason`;
+        }
+        updateQuery += ` WHERE order_id = @orderId`;
+        
+        await executeQuery(updateQuery, { status, cancel_reason, orderId });
+
+        if (status === 'completed' || status === 'cancelled') {
+            const orderResult = await executeQuery(`SELECT table_id, order_type FROM Orders WHERE order_id = @orderId`, { orderId });
+            const order = orderResult.recordset[0];
+            if (order && order.table_id && order.order_type === 'dine-in') {
+                await executeQuery(`UPDATE Tables SET status = 'cleaning' WHERE table_id = @tableId`, { tableId: order.table_id });
+            }
+        }
+        
         res.json({ success: true, message: 'Cập nhật trạng thái thành công' });
     } catch (error) {
+        console.error('Lỗi updateStatus:', error);
         res.status(500).json({ message: 'Lỗi server' });
     }
 };

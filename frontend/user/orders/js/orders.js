@@ -17,7 +17,20 @@ const selectedCountEl = document.getElementById('selectedCount');
 const checkoutBtn = document.getElementById('checkoutBtn');
 const cartCountSpan = document.getElementById('cartCount');
 
-document.addEventListener('DOMContentLoaded', () => {
+let storeConfig = { vatRate: 10 };
+
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        const response = await fetch('http://localhost:5000/api/store');
+        const data = await response.json();
+        storeConfig.vatRate = data.vatRate != null ? data.vatRate : 10;
+        if (taxEl && taxEl.previousElementSibling) {
+            taxEl.previousElementSibling.textContent = `Thuế VAT (${storeConfig.vatRate}%):`;
+        }
+    } catch (e) {
+        console.error('Error fetching store config for cart:', e);
+    }
+
     loadCart();
     initEventListeners();
     updateNavbarCartCount();
@@ -195,7 +208,7 @@ function updateSummary() {
         }
     });
 
-    const tax = subtotal * 0.1;
+    const tax = subtotal * (storeConfig.vatRate / 100);
     const total = subtotal + tax;
 
     if (subtotalEl) subtotalEl.textContent = formatCurrency(subtotal);

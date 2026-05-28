@@ -213,7 +213,8 @@ exports.getStoreSettings = async (req, res) => {
             language: map.language || 'vi',
             heroBanners: map.hero_banners || '[]',
             danmakuEnabled: map.danmaku_enabled === 'true',
-            danmakuMessages: map.danmaku_messages || ''
+            danmakuMessages: map.danmaku_messages || '',
+            storeLogo: map.store_logo || ''
         });
     } catch (error) {
         res.status(500).json({ message: 'Lỗi server' });
@@ -236,6 +237,7 @@ exports.updateStoreSettings = async (req, res) => {
         if (b.heroBanners !== undefined) await Setting.upsertSetting('hero_banners', b.heroBanners);
         if (b.danmakuEnabled !== undefined) await Setting.upsertSetting('danmaku_enabled', b.danmakuEnabled ? 'true' : 'false');
         if (b.danmakuMessages !== undefined) await Setting.upsertSetting('danmaku_messages', b.danmakuMessages);
+        if (b.storeLogo !== undefined) await Setting.upsertSetting('store_logo', b.storeLogo);
         
         res.json({ success: true, message: 'Đã lưu cấu hình' });
     } catch (error) {

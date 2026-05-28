@@ -50,7 +50,7 @@ async function loadRedeemableOffers() {
         container.innerHTML = offers.map(offer => `
             <div class="redeem-card">
                 <div class="redeem-info">
-                    <h4>Giảm ${offer.discount_type === 'percentage' ? offer.discount_value + '%' : offer.discount_value.toLocaleString() + 'đ'}</h4>
+                    <h4>Giảm ${offer.discount_type === 'percentage' ? offer.discount_value + '%' : formatCurrency(offer.discount_value)}</h4>
                     <p>${offer.description || 'Ưu đãi đổi điểm'}</p>
                     <span class="redeem-points">${offer.points_required.toLocaleString()} điểm</span>
                 </div>
@@ -135,7 +135,7 @@ async function loadOrderHistory() {
                             <span class="order-date">${new Date(order.created_at).toLocaleString('vi-VN')}</span>
                         </div>
                         <div class="order-total">
-                            ${order.total_amount.toLocaleString('vi-VN')}₫
+                            ${formatCurrency(order.total_amount)}
                         </div>
                     </div>
                     ${canReview ? `

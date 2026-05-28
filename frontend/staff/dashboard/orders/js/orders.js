@@ -193,7 +193,10 @@ function renderCustomerInfo(order) {
 function renderStatusFlowButtons(order) {
     switch(order.status) {
         case 'pending':
-            return `<button class="action-btn btn-confirm-order" onclick="updateStatus(${order.order_id}, 'confirmed')" title="Xác nhận"><i class="fas fa-check"></i></button>`;
+            return `
+                <button class="action-btn btn-confirm-order" onclick="updateStatus(${order.order_id}, 'confirmed')" title="Xác nhận"><i class="fas fa-check"></i></button>
+                <button class="action-btn" style="background: #e74c3c; color: white;" onclick="updateStatus(${order.order_id}, 'cancelled')" title="Từ chối"><i class="fas fa-times"></i></button>
+            `;
         case 'paid':
         case 'confirmed':
             return `<button class="action-btn" style="background: #f1c40f;" onclick="updateStatus(${order.order_id}, 'preparing')" title="Bắt đầu làm"><i class="fas fa-coffee"></i></button>`;
@@ -207,7 +210,13 @@ function renderStatusFlowButtons(order) {
 }
 
 async function updateStatus(orderId, status) {
-    if (!confirm(`Chuyển đơn hàng sang trạng thái "${getStatusText(status)}"?`)) return;
+    let cancelReason = '';
+    if (status === 'cancelled') {
+        cancelReason = prompt(`Vui lòng nhập lý do từ chối đơn hàng #${orderId}:`);
+        if (cancelReason === null) return; // User clicked cancel
+    } else {
+        if (!confirm(`Chuyển đơn hàng sang trạng thái "${getStatusText(status)}"?`)) return;
+    }
     
     try {
         const token = localStorage.getItem('token');
@@ -217,7 +226,7 @@ async function updateStatus(orderId, status) {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ status })
+            body: JSON.stringify({ status, cancel_reason: cancelReason })
         });
         
         if (response.ok) {
@@ -403,7 +412,10 @@ function renderOrderDetail(order) {
 function getNextStatusButton(order) {
     switch(order.status) {
         case 'pending':
-            return `<button type="button" class="btn-confirm" onclick="updateStatus(${order.order_id}, 'confirmed')">XÁC NHẬN ĐƠN</button>`;
+            return `
+                <button type="button" class="btn-confirm" onclick="updateStatus(${order.order_id}, 'confirmed')">XÁC NHẬN ĐƠN</button>
+                <button type="button" class="btn-confirm" style="background: #e74c3c;" onclick="updateStatus(${order.order_id}, 'cancelled')">TỪ CHỐI</button>
+            `;
         case 'paid':
         case 'confirmed':
             return `<button type="button" class="btn-confirm" style="background: #f1c40f;" onclick="updateStatus(${order.order_id}, 'preparing')">BẮT ĐẦU CHẾ BIẾN</button>`;
@@ -454,7 +466,12 @@ async function confirmCurrentOrder() {
 
 // Format functions
 function formatCurrency(amount) {
-    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount || 0);
+    if (amount === undefined || amount === null) amount = 0;
+    const currency = localStorage.getItem('currency') || localStorage.getItem('store_currency') || 'VND';
+    if (currency === 'USD') {
+        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount / 25000);
+    }
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
 }
 
 function formatDate(dateStr) {

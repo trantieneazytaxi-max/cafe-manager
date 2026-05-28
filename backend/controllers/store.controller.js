@@ -20,7 +20,8 @@ exports.getStoreInfo = async (req, res) => {
             storeEmail: map.store_email || '',
             storeOpeningHours: map.store_opening_hours || '',
             mapboxAccessToken: process.env.MAPBOX_ACCESS_TOKEN || '',
-            heroBanners: map.hero_banners || ''
+            heroBanners: map.hero_banners || '',
+            storeLogo: map.store_logo || ''
         });
     } catch (error) {
         res.status(500).json({ message: 'Lỗi server' });
