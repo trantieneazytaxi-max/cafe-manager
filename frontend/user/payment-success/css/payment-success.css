@@ -279,9 +279,13 @@
 @media (min-width: 600px) {
     .action-buttons {
         flex-direction: row;
+        flex-wrap: wrap;
+        gap: 12px;
     }
     
     .btn {
-        flex: 1;
+        flex: 1 1 calc(50% - 12px);
+        min-width: 180px;
+        margin-bottom: 0 !important; /* Reset margin bottom */
     }
 }

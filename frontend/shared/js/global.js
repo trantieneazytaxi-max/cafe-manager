@@ -42,6 +42,15 @@
             document.head.appendChild(link);
         }
     }
+
+    // Immediate Dark Mode check
+    if (localStorage.getItem('darkMode') === 'true') {
+        document.documentElement.classList.add('dark-mode');
+        document.body?.classList.add('dark-mode');
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.classList.add('dark-mode');
+        });
+    }
 })();
 
 if (document.readyState === 'loading') {
@@ -71,6 +80,7 @@ function initGlobalUI() {
     initFloatingButtons();
     updateFooterInfo();
     injectGlobalComponents(); // Inject Loading Screen & Modals
+    initGlobalBGM();
 }
 
 /**
@@ -1082,7 +1092,14 @@ const EN_DICT = {
     "Nóng": "Hot",
     "Vừa": "Medium",
     "Lớn": "Large",
-    "Nhỏ": "Small"
+    "Nhỏ": "Small",
+    "Nơi thời gian ": "Where time ",
+    " bên ly cà phê": " beside a cup of coffee",
+    "Giữa nhịp sống hối hả của phố thị, ": "Amidst the hustle and bustle of the city, ",
+    " ra đời như một chốn dừng chân bình yên, nơi mùi hương của những hạt cà phê rang mộc quyện hòa cùng không gian ấm không tĩnh lặng. Chúng tôi tin rằng, mỗi ly cà phê không chỉ là thức uống, mà là cầu nối của những cuộc trò chuyện, là nguồn cảm hứng cho những ý tưởng mới, và là khoảnh khắc bạn dành riêng để chiều chuộng bản thân.": " was born as a peaceful stop, where the aroma of roasted coffee beans blends with a warm, quiet space. We believe that each cup of coffee is not just a drink, but a bridge for conversations, a source of inspiration for new ideas, and a moment you dedicate to pamper yourself.",
+    "Đừng ngần ngại đẩy cửa bước vào. ": "Don't hesitate to push open the door and step in. ",
+    "Không cần phải đặt bàn trước": "No table reservation required",
+    ", hãy cứ tự nhiên chọn cho mình một góc ưng ý, lướt menu điện tử, và để chúng tôi lo phần còn lại. Dù bạn ghé vội lấy một ly mang đi, hay nán lại cả buổi chiều để lẩn trốn sự ồn ào – chúng tôi luôn ở đây, sẵn sàng đón tiếp bạn bằng nụ cười và hương vị chân thật nhất.": ", feel free to choose a spot you like, browse the e-menu, and let us handle the rest. Whether you drop by quickly for a takeaway cup, or stay all afternoon to escape the noise – we are always here, ready to welcome you with a smile and the most authentic flavor."
 };
 
 
@@ -1182,4 +1199,423 @@ if (document.body) {
     document.addEventListener('DOMContentLoaded', () => {
         i18nObserver.observe(document.body, { childList: true, subtree: true });
     });
+}
+
+/**
+ * Background Music (BGM) Global Player Integration
+ */
+function initGlobalBGM() {
+    // Skip BGM on staff pages
+    if (window.location.pathname.includes('/staff/')) return;
+    
+    fetch('http://localhost:5000/api/store')
+        .then(res => {
+            if (!res.ok) throw new Error('Cannot fetch store config');
+            return res.json();
+        })
+        .then(data => {
+            if (data.bgmEnabled && data.bgmUrl) {
+                createBgmWidget(data.bgmUrl, data.bgmVolume || 0.3, data.storeName || 'Cà Phê Thông Minh');
+            }
+        })
+        .catch(err => {
+            console.warn('Error loading background music:', err);
+        });
+}
+
+function createBgmWidget(url, defaultVolume, storeName) {
+    if (document.getElementById('global-bgm-widget')) return;
+
+    // Load preferences from localStorage
+    const isMuted = localStorage.getItem('bgm_muted') === 'true';
+    const isPaused = localStorage.getItem('bgm_paused') === 'true';
+    const isCollapsed = localStorage.getItem('bgm_collapsed') === 'true';
+
+    // Create audio tag
+    const audio = document.createElement('audio');
+    audio.id = 'global-bgm-audio';
+    audio.src = url;
+    audio.loop = true;
+    audio.volume = defaultVolume;
+    audio.muted = isMuted;
+    document.body.appendChild(audio);
+
+    // Create BGM Control floating panel at bottom-left
+    const widget = document.createElement('div');
+    widget.id = 'global-bgm-widget';
+    widget.className = 'bgm-widget' + (isCollapsed ? ' bgm-collapsed' : '');
+    widget.innerHTML = `
+        <div class="bgm-disk-container" id="bgmDiskContainer" title="Phát/Tạm dừng">
+            <i class="fas fa-compact-disc bgm-disk" id="bgmDisk"></i>
+        </div>
+        <div class="bgm-details" id="bgmDetails">
+            <span class="bgm-status" id="bgmStatusText">NHẠC NỀN</span>
+            <span class="bgm-title" id="bgmTitleText">${storeName}</span>
+        </div>
+        <div class="bgm-wave" id="bgmWave">
+            <span class="bgm-wave-bar"></span>
+            <span class="bgm-wave-bar"></span>
+            <span class="bgm-wave-bar"></span>
+            <span class="bgm-wave-bar"></span>
+        </div>
+        <div class="bgm-actions" id="bgmActions">
+            <button class="bgm-btn" id="bgmPlayBtn" title="Phát/Tạm dừng"><i class="fas fa-play" id="bgmPlayIcon"></i></button>
+            <button class="bgm-btn" id="bgmMuteBtn" title="Tắt/Bật tiếng"><i class="fas ${isMuted ? 'fa-volume-mute' : 'fa-volume-up'}" id="bgmMuteIcon"></i></button>
+        </div>
+        <button class="bgm-collapse-btn" id="bgmCollapseBtn" title="Thu nhỏ / Mở rộng">
+            <i class="fas fa-chevron-left" id="bgmCollapseIcon"></i>
+        </button>
+    `;
+    document.body.appendChild(widget);
+
+    // Add Styles
+    const style = document.createElement('style');
+    style.id = 'global-bgm-style';
+    style.textContent = `
+        .bgm-widget {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(28, 17, 10, 0.85);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1.5px solid rgba(230, 126, 34, 0.3);
+            border-radius: 50px;
+            padding: 8px 18px 8px 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-family: 'Inter', sans-serif;
+            color: #fff;
+            pointer-events: auto;
+            overflow: hidden;
+        }
+        .reverie-theme .bgm-widget,
+        body.reverie-theme .bgm-widget,
+        body.dark-mode .bgm-widget {
+            background: rgba(13, 13, 26, 0.85) !important;
+            border-color: rgba(0, 243, 255, 0.4) !important;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.15) !important;
+        }
+        .bgm-widget:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        }
+        /* --- COLLAPSED STATE: chỉ hiển thị đĩa nhạc --- */
+        .bgm-widget.bgm-collapsed {
+            padding: 5px;
+            gap: 0;
+            border-radius: 50%;
+            width: 54px;
+            height: 54px;
+            justify-content: center;
+        }
+        .bgm-widget.bgm-collapsed .bgm-details,
+        .bgm-widget.bgm-collapsed .bgm-wave,
+        .bgm-widget.bgm-collapsed .bgm-actions {
+            display: none !important;
+        }
+        .bgm-widget.bgm-collapsed .bgm-collapse-btn {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 18px;
+            height: 18px;
+            font-size: 0.5rem;
+            padding: 0;
+        }
+        /* khi collapsed, tắt animation đĩa để giảm lag */
+        .bgm-widget.bgm-collapsed .bgm-disk {
+            animation-play-state: paused !important;
+        }
+        .bgm-disk-container {
+            position: relative;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #111;
+            border: 2px solid #E67E22;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        body.reverie-theme .bgm-disk-container,
+        body.dark-mode .bgm-disk-container {
+            border-color: #00f3ff !important;
+        }
+        .bgm-disk {
+            font-size: 1.6rem;
+            color: #E67E22;
+            animation: bgmSpin 4s linear infinite;
+            animation-play-state: paused;
+        }
+        body.reverie-theme .bgm-disk,
+        body.dark-mode .bgm-disk {
+            color: #00f3ff !important;
+        }
+        .bgm-disk.playing {
+            animation-play-state: running;
+        }
+        @keyframes bgmSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .bgm-details {
+            display: flex;
+            flex-direction: column;
+            width: 110px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .bgm-status {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: #E67E22;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+        body.reverie-theme .bgm-status,
+        body.dark-mode .bgm-status {
+            color: #ff0055 !important;
+            text-shadow: 0 0 5px rgba(255, 0, 85, 0.5);
+        }
+        .bgm-title {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #fff;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+        .bgm-wave {
+            display: flex;
+            align-items: flex-end;
+            gap: 3px;
+            height: 12px;
+            margin-left: 5px;
+        }
+        .bgm-wave-bar {
+            width: 2px;
+            height: 3px;
+            background-color: #E67E22;
+            border-radius: 1px;
+            animation: bgmWaveAnim 0.8s ease-in-out infinite alternate;
+            animation-play-state: paused;
+        }
+        body.reverie-theme .bgm-wave-bar,
+        body.dark-mode .bgm-wave-bar {
+            background-color: #00f3ff !important;
+        }
+        .bgm-wave-bar.playing {
+            animation-play-state: running;
+        }
+        .bgm-wave-bar:nth-child(2) { animation-delay: 0.15s; }
+        .bgm-wave-bar:nth-child(3) { animation-delay: 0.3s; }
+        .bgm-wave-bar:nth-child(4) { animation-delay: 0.45s; }
+        @keyframes bgmWaveAnim {
+            0% { height: 3px; }
+            100% { height: 12px; }
+        }
+        .bgm-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 5px;
+        }
+        .bgm-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+        .bgm-btn:hover {
+            background: #E67E22;
+            color: #fff;
+            border-color: #E67E22;
+            transform: scale(1.1);
+        }
+        body.reverie-theme .bgm-btn:hover,
+        body.dark-mode .bgm-btn:hover {
+            background: #00f3ff !important;
+            color: #0d0d1a !important;
+            border-color: #00f3ff !important;
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+        }
+        /* Nút Thu nhỏ */
+        .bgm-collapse-btn {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            background: rgba(0, 0, 0, 0.4);
+            color: rgba(255,255,255,0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 0.6rem;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            margin-left: -4px;
+        }
+        .bgm-collapse-btn:hover {
+            background: rgba(230, 126, 34, 0.8);
+            color: #fff;
+            border-color: #E67E22;
+            transform: scale(1.15);
+        }
+        body.reverie-theme .bgm-collapse-btn:hover,
+        body.dark-mode .bgm-collapse-btn:hover {
+            background: rgba(0, 243, 255, 0.8) !important;
+            color: #0d0d1a !important;
+            border-color: #00f3ff !important;
+        }
+        .bgm-disk-container.pulse-tip {
+            animation: bgmPulse 1.5s infinite alternate;
+        }
+        @keyframes bgmPulse {
+            0% { box-shadow: 0 0 0 0px rgba(230, 126, 34, 0.5); }
+            100% { box-shadow: 0 0 0 8px rgba(230, 126, 34, 0); }
+        }
+        body.reverie-theme .bgm-disk-container.pulse-tip,
+        body.dark-mode .bgm-disk-container.pulse-tip {
+            animation: bgmPulseCyber 1.5s infinite alternate;
+        }
+        @keyframes bgmPulseCyber {
+            0% { box-shadow: 0 0 0 0px rgba(0, 243, 255, 0.5); }
+            100% { box-shadow: 0 0 0 8px rgba(0, 243, 255, 0); }
+        }
+    `;
+    document.head.appendChild(style);
+
+    const playBtn = document.getElementById('bgmPlayBtn');
+    const playIcon = document.getElementById('bgmPlayIcon');
+    const muteBtn = document.getElementById('bgmMuteBtn');
+    const muteIcon = document.getElementById('bgmMuteIcon');
+    const disk = document.getElementById('bgmDisk');
+    const diskContainer = document.getElementById('bgmDiskContainer');
+    const waveBars = document.querySelectorAll('.bgm-wave-bar');
+    const statusText = document.getElementById('bgmStatusText');
+
+    function updateWidgetState(playing) {
+        if (playing) {
+            playIcon.className = 'fas fa-pause';
+            disk.classList.add('playing');
+            waveBars.forEach(b => b.classList.add('playing'));
+            statusText.textContent = audio.muted ? 'ĐÃ TẮT TIẾNG' : 'ĐANG PHÁT';
+            diskContainer.classList.remove('pulse-tip');
+        } else {
+            playIcon.className = 'fas fa-play';
+            disk.classList.remove('playing');
+            waveBars.forEach(b => b.classList.remove('playing'));
+            statusText.textContent = audio.muted ? 'ĐÃ TẮT TIẾNG' : 'TẠM DỪNG';
+        }
+    }
+
+    function togglePlay() {
+        if (audio.paused) {
+            audio.play().then(() => {
+                localStorage.setItem('bgm_paused', 'false');
+                updateWidgetState(true);
+            }).catch(e => {
+                console.warn('Play blocked:', e);
+            });
+        } else {
+            audio.pause();
+            localStorage.setItem('bgm_paused', 'true');
+            updateWidgetState(false);
+        }
+    }
+
+    function toggleMute() {
+        const muted = !audio.muted;
+        audio.muted = muted;
+        localStorage.setItem('bgm_muted', muted ? 'true' : 'false');
+        muteIcon.className = muted ? 'fas fa-volume-mute' : 'fas fa-volume-up';
+        updateWidgetState(!audio.paused);
+    }
+
+    // Set initial states
+    updateWidgetState(!isPaused && !isMuted);
+
+    // Collapse/expand toggle
+    const collapseBtn = document.getElementById('bgmCollapseBtn');
+    const collapseIcon = document.getElementById('bgmCollapseIcon');
+
+    function applyCollapsedState(collapsed) {
+        if (collapsed) {
+            widget.classList.add('bgm-collapsed');
+            collapseIcon.className = 'fas fa-chevron-right';
+            collapseBtn.title = 'Mở rộng';
+        } else {
+            widget.classList.remove('bgm-collapsed');
+            collapseIcon.className = 'fas fa-chevron-left';
+            collapseBtn.title = 'Thu nhỏ';
+        }
+    }
+
+    function toggleCollapse() {
+        const nowCollapsed = !widget.classList.contains('bgm-collapsed');
+        localStorage.setItem('bgm_collapsed', nowCollapsed ? 'true' : 'false');
+        applyCollapsedState(nowCollapsed);
+    }
+
+    applyCollapsedState(isCollapsed);
+    collapseBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleCollapse(); });
+
+    // When collapsed, clicking the disc toggles collapse (expand)
+    diskContainer.addEventListener('click', (e) => {
+        if (widget.classList.contains('bgm-collapsed')) {
+            toggleCollapse();
+        } else {
+            togglePlay();
+        }
+    });
+
+    playBtn.addEventListener('click', togglePlay);
+    muteBtn.addEventListener('click', toggleMute);
+
+    // Try play
+    if (!isPaused) {
+        audio.play().then(() => {
+            updateWidgetState(true);
+        }).catch(() => {
+            console.log('Autoplay blocked. Adding interaction trigger.');
+            diskContainer.classList.add('pulse-tip');
+            statusText.textContent = 'CHẠM ĐỂ PHÁT';
+            
+            const startOnInteraction = () => {
+                if (localStorage.getItem('bgm_paused') !== 'true') {
+                    audio.play().then(() => {
+                        updateWidgetState(true);
+                        cleanup();
+                    }).catch(e => console.log(e));
+                } else {
+                    cleanup();
+                }
+            };
+            const cleanup = () => {
+                window.removeEventListener('click', startOnInteraction);
+                window.removeEventListener('keydown', startOnInteraction);
+            };
+            window.addEventListener('click', startOnInteraction, { once: true });
+            window.addEventListener('keydown', startOnInteraction, { once: true });
+        });
+    }
 }

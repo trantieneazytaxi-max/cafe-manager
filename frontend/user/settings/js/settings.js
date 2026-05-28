@@ -72,16 +72,16 @@ async function loadProfileAddress() {
 
 function initAddressAutocomplete() {
     const addrInput = document.getElementById('deliveryAddressPref');
-    if (!addrInput || typeof loadMapboxPlaces !== 'function') return;
+    if (!addrInput || typeof loadGoongPlaces !== 'function') return;
 
     fetch('http://localhost:5000/api/store')
         .then((r) => r.json())
         .then((data) => {
-            if (!data.mapboxAccessToken) {
+            if (!data.goongApiKey) {
                 return;
             }
 
-            return loadMapboxPlaces(data.mapboxAccessToken).then(() =>
+            return loadGoongPlaces(data.goongApiKey, data.goongMaptileKey).then(() =>
                 attachPlacesAutocomplete(addrInput, {
                     onPlace: (p) => {
                         document.getElementById('deliveryLatPref').value = String(p.lat);

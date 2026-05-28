@@ -138,12 +138,12 @@
                         <input type="text" id="storeLogo" placeholder="https://.../logo.png">
                     </div>
                     <div class="form-group">
-                        <label>Địa chỉ cửa hàng (Mapbox)</label>
+                        <label>Địa chỉ cửa hàng (Goong Maps)</label>
                         <input type="text" id="storeAddress" placeholder="Tìm địa chỉ, chọn kết quả để lưu tọa độ" autocomplete="off">
                         <input type="hidden" id="storeLat" value="">
                         <input type="hidden" id="storeLng" value="">
                         <input type="hidden" id="storePlaceId" value="">
-                        <p style="font-size: 0.75rem; color: #8892b0; margin-top: 0.5rem;">Geocoding Mapbox. Cấu hình <code style="color:#00f3ff;">MAPBOX_ACCESS_TOKEN</code> (token public <code>pk....</code>) trong <code style="color:#00f3ff;">backend/.env</code>.</p>
+                        <p style="font-size: 0.75rem; color: #8892b0; margin-top: 0.5rem;">Geocoding Goong Maps. Cấu hình <code style="color:#00f3ff;">GOONG_API_KEY</code> trong <code style="color:#00f3ff;">backend/.env</code>.</p>
                         <div id="storeMap" style="height: 280px; border-radius: 12px; margin-top: 1rem; border: 1px solid rgba(0, 243, 255, 0.2);"></div>
                     </div>
                     <div class="form-group">
@@ -223,6 +223,41 @@
                 </div>
             </div>
 
+            <!-- Background Music (BGM) Section -->
+            <div class="settings-card" style="margin-top: 2rem; max-width: 100%;">
+                <h3><i class="fas fa-music"></i> Cấu hình Nhạc nền hệ thống (BGM)</h3>
+                <div class="form-group" style="display: flex; flex-direction: row; align-items: center; gap: 15px; background: rgba(0, 243, 255, 0.05); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(0, 243, 255, 0.1);">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <input type="checkbox" id="bgmEnabled" style="width: 24px; height: 24px; cursor: pointer;">
+                        <label for="bgmEnabled" style="margin-bottom: 0; cursor: pointer; color: #00f3ff; font-weight: 700; text-shadow: 0 0 5px rgba(0, 243, 255, 0.3);">KÍCH HOẠT NHẠC NỀN (BGM) CHO ADMIN & KHÁCH HÀNG</label>
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.5rem;">
+                    <div class="form-group">
+                        <label>Chọn Nhạc từ Thư viện mẫu</label>
+                        <select id="bgmPreset" style="width: 100%; padding: 1rem; background: rgba(0, 243, 255, 0.05); border: 1px solid rgba(0, 243, 255, 0.1); border-radius: 12px; color: #fff;" onchange="handleBgmPresetChange()">
+                            <option value="custom">-- Nhập URL Tự Chọn --</option>
+                            <option value="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3">Lofi Beats Thư Giãn (SoundHelix 1)</option>
+                            <option value="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3">Coffee Shop Acoustic Guitar (SoundHelix 4)</option>
+                            <option value="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3">Jazz Saxophone Quán Nước (SoundHelix 8)</option>
+                            <option value="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-16.mp3">Piano Classic Nhẹ Nhàng (SoundHelix 16)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Âm lượng mặc định (%)</label>
+                        <input type="number" id="bgmVolume" min="0" max="100" value="30" placeholder="Mặc định: 30%">
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 1rem;">
+                    <label>Đường dẫn nhạc nền (Direct Audio/MP3 URL)</label>
+                    <input type="text" id="bgmUrl" placeholder="https://tên-miền.com/đường-dẫn-nhạc.mp3">
+                    <p style="font-size: 0.8rem; color: #888; margin-top: 0.5rem;">Vui lòng nhập đường dẫn trực tiếp (phần mở rộng .mp3, .ogg) hoặc chọn từ thư viện mẫu ở trên.</p>
+                </div>
+            </div>
+
             <!-- Security Section -->
             <div class="settings-card" style="margin-top: 2rem; max-width: 600px;">
                 <h3><i class="fas fa-shield-alt"></i> Quản trị & Bảo mật</h3>
@@ -253,7 +288,7 @@
         let adminStoreMap = null;
         let adminStoreMarker = null;
 
-        async function initAdminMap(lat, lng) {
+        async function initAdminMap(lat, lng, apiKey) {
             const container = document.getElementById('storeMap');
             if (!container) return;
             
@@ -262,6 +297,7 @@
 
             const picker = await initLeafletPicker('storeMap', {
                 center: [latN, lngN],
+                apiKey: apiKey,
                 onSelect: (p) => {
                     document.getElementById('storeLat').value = p.lat;
                     document.getElementById('storeLng').value = p.lng;
@@ -301,6 +337,24 @@
                 document.getElementById('danmakuEnabled').checked = d.danmakuEnabled || false;
                 document.getElementById('danmakuMessages').value = d.danmakuMessages || '';
                 
+                // Load BGM Settings
+                document.getElementById('bgmEnabled').checked = d.bgmEnabled || false;
+                document.getElementById('bgmUrl').value = d.bgmUrl || '';
+                document.getElementById('bgmVolume').value = d.bgmVolume != null ? Math.round(parseFloat(d.bgmVolume) * 100) : 30;
+
+                const presetSelect = document.getElementById('bgmPreset');
+                if (presetSelect) {
+                    let matched = false;
+                    for (let option of presetSelect.options) {
+                        if (option.value === d.bgmUrl) {
+                            presetSelect.value = d.bgmUrl;
+                            matched = true;
+                            break;
+                        }
+                    }
+                    if (!matched) presetSelect.value = 'custom';
+                }
+
                 // Show/Hide Reverie settings based on active theme
                 if (localStorage.getItem('reverieTheme') === 'true') {
                     document.getElementById('reverieSettingsSection').style.display = 'block';
@@ -316,8 +370,30 @@
                 }
 
 
-                // Khởi tạo bản đồ Leaflet
-                await initAdminMap(d.lat, d.lng);
+                // Initialize Goong Maps FIRST (both geocoding and maptiles)
+                if (d.goongApiKey) {
+                    await loadGoongPlaces(d.goongApiKey, d.goongMaptileKey);
+                }
+
+                // Then initialize map with Maptiles key
+                await initAdminMap(d.lat, d.lng, d.goongMaptileKey);
+
+                // Initialize address autocomplete
+                if (d.goongApiKey) {
+                    const addrInput = document.getElementById('storeAddress');
+                    if (addrInput) {
+                        attachPlacesAutocomplete(addrInput, {
+                            onPlace: (p) => {
+                                document.getElementById('storeLat').value = p.lat;
+                                document.getElementById('storeLng').value = p.lng;
+                                if (adminStoreMarker) {
+                                    adminStoreMarker.setLatLng([p.lat, p.lng]);
+                                    if (adminStoreMap) adminStoreMap.setView([p.lat, p.lng], 15);
+                                }
+                            }
+                        });
+                    }
+                }
                 
             } catch (e) {
                 console.error(e);
@@ -350,6 +426,9 @@
                         language: document.getElementById('language').value,
                         danmakuEnabled: document.getElementById('danmakuEnabled').checked,
                         danmakuMessages: document.getElementById('danmakuMessages').value,
+                        bgmEnabled: document.getElementById('bgmEnabled').checked,
+                        bgmUrl: document.getElementById('bgmUrl').value,
+                        bgmVolume: parseFloat(document.getElementById('bgmVolume').value) / 100,
                         heroBanners: JSON.stringify(document.getElementById('heroBanners').value.split('\n').map(l => l.trim()).filter(l => l))
                     })
                 });
@@ -363,6 +442,14 @@
                 location.reload();
             } catch (e) {
                 alert(e.message);
+            }
+        }
+
+        function handleBgmPresetChange() {
+            const select = document.getElementById('bgmPreset');
+            const urlInput = document.getElementById('bgmUrl');
+            if (select.value !== 'custom') {
+                urlInput.value = select.value;
             }
         }
 

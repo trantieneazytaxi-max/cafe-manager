@@ -19,9 +19,13 @@ exports.getStoreInfo = async (req, res) => {
             storePhone: map.store_phone || '',
             storeEmail: map.store_email || '',
             storeOpeningHours: map.store_opening_hours || '',
-            mapboxAccessToken: process.env.MAPBOX_ACCESS_TOKEN || '',
+            goongApiKey: process.env.GOONG_API_KEY || '',
+            goongMaptileKey: process.env.GOONG_MAPTILES_KEY || '',
             heroBanners: map.hero_banners || '',
-            storeLogo: map.store_logo || ''
+            storeLogo: map.store_logo || '',
+            bgmEnabled: map.bgm_enabled === 'true',
+            bgmUrl: map.bgm_url || '',
+            bgmVolume: map.bgm_volume ? parseFloat(map.bgm_volume) : 0.3
         });
     } catch (error) {
         res.status(500).json({ message: 'Lỗi server' });

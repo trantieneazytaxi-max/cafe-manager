@@ -66,12 +66,34 @@ async function initProfileMap() {
     const container = document.getElementById('deliveryMap');
     if (!container) return;
 
+    // Fetch store data FIRST to get API keys
+    let apiKey = null;
+    let maptileKey = null;
+    try {
+        const storeRes = await fetch('http://localhost:5000/api/store');
+        const storeData = await storeRes.json();
+        apiKey = storeData.goongApiKey;
+        maptileKey = storeData.goongMaptileKey;
+    } catch (e) {
+        console.warn('Could not fetch store config:', e);
+    }
+
+    // Load Goong if key available
+    if (apiKey) {
+        try {
+            await loadGoongPlaces(apiKey, maptileKey);
+        } catch (e) {
+            console.warn('Could not load Goong:', e);
+        }
+    }
+
     // Default to HCM if no user coordinates
     const lat = currentLat || 10.7769;
     const lng = currentLng || 106.7009;
 
     const picker = await initLeafletPicker('deliveryMap', {
         center: [lat, lng],
+        apiKey: maptileKey,
         onSelect: (p) => {
             currentLat = p.lat;
             currentLng = p.lng;
@@ -82,12 +104,9 @@ async function initProfileMap() {
     deliveryMap = picker.map;
     deliveryMarker = picker.marker;
 
-    // Optional: Attach autocomplete if Mapbox token exists
-    try {
-        const storeRes = await fetch('http://localhost:5000/api/store');
-        const storeData = await storeRes.json();
-        if (storeData.mapboxAccessToken) {
-            await loadMapboxPlaces(storeData.mapboxAccessToken);
+    // Attach autocomplete
+    if (apiKey) {
+        try {
             await attachPlacesAutocomplete(deliveryAddressInput, {
                 onPlace: (p) => {
                     currentLat = p.lat;
@@ -99,9 +118,9 @@ async function initProfileMap() {
                     }
                 }
             });
+        } catch (e) {
+            console.warn('Could not attach autocomplete:', e);
         }
-    } catch (e) {
-        console.warn('Mapbox autocomplete not available:', e);
     }
 }
 

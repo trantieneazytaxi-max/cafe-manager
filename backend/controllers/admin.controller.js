@@ -214,7 +214,10 @@ exports.getStoreSettings = async (req, res) => {
             heroBanners: map.hero_banners || '[]',
             danmakuEnabled: map.danmaku_enabled === 'true',
             danmakuMessages: map.danmaku_messages || '',
-            storeLogo: map.store_logo || ''
+            storeLogo: map.store_logo || '',
+            bgmEnabled: map.bgm_enabled === 'true',
+            bgmUrl: map.bgm_url || '',
+            bgmVolume: map.bgm_volume || '0.3'
         });
     } catch (error) {
         res.status(500).json({ message: 'Lỗi server' });
@@ -238,6 +241,9 @@ exports.updateStoreSettings = async (req, res) => {
         if (b.danmakuEnabled !== undefined) await Setting.upsertSetting('danmaku_enabled', b.danmakuEnabled ? 'true' : 'false');
         if (b.danmakuMessages !== undefined) await Setting.upsertSetting('danmaku_messages', b.danmakuMessages);
         if (b.storeLogo !== undefined) await Setting.upsertSetting('store_logo', b.storeLogo);
+        if (b.bgmEnabled !== undefined) await Setting.upsertSetting('bgm_enabled', b.bgmEnabled ? 'true' : 'false');
+        if (b.bgmUrl !== undefined) await Setting.upsertSetting('bgm_url', b.bgmUrl);
+        if (b.bgmVolume !== undefined) await Setting.upsertSetting('bgm_volume', b.bgmVolume.toString());
         
         res.json({ success: true, message: 'Đã lưu cấu hình' });
     } catch (error) {

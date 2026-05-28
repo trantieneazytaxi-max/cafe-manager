@@ -631,10 +631,11 @@ body {
     color: #5C3A21;
 }
 
-.order-total {
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 2px solid #F5E6D3;
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    color: #8B7355;
 }
 
 .total-row {

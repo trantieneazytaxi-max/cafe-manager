@@ -4,7 +4,7 @@ const STORE_KEYS = [
     'store_name', 'store_address', 'store_lat', 'store_lng', 'store_place_id', 
     'hero_banners', 'vat_rate', 'default_shipping', 'free_ship_threshold', 
     'currency', 'language', 'store_phone', 'store_email', 'store_opening_hours',
-    'danmaku_enabled', 'danmaku_messages'
+    'danmaku_enabled', 'danmaku_messages', 'bgm_enabled', 'bgm_url', 'bgm_volume'
 ];
 
 exports.upsertSetting = async (key, value) => {

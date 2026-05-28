@@ -147,7 +147,14 @@ const EN_DICT = {
     "Nóng": "Hot",
     "Vừa": "Medium",
     "Lớn": "Large",
-    "Nhỏ": "Small"
+    "Nhỏ": "Small",
+    "Nơi thời gian ": "Where time ",
+    " bên ly cà phê": " beside a cup of coffee",
+    "Giữa nhịp sống hối hả của phố thị, ": "Amidst the hustle and bustle of the city, ",
+    " ra đời như một chốn dừng chân bình yên, nơi mùi hương của những hạt cà phê rang mộc quyện hòa cùng không gian ấm không tĩnh lặng. Chúng tôi tin rằng, mỗi ly cà phê không chỉ là thức uống, mà là cầu nối của những cuộc trò chuyện, là nguồn cảm hứng cho những ý tưởng mới, và là khoảnh khắc bạn dành riêng để chiều chuộng bản thân.": " was born as a peaceful stop, where the aroma of roasted coffee beans blends with a warm, quiet space. We believe that each cup of coffee is not just a drink, but a bridge for conversations, a source of inspiration for new ideas, and a moment you dedicate to pamper yourself.",
+    "Đừng ngần ngại đẩy cửa bước vào. ": "Don't hesitate to push open the door and step in. ",
+    "Không cần phải đặt bàn trước": "No table reservation required",
+    ", hãy cứ tự nhiên chọn cho mình một góc ưng ý, lướt menu điện tử, và để chúng tôi lo phần còn lại. Dù bạn ghé vội lấy một ly mang đi, hay nán lại cả buổi chiều để lẩn trốn sự ồn ào – chúng tôi luôn ở đây, sẵn sàng đón tiếp bạn bằng nụ cười và hương vị chân thật nhất.": ", feel free to choose a spot you like, browse the e-menu, and let us handle the rest. Whether you drop by quickly for a takeaway cup, or stay all afternoon to escape the noise – we are always here, ready to welcome you with a smile and the most authentic flavor."
 };
 
 
